@@ -82,7 +82,7 @@ double* user_JointForces(MbsData *mbs_data, double tsim)
 		//uqd_DTC_PID(mbs_data);
 		// mbs_data->Qq[R3_steering_fork_id] = mbs_data->user_IO->dummy_Qsteer;
 
-		//mbs_data->Qq[R2_wheel_rr_id] =  mbs_data->user_IO->inter->Qqu[8 - 1];//mbs_data->user_IO->dummy_Qqrear;
+		mbs_data->Qq[R2_wheel_rr_id] = 0.0;// mbs_data->user_IO->inter->Qqu[8 - 1];//mbs_data->user_IO->dummy_Qqrear;
 
 		// DO NOT FORGET TO APPLY OTHER JOINT FORCES !
 

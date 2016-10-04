@@ -56,6 +56,19 @@ extern "C" {
 
 int main(int argc, char const *argv[])
 {
+
+	double *q_saved_dir, *qd_saved_dir, *Qq_saved_dir;
+	MbsData *mbs_data;
+	MbsPart *mbs_part;
+	MbsDirdyn *mbs_dirdyn;
+	double simu_t;
+	double V, Rmin, steer;
+
+	UserIO *uIO;
+	MbsEquil *mbs_equil;
+	MbsModal *mbs_modal;
+
+
 	//char str[15], str_curve[15];
 	//char fileName[400];
 	//char res_fileName[500];
@@ -73,48 +86,26 @@ int main(int argc, char const *argv[])
 	//double *vQ;
 
 
-
-
-
 	//double cog[4];
 	//char *filename;
 	//char *filename_dirdyn;
 	//char *rslt_quasi;
 
 	// for curve quasistatic computation !
-//	double *q_saved, *qd_saved, *Qq_saved;
-	double *q_saved_dir, *qd_saved_dir, *Qq_saved_dir;
-
-	//double error = 0.0;
-
-	MbsData *mbs_data; // auto
-	MbsPart *mbs_part; // auto
-	MbsDirdyn *mbs_dirdyn; // auto
-	double simu_t;
-	double V, Rmin,steer;
-
-	UserIO *uIO;
-	MbsEquil *mbs_equil;
-	MbsModal *mbs_modal;
-
+	//	double *q_saved, *qd_saved, *Qq_saved;
+	//	double error = 0.0;
 	//double v, vstart, R, Rstart, omega, deltaV, deltaR;
 	//int i, nV, j, nR;
-	
-
-
-
-
 	//double **Ktest;
 
-	printf("Hello tricycle MBS!\n"); // auto
-
+	printf("Hello tricycle MBS!\n"); 
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	/*                     LOADING                               *
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-	printf("Loading the tricycle data file !\n"); // auto
-	mbs_data = mbs_load(PROJECT_SOURCE_DIR"/../dataR/tricycle.mbs", BUILD_PATH); // auto
-	printf("*.mbs file loaded!\n");// auto
+	printf("Loading the tricycle data file !\n"); 
+	mbs_data = mbs_load(PROJECT_SOURCE_DIR"/../dataR/tricycle.mbs", BUILD_PATH); 
+	printf("*.mbs file loaded!\n");
 	uIO = mbs_data->user_IO;
 
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -175,6 +166,30 @@ int main(int argc, char const *argv[])
 
 
 	system("pause");
+
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	/*					 MODAL ANALYSIS                     *
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+	mbs_data->process = 18; // modal
+	mbs_modal = mbs_new_modal(mbs_data);
+
+	// modal options (see documentations for additional options)
+
+//	mbs_modal->options->verbose = 0;
+
+
+
+	printf("run modal\n");
+	mbs_run_modal(mbs_modal, mbs_data);
+	printf("print modal \n");
+	
+	mbs_modal_save_result(mbs_modal, mbs_data, "Analyse_modale\My_Modal_Analysis.txt");
+	mbs_delete_modal(mbs_modal, mbs_data);
+
+
+	system("pause");
+
 
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	/*					LOOPS (speed or R)			             *
@@ -257,11 +272,9 @@ int main(int argc, char const *argv[])
 
 	// save the Qq rear... !
 
-	////mbs_set_qdriven(mbs_data, R3_steering_fork_id);
 
 	mbs_data->user_IO->modeTC = 2;
 
-	
 	// initialize dirdyn with slane equilibrium
 	copy_dvec_0(q_saved_dir, &(mbs_data->q[1]), mbs_data->njoint);
 	copy_dvec_0(qd_saved_dir, &(mbs_data->qd[1]), mbs_data->njoint);
@@ -275,7 +288,7 @@ int main(int argc, char const *argv[])
 	//uqd_slane_equil(mbs_data, V);
 	mbs_data->user_IO->dummy_Qqrear = mbs_data->Qq[R2_wheel_rr_id];
 
-
+	mbs_data->q[T3_body_id] = 0.4;
 	//------------------------------------------
 
 	// initialize dirdyn with curve equilibrium
