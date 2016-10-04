@@ -1,0 +1,7 @@
+#ifndef USER_WHEEL_h
+#define USER_WHEEL_h
+
+//#define AUTOMOTIVE_KINEWHEEL
+#define MOTORBIKE_KINEWHEEL
+
+#endif
