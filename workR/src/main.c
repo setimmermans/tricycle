@@ -68,35 +68,11 @@ int main(int argc, char const *argv[])
 	MbsEquil *mbs_equil;
 	MbsModal *mbs_modal;
 
+	simu_t = 1.5;
+	V = 10;
 
-	//char str[15], str_curve[15];
-	//char fileName[400];
-	//char res_fileName[500];
-
-	//// for quasistati save and analysis
-	//char file_dpsiQ[500];
-	//char file_thetaQ[500];
-	//char file_RQ[500];
-	//char file_vQ[500];
-	//char file_steerQ[500];
-	//double **dpsiQ;
-	//double **thetaQ;
-	//double **steerQ;
-	//double *RQ;
-	//double *vQ;
-
-
-	//double cog[4];
-	//char *filename;
-	//char *filename_dirdyn;
-	//char *rslt_quasi;
-
-	// for curve quasistatic computation !
-	//	double *q_saved, *qd_saved, *Qq_saved;
-	//	double error = 0.0;
-	//double v, vstart, R, Rstart, omega, deltaV, deltaR;
-	//int i, nV, j, nR;
-	//double **Ktest;
+	char *filename;
+	char *filename_modal;
 
 	printf("Hello tricycle MBS!\n"); 
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -167,6 +143,46 @@ int main(int argc, char const *argv[])
 
 	system("pause");
 
+
+
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	/*					 QUASI STATIC EQUILIBRIUM	                     *
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+	mbs_data->process = 2; // equil !
+
+
+	mbs_data->qd[T1_body_id] = V;
+	mbs_data->q[T1_body_id] = 0.0;
+	mbs_data->q[T2_body_id] = 0.0;
+
+	mbs_data->qd[R2_wheel_ft_lt_id] = V / 0.258591;
+	mbs_data->qd[R2_wheel_ft_rt_id] = V / 0.258591;
+	mbs_data->qd[R2_wheel_rr_id] = V / 0.255193; // very sensitive (need to take static eq value for nominal radii)
+
+	mbs_equil = mbs_new_equil(mbs_data);
+
+	// equil options (see documentations for additional options)
+	mbs_equil->options->senstol = 1e-01;
+	mbs_equil->options->verbose = 0;
+	mbs_equil->options->quasistatic = 1;
+	mbs_equil->options->nquch = 4;
+	mbs_equil_exchange(mbs_equil->options);
+	mbs_equil->options->quch[1] = T1_body_id;
+	mbs_equil->options->quch[2] = R2_wheel_ft_lt_id;
+	mbs_equil->options->quch[3] = R2_wheel_rr_id;
+	mbs_equil->options->quch[4] = R2_wheel_ft_rt_id;
+	mbs_equil->options->xch_ptr[1] = &(mbs_data->Qq[R2_wheel_rr_id]);
+	mbs_equil->options->xch_ptr[2] = &(mbs_data->qd[R2_wheel_ft_lt_id]);
+	mbs_equil->options->xch_ptr[3] = &(mbs_data->qd[R2_wheel_rr_id]);
+	mbs_equil->options->xch_ptr[4] = &(mbs_data->qd[R2_wheel_ft_rt_id]);
+	mbs_run_equil(mbs_equil, mbs_data);
+
+	mbs_print_equil(mbs_equil);
+	mbs_delete_equil(mbs_equil, mbs_data);
+	system("pause");
+
+
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	/*					 MODAL ANALYSIS                     *
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -177,7 +193,6 @@ int main(int argc, char const *argv[])
 	// modal options (see documentations for additional options)
 
 //	mbs_modal->options->verbose = 0;
-
 
 
 	printf("run modal\n");
@@ -192,86 +207,48 @@ int main(int argc, char const *argv[])
 
 
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	/*					LOOPS (speed or R)			             *
+	/*					LOOPS MODAL ANALYSIS ON V			             *
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
+	double steps, speed;
+	steps = 1;
+	speed = 0.0;
 
-	//// 1: STC   2: DTC
-	//mbs_data->user_IO->modeTC =1;
-	//mbs_data->process = 1;
+	char *path = PROJECT_SOURCE_DIR"/../resultsR/AnalyseModale";
+	filename_modal =  (char *)malloc(1 + strlen(path) + strlen("/") + 30);//"Analyse_modale\My_Modal_Analysis"; // 
+	printf("\n\n Ready for LOOPS \n");
+	system("pause");
 
-	////V = 1; 	steer = 0.15; simu_t = 10.0; 	Rmin = 10;// Radius min : 12
-	////V = 4.8; 	steer = 0.10; simu_t = 5.0; 	Rmin = 10;// Radius min : 12
-	V = 0.0; 	steer = 0.075; simu_t = 1.5; Rmin=15;  //0.05 on steer
+	while (speed<V)
+	{
+		mbs_data->qd[T1_body_id] = speed;
+		mbs_data->q[T1_body_id] = 0.0;
+		mbs_data->q[T2_body_id] = 0.0;
+
+		mbs_data->qd[R2_wheel_ft_lt_id] = speed / 0.258591;
+		mbs_data->qd[R2_wheel_ft_rt_id] = speed / 0.258591;
+		mbs_data->qd[R2_wheel_rr_id] = speed / 0.255193; // very sensitive (need to take static eq value for nominal radii)
+
+		sprintf(filename_modal, "%s/V%3.1f.txt", path, speed);
+
+		mbs_modal = mbs_new_modal(mbs_data);
+		mbs_run_modal(mbs_modal, mbs_data);
+		mbs_modal_save_result(mbs_modal, mbs_data, filename_modal);
+		mbs_delete_modal(mbs_modal, mbs_data);
 
 
-
-	//mbs_data->user_IO->V = V;
-	//mbs_data->user_IO->steer = steer;
-
-	//char *path = "C:/Users/qdocquier/Documents/MBProjects/tricycle/resultsR/controller";
-	//filename = (char *)malloc(1 + strlen(path) + strlen("/") + 30);
-
-	//if (mbs_data->user_IO->modeTC == 1)
-	//{
-	//	/// computing and saving
-	//	sprintf(filename, "%s/V%3.1f/STC_slane", path, V);
-	//	userQD_slane_qstc(mbs_data, V - 0.2, V + 0.2, 0.1);
-	//		uqd_savedelete_linA(mbs_data->user_IO->linAroundLane, 29, 1, 14, filename);
-	//	sprintf(filename, "%s/V%3.1f/STC_curve", path, V);
-	//		userQD_curve_qstc(1,mbs_data, V - 0.2, V + 0.2, 0.1, Rmin, 50.0, 95.0,1.0);
-	//		uqd_savedelete_linA(mbs_data->user_IO->linAroundCurve, 29, 1,14,filename);
-	//		/// loading
-	//	sprintf(filename, "%s/V%3.1f/STC_slane", path, V);
-	//	mbs_data->user_IO->linAroundCurve = uqd_loadget_linA(29, 1, 14, filename);
-	//	sprintf(filename, "%s/V%3.1f/STC_curve", path, V);
-	//	mbs_data->user_IO->linAroundCurve = uqd_loadget_linA(29, 1, 14, filename);
-	//}
-	//else if (mbs_data->user_IO->modeTC == 2)
-	//{
-	//	// computing and saving
-	//	sprintf(filename, "%s/V%3.1f/DTC_slane", path, V);
-	//	userQD_slane_qstc(mbs_data, V - 0.2, V + 0.2, 0.1);
-	//	uqd_savedelete_linA(mbs_data->user_IO->linAroundLane, 27, 1, 14, filename);
-	//	sprintf(filename, "%s/V%3.1f/DTC_curve", path, V);
-	//	userQD_curve_qstc(1, mbs_data, V - 0.2, V + 0.2, 0.1, Rmin, 50.0, 95.0, 1.0);
-	//	uqd_savedelete_linA(mbs_data->user_IO->linAroundCurve, 27, 1, 14, filename);
-	//	// loading
-	//	sprintf(filename, "%s/V%3.1f/DTC_slane", path, V);
-	//	mbs_data->user_IO->linAroundCurve = uqd_loadget_linA(27, 1, 14, filename);
-	//	sprintf(filename, "%s/V%3.1f/DTC_curve", path, V);
-	//	mbs_data->user_IO->linAroundCurve = uqd_loadget_linA(27, 1, 14, filename);
-	//}
+		speed = speed + steps;
+	}
 
 
 
-	////printf("V 7.8\n");
-	////print_dmat_0(&(mbs_data->user_IO->linAroundCurve->K_LQI[0 * mbs_data->user_IO->linAroundCurve->nR]), 1*mbs_data->user_IO->linAroundCurve->nR, 27);
-	////printf("V 7.9\n");
-	////print_dmat_0(&(mbs_data->user_IO->linAroundCurve->K_LQI[1 * mbs_data->user_IO->linAroundCurve->nR]), 1 * mbs_data->user_IO->linAroundCurve->nR, 27);
-	////printf("V 8.0\n");
-	////print_dmat_0(&(mbs_data->user_IO->linAroundCurve->K_LQI[2 * mbs_data->user_IO->linAroundCurve->nR]), 1 * mbs_data->user_IO->linAroundCurve->nR, 27);
-	////printf("V 8.1\n");
-	////print_dmat_0(&(mbs_data->user_IO->linAroundCurve->K_LQI[3 * mbs_data->user_IO->linAroundCurve->nR]), 1 * mbs_data->user_IO->linAroundCurve->nR, 27);
-	////printf("V 8.2\n");
-	////print_dmat_0(&(mbs_data->user_IO->linAroundCurve->K_LQI[4 * mbs_data->user_IO->linAroundCurve->nR]), 1 * mbs_data->user_IO->linAroundCurve->nR, 27);
-
-	//printf("done... \n");
-	//system("pause");
-	//system("pause");
+	system("pause");
 
 
-	//userQD_curve_qstc(1,mbs_data, 3.9, 4.1, 0.1, 20.0, 50.0, 100.00,1.0);  // upper limit for 1m/s 201.5 10m/s 199.0
-	//print_dmat_0(mbs_data->user_IO->linAroundCurve->K_LQI, mbs_data->user_IO->linAroundCurve->nV*mbs_data->user_IO->linAroundCurve->nR, 27);
-
-
+	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	/*                   DIRECT DYNANMICS                        *
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-
-
-	// save the Qq rear... !
-
 
 	mbs_data->user_IO->modeTC = 2;
 
@@ -286,22 +263,23 @@ int main(int argc, char const *argv[])
 	}
 
 	//uqd_slane_equil(mbs_data, V);
-	mbs_data->user_IO->dummy_Qqrear = mbs_data->Qq[R2_wheel_rr_id];
+	
 
-	mbs_data->q[T3_body_id] = 0.4;
+	mbs_data->q[T3_body_id] = 0.18;
+
 	//------------------------------------------
 
 	// initialize dirdyn with curve equilibrium
-	//V = 4.0;
+	//V = 10.0;
 	//R = 30.0;
 	//uqd_curve_equil(mbs_data, V, R, 1);
-	//mbs_data->qd[R3_body_id] = mbs_data->qd[R3_body_qs_id];
-	//mbs_data->qd[R3_body_qs_id] = 0.0;
-	//mbs_data->qd[T1_body_id] = V;
-	//mbs_data->q[T1_body_id] = 0.0;
-	//mbs_data->q[T2_body_id] = 0.0;
-	//mbs_data->user_IO->dummy_Qsteer = mbs_data->Qq[R3_steering_fork_id];
-	//mbs_data->user_IO->dummy_Qqrear = mbs_data->Qq[R2_wheel_rr_id];
+	mbs_data->qd[R3_body_id] = mbs_data->qd[R3_body_qs_id];
+	mbs_data->qd[R3_body_qs_id] = 0.0;
+	mbs_data->qd[T1_body_id] = V;
+	mbs_data->q[T1_body_id] = 0.0;
+	mbs_data->q[T2_body_id] = 0.0;
+	mbs_data->user_IO->dummy_Qsteer = mbs_data->Qq[R3_steering_fork_id];
+	mbs_data->user_IO->dummy_Qqrear = mbs_data->Qq[R2_wheel_rr_id];
 	//------------------------------------------
 
 	printf("\n\n Ready for dirdyn \n");
@@ -320,7 +298,7 @@ int main(int argc, char const *argv[])
 	mbs_dirdyn->options->save2file = 1;
 	mbs_dirdyn->options->animpath = PROJECT_SOURCE_DIR"/../animationR";
 	
-	mbs_dirdyn->options->realtime = 1;
+	//mbs_dirdyn->options->realtime = 1;
 	mbs_dirdyn->options->saveperiod = 10;
 
 
@@ -350,6 +328,7 @@ int main(int argc, char const *argv[])
 	/*                   CLOSING OPERATIONS                      *
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	mbs_delete_data(mbs_data);
+	free(filename_modal);
 	return 0;
 }
 

@@ -56,7 +56,7 @@ void user_DrivenJoints(MbsData *mbs_data, double tsim)
 	{
 		if (mbs_data->user_IO->modeTC == 2) // DTC
 		{
-			mbs_data->q[R3_steering_fork_id] = smoothStep(2.0, tsim, 3.0, 0.0, mbs_data->user_IO->steer);
+			mbs_data->q[R3_steering_fork_id] = 0.0;//  smoothStep(2.0, tsim, 3.0, 0.0, mbs_data->user_IO->steer);
 		}
 		else
 		{

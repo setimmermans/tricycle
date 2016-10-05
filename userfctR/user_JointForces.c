@@ -53,7 +53,9 @@ double* user_JointForces(MbsData *mbs_data, double tsim)
 
 
 	// feedbackloop			
-
+	mbs_data->Qq[R3_steering_fork_id] = 0.0;
+	mbs_data->Qc[R3_steering_fork_id] = 0.0;
+	
 	// linearization, real time  
 	if (mbs_data->process == 8)
 	{
