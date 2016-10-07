@@ -64,6 +64,7 @@ int main(int argc, char const *argv[])
 	MbsDirdyn *mbs_dirdyn;
 	double simu_t;
 	double V, Rmin, steer;
+	double max_V;
 
 	UserIO *uIO;
 	MbsEquil *mbs_equil;
@@ -77,8 +78,8 @@ int main(int argc, char const *argv[])
 	/*                    PARAMETERS                              *
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	simu_t = 10.0;
-	V = 8.0; // en m/s
-
+	V = 6.0; // en m/s
+	max_V = 30; 
 
 
 	printf("Hello tricycle MBS!\n"); 
@@ -141,12 +142,13 @@ int main(int argc, char const *argv[])
 	mbs_print_equil(mbs_equil);
 	mbs_delete_equil(mbs_equil, mbs_data);
 
-	q_saved_dir = get_dvec_0(mbs_data->njoint + 1);
-	qd_saved_dir = get_dvec_0(mbs_data->njoint + 1);
-	Qq_saved_dir = get_dvec_0(mbs_data->njoint + 1);
-	copy_dvec_0(&(mbs_data->q[1]), q_saved_dir, mbs_data->njoint);
-	copy_dvec_0(&(mbs_data->qd[1]), qd_saved_dir, mbs_data->njoint);
-	copy_dvec_0(&(mbs_data->Qq[1]), Qq_saved_dir, mbs_data->njoint);
+	// store results from equil
+	//q_saved_dir = get_dvec_0(mbs_data->njoint + 1);
+	//qd_saved_dir = get_dvec_0(mbs_data->njoint + 1);
+	//Qq_saved_dir = get_dvec_0(mbs_data->njoint + 1);
+	//copy_dvec_0(&(mbs_data->q[1]), q_saved_dir, mbs_data->njoint);
+	//copy_dvec_0(&(mbs_data->qd[1]), qd_saved_dir, mbs_data->njoint);
+	//copy_dvec_0(&(mbs_data->Qq[1]), Qq_saved_dir, mbs_data->njoint);
 
 
 	system("pause");
@@ -176,14 +178,14 @@ int main(int argc, char const *argv[])
 
 	double steps, speed;
 	steps = 0.1;
-	speed = 0.0;
+	speed = 0.1;
 
 	char *path = PROJECT_SOURCE_DIR"/../resultsR/AnalyseModale";
 	filename_modal =  (char *)malloc(1 + strlen(path) + strlen("/") + 30);
 	printf("\n\n Ready for LOOPS on Modal Analysis \n");
 	system("pause");
 
-	while (speed<V)
+	while (speed<max_V)
 	{
 		QuasiEquilibrium(mbs_data, speed);
 		sprintf(filename_modal, "%s/V%3.1f.txt", path, speed);
@@ -201,18 +203,13 @@ int main(int argc, char const *argv[])
 
 	mbs_data->user_IO->modeTC = 2;
 
-	// initialize dirdyn with slane equilibrium
-	//copy_dvec_0(q_saved_dir, &(mbs_data->q[1]), mbs_data->njoint);
-	//copy_dvec_0(qd_saved_dir, &(mbs_data->qd[1]), mbs_data->njoint);
-	//copy_dvec_0(Qq_saved_dir, &(mbs_data->Qq[1]), mbs_data->njoint);
-	
+
 	//------------------------------------------
 
 	// initialize dirdyn with equilibrium
-	//mbs_data->qd[T1_body_id] = V;
-	//mbs_data->q[T1_body_id] = 0.0;
-	//mbs_data->q[T2_body_id] = 0.0;
-	//mbs_data->q[T3_body_id] = 0.2;
+	QuasiEquilibrium(mbs_data, V);
+
+	system("pause");
 	//------------------------------------------
 
 	printf("\n\n Ready for dirdyn \n");
