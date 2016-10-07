@@ -16,47 +16,13 @@
 #include "user_IO.h"
 
 
-
-double smoothStep(double t1, double t, double t2, double v1, double v2)
-{
-	double x, y;
-	x = (t - t1) / (t2 - t1);
-	if (x < 0.0) { x = 0.0; }
-	if (x > 1.0) { x = 1.0; }
-
-
-	y = 3 * x*x - 2 * x*x*x;
-
-	return  (v2 - v1)*y + v1;
-}
-
-double smoothStep_d(double t1, double t, double t2, double v1, double v2)
-{
-	double x, y;
-	x = (t - t1) / (t2 - t1);
-	y = 3 * x*x - 2 * x*x*x;
-
-	return  (v2 - v1)*y + v1;
-}
-
-double smoothStep_dd(double t1, double t, double t2, double v1, double v2)
-{
-	double x, y;
-	x = (t - t1) / (t2 - t1);
-	y = 3 * x*x - 2 * x*x*x;
-
-	return  (v2 - v1)*y + v1;
-}
-
-
-
 void user_DrivenJoints(MbsData *mbs_data, double tsim)
 {
 	if (tsim > 0.0)
 	{
 		if (mbs_data->user_IO->modeTC == 2) // DTC
 		{
-			mbs_data->q[R3_steering_fork_id] = 0.0;//  smoothStep(2.0, tsim, 3.0, 0.0, mbs_data->user_IO->steer);
+			mbs_data->q[R3_steering_fork_id] = 0.0;
 		}
 		else
 		{
@@ -64,18 +30,6 @@ void user_DrivenJoints(MbsData *mbs_data, double tsim)
 		}
 	}
 
-
-	/*
-	double omega = _2pi / 3.0;
-	double A=0.0;
-
-	if (mbs_data->process == 3)
-	{
-		mbs_data->q[R3_steering_fork_id] = A*sin(tsim*omega);
-		mbs_data->qd[R3_steering_fork_id] = A*omega*cos(tsim*omega);
-		mbs_data->qdd[R3_steering_fork_id] = -A*omega*omega*sin(tsim*omega);
-	}
-	*/
 }
 
 

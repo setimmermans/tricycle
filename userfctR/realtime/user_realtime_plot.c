@@ -11,6 +11,7 @@
 
 #include "mbs_data.h"
 #include "user_realtime.h"
+#include "user_all_id.h"
 
 /*! \brief assign values for the SDL functions
  *
@@ -30,7 +31,14 @@
  */
 void user_realtime_plot(MbsData* mbs_data)
 {
-	set_plot(mbs_data->q[1], "q1");
+	double V;
+
+	V = sqrt(  mbs_data->qd[T1_body_id]* mbs_data->qd[T1_body_id] + mbs_data->qd[T2_body_id]* mbs_data->qd[T2_body_id]);
+
+	set_plot(V, "V");
+
+	set_plot(mbs_data->q[R1_body_id], "R1 body");
+	
 }
 
 #endif

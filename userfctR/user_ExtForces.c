@@ -35,25 +35,13 @@ double* user_ExtForces(double PxF[4], double RxF[4][4],
 	double vec_2[4] = { 0.0, 0.0, 0.0, 0.0 };
 
 	double  RxF_t[4][4];
-	//double delta, phi, Rphi[4][4],Rphi_T[4][4], eRb[4], eRturn[4], Rturn[4][4];
-	//int i,j;
-
-	// quasistatic analysis
-	double Fn_inner, Flat_inner, Fn_outer, Flat_outer;
-
-
-
 	int idpt;
 
 	// wheel parameters...
-	double pen, rz, anglis, angcamb, gliss, Vct[4], Rtsol[4][4], Ftemp[4],steering_Angle;
-	
+	double pen, rz, anglis, angcamb, gliss, Vct[4], Rtsol[4][4], Ftemp[4]; // , steering_Angle;
 
     double *SWr = mbs_data->SWr[ixF];
-
 	double r_rim, r_tire;
-
-
 
 
 	if(ixF==F_wheel_ft_lt_id || F_wheel_ft_rt_id==ixF)
@@ -79,23 +67,6 @@ double* user_ExtForces(double PxF[4], double RxF[4][4],
 	user_WheelForces_motorbike(pen,rz,anglis,angcamb,gliss, Vct[3], dxF, mbs_data, tsim, ixF, SWr);
 	//printf("Calcul Forces wheel ok \n");
 	
-	
-	
-	// calculation of delta 1,2,3
-    
-	//mbs_sensor(mbs_data->user_IO->PtrSensor, mbs_data, 2);
-    // compute the sensor (position, velocity...)
-	/*for(i=1;i<=3;i++)
-	{
-		for(j=1;j<=3;j++)
-		{
-			Rturn[i][j]=mbs_data->user_IO->PtrSensor->R[i][j];
-			//printf("R[%d][%d] : %f ",i,j,Rturn[i][j]);
-		}
-		//printf(" \n ");
-	}*/
-
-
 
 	// camber and toe
 	vec_1[0] = 0.0; vec_1[1] = 0.0; vec_1[2] = 1.0; vec_1[3] = 0.0;
@@ -121,7 +92,6 @@ double* user_ExtForces(double PxF[4], double RxF[4][4],
 	}
 
 
-	//mbs_bakker(SWr ,&(SWr[3]),anglis,angcamb,gliss);
 
 	// transformation from Rsol to inertial frame
 	
@@ -146,45 +116,8 @@ double* user_ExtForces(double PxF[4], double RxF[4][4],
 	SWr[5] = Ftemp[2];
 	SWr[6] = Ftemp[3];
 
+	//	printf("rear wheel Fn:%f , Flat:%f  \n", SWr[3], SWr[2]);
 
-
-
-
-
-
-
-	// proof of quasistatic equilibirum
-	// center of mass
-	/*if (ixF == F_wheel_ft_lt_id)
-	{
-		Flat_outer= SWr[2];
-		Fn_outer = SWr[3];
-		printf("outer wheel Fn:%f , Flat:%f  \n", SWr[3],SWr[2]);
-	}
-	else if (F_wheel_ft_rt_id == ixF)
-	{
-		printf("inner wheel Fn:%f , Flat:%f  \n", SWr[3], SWr[2]);
-	}
-	else if (ixF == F_wheel_rr_id)
-	{
-		printf("rear wheel Fn:%f , Flat:%f  \n", SWr[3], SWr[2]);
-	}$/
-
-
-
-
-
-	/*
-    SWr[1]=Fx;
-    SWr[2]=Fy;
-    SWr[3]=Fz;
-    SWr[4]=Mx;
-    SWr[5]=My;
-    SWr[6]=Mz;
-    SWr[7]=dxF[1];
-    SWr[8]=dxF[2];
-    SWr[9]=dxF[3];
-	*/
     return SWr;
 }
 
