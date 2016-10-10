@@ -77,8 +77,8 @@ int main(int argc, char const *argv[])
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	/*                    PARAMETERS                              *
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-	simu_t = 10.0;
-	V = 6.0; // en m/s
+	simu_t = 50.0;
+	V = 8.0; // en m/s
 	max_V = 30; 
 
 

@@ -18,17 +18,6 @@
 
 void user_DrivenJoints(MbsData *mbs_data, double tsim)
 {
-	if (tsim > 0.0)
-	{
-		if (mbs_data->user_IO->modeTC == 2) // DTC
-		{
-			mbs_data->q[R3_steering_fork_id] = 0.0;
-		}
-		else
-		{
-			// no control of variables ! 
-		}
-	}
 
 }
 

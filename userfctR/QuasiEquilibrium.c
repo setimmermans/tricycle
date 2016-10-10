@@ -33,7 +33,7 @@ extern "C" {
 void QuasiEquilibrium(MbsData *mbs_data, double V)
 {
 
-	mbs_data->process = 2; // equil !
+	mbs_data->process = 1; // equil !
 	
 	mbs_data->qd[T1_body_id] = V;
 	mbs_data->q[T1_body_id] = 0.0;

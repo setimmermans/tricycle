@@ -20,13 +20,13 @@ double* user_JointForces(MbsData *mbs_data, double tsim)
 {
 
 	
-	mbs_data->Qq[R3_steering_fork_id] = 0.0;
-	mbs_data->Qc[R3_steering_fork_id] = 0.0;
+	//mbs_data->Qq[R3_steering_fork_id] = 0.0;
+	//mbs_data->Qc[R3_steering_fork_id] = 0.0;
 	
 
 
 	//perturbation
-	//if (tsim > 3.0 && tsim < 3.03)
+	//if (tsim > 30.0 && tsim < 30.03)
 	//{
 	//	mbs_data->Qq[R3_steering_fork_id] = -0.5;
 	//}
