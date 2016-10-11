@@ -8,7 +8,7 @@
  *
  * Universite catholique de Louvain, Belgium 
  *
- * Last update : Sat Oct  1 14:24:44 2016
+ * Last update : Tue Oct 11 17:30:10 2016
  * --------------------------------------------------------
  *
  */
@@ -73,44 +73,46 @@
 
 // point
 
-#define body_to_fork_id 0
-#define body_to_shock_rr_id 1
-#define body_to_sensor_id 2
-#define body_to_body_noze_dn_id 3
-#define body_to_steering_fork_id 4
-#define body_to_body_noze_up_id 5
-#define fork_to_wheel_rr_id 6
-#define fork_to_shock_rr_id 7
-//#define origin_id 8
-#define body_noze_dn_to_wishbone_ft_rt_dn_id 9
-#define body_noze_dn_to_wishbone_ft_lt_dn_id 10
-#define pendulum_to_shock_ft_rt_id 11
-#define pendulum_to_shock_ft_lt_id 12
-#define Point_0_id 13
-#define wishbone_ft_rt_dn_to_carrier_ft_rt_id 14
-#define wishbone_ft_rt_dn_to_shock_ft_rt_id 15
-#define carrier_ft_rt_to_wishbone_ft_rt_up_id 16
-#define carrier_ft_rt_to_wheel_ft_rt_id 17
-#define carrier_ft_rt_to_sterring_rod_ft_rt_id 18
-//#define origin_id 19
-#define wishbone_ft_lt_dn_to_carrier_ft_lt_id 20
-#define wishbone_ft_lt_dn_to_shock_ft_lt_id 21
-#define carrier_ft_lt_to_wishbone_ft_lt_up_id 22
-#define carrier_ft_lt_to_wheel_ft_lt_id 23
-#define carrier_ft_lt_to_sterring_rod_ft_lt_id 24
-//#define origin_id 25
-#define steering_fork_to_steering_rod_rt_id 26
-#define steering_fork_to_steering_rod_lt_id 27
-#define body_noze_up_to_wishbone_ft_rt_up_id 28
-#define body_noze_up_to_wishbone_ft_lt_up_id 29
-#define wishbone_ft_rt_up_to_carrier_ft_rt_id 30
-#define wishbone_ft_lt_up_to_carrier_ft_lt_id 31
+//#define origin_id 0
+#define body_to_fork_id 1
+#define body_to_shock_rr_id 2
+#define body_to_sensor_id 3
+#define body_to_body_noze_dn_id 4
+#define body_to_steering_fork_id 5
+#define body_to_body_noze_up_id 6
+#define fork_to_wheel_rr_id 7
+#define fork_to_shock_rr_id 8
+//#define origin_id 9
+#define body_noze_dn_to_wishbone_ft_rt_dn_id 10
+#define body_noze_dn_to_wishbone_ft_lt_dn_id 11
+#define pendulum_to_shock_ft_rt_id 12
+#define pendulum_to_shock_ft_lt_id 13
+#define Point_0_id 14
+#define wishbone_ft_rt_dn_to_carrier_ft_rt_id 15
+#define wishbone_ft_rt_dn_to_shock_ft_rt_id 16
+#define carrier_ft_rt_to_wishbone_ft_rt_up_id 17
+#define carrier_ft_rt_to_wheel_ft_rt_id 18
+#define carrier_ft_rt_to_sterring_rod_ft_rt_id 19
+//#define origin_id 20
+#define wishbone_ft_lt_dn_to_carrier_ft_lt_id 21
+#define wishbone_ft_lt_dn_to_shock_ft_lt_id 22
+#define carrier_ft_lt_to_wishbone_ft_lt_up_id 23
+#define carrier_ft_lt_to_wheel_ft_lt_id 24
+#define carrier_ft_lt_to_sterring_rod_ft_lt_id 25
+//#define origin_id 26
+#define steering_fork_to_steering_rod_rt_id 27
+#define steering_fork_to_steering_rod_lt_id 28
+#define body_noze_up_to_wishbone_ft_rt_up_id 29
+#define body_noze_up_to_wishbone_ft_lt_up_id 30
+#define wishbone_ft_rt_up_to_carrier_ft_rt_id 31
+#define wishbone_ft_lt_up_to_carrier_ft_lt_id 32
 
 
 // sensor
 
-#define sensor_pilot_id 1
-#define sens_ft_lf_id 2
+#define sensor_body_bottom_id 1
+#define sensor_pilot_id 2
+#define sens_ft_lf_id 3
 
 
 // extforce

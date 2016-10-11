@@ -74,6 +74,7 @@ double* user_ExtForces(double PxF[4], double RxF[4][4],
 	matrix_product(RxF_t, vec_1, vec_2);
 	if (ixF == F_wheel_ft_lt_id)
 	{
+		
 		mbs_data->user_IO->equil_ft_lt_camber = atan2(vec_2[3], vec_2[2]);
 		mbs_data->user_IO->equil_ft_lt_toe = -atan2(vec_2[1], vec_2[2]);
 		mbs_data->user_IO->dirdyn_ft_lt_steer = -atan2(vec_2[1], vec_2[2]) - mbs_data->q[R3_body_id];

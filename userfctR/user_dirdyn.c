@@ -15,7 +15,9 @@
 
 #include "mbs_data.h"
 #include "mbs_dirdyn_struct.h"
-
+#include "set_output.h"
+#include "user_all_id.h"
+#include "mbs_project_interface.h"
 
 /*! \brief user own initialization functions
  *
@@ -40,6 +42,21 @@ void user_dirdyn_init(MbsData *mbs_data, MbsDirdyn *mbs_dd)
  */
 void user_dirdyn_loop(MbsData *mbs_data, MbsDirdyn *mbs_dd)
 {
+	// sensors
+	int id = sensor_pilot_id;
+
+	// retrieve the pointer to the sensor structure defined in mbs_aux
+	MbsSensor *PtrSensor = mbs_dd->mbs_aux->psens;
+
+	// compute the sensor (position, velocity...)
+	mbs_sensor(PtrSensor, mbs_data, id);
+
+	// save the vertical acceleration
+	set_output(PtrSensor->A[3], "Sensor_pilot_AccelerationZ");
+	// save the position
+	set_output(PtrSensor->P[1], "Sensor_pilot_PositionX");
+	set_output(PtrSensor->P[2], "Sensor_pilot_PositionY");
+	set_output(PtrSensor->P[3], "Sensor_pilot_PositionZ");
 
 }
 

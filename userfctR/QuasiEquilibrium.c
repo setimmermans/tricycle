@@ -61,7 +61,7 @@ void QuasiEquilibrium(MbsData *mbs_data, double V)
 	mbs_equil->options->xch_ptr[4] = &(mbs_data->qd[R2_wheel_ft_rt_id]);
 	mbs_run_equil(mbs_equil, mbs_data);
 
-	mbs_print_equil(mbs_equil);
+	//mbs_print_equil(mbs_equil);
 	//printf("my speed = %f \n", mbs_data->qd[R2_wheel_ft_lt_id]/(3.1415*2));
 	mbs_delete_equil(mbs_equil, mbs_data);
 	

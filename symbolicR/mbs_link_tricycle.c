@@ -11,7 +11,7 @@
 //	1348 Louvain-la-Neuve 
 //	http://www.robotran.be// 
 //
-//	==> Generation Date : Tue Oct  4 18:18:28 2016
+//	==> Generation Date : Tue Oct 11 17:37:02 2016
 //
 //	==> Project name : tricycle
 //	==> using XML input file 
@@ -21,8 +21,8 @@
 //	==> Function : F 7 : Point to point Link Forces (frc,trq,Flnk) 
 //	==> Flops complexity : 155
 //
-//	==> Generation Time :  0.010 seconds
-//	==> Post-Processing :  0.000 seconds
+//	==> Generation Time :  0.000 seconds
+//	==> Post-Processing :  0.010 seconds
 //
 //-------------------------------------------------------------
 //
@@ -87,43 +87,43 @@ MbsData *s, double tsim)
  
 // Link Kinematics: Distance Z , Relative Velocity ZD 
 
-  RLlnk1_240 = s->dpt[2][12]*C11-s->dpt[3][12]*S11;
-  RLlnk1_340 = s->dpt[2][12]*S11+s->dpt[3][12]*C11;
+  RLlnk1_240 = s->dpt[2][13]*C11-s->dpt[3][13]*S11;
+  RLlnk1_340 = s->dpt[2][13]*S11+s->dpt[3][13]*C11;
 
 // = = Block_0_1_0_0_1_5 = = 
  
 // Link Kinematics: Distance Z , Relative Velocity ZD 
 
-  RLlnk0_239 = s->dpt[2][16]*C12-s->dpt[3][16]*S12;
-  RLlnk0_339 = s->dpt[2][16]*S12+s->dpt[3][16]*C12;
+  RLlnk0_239 = s->dpt[2][17]*C12-s->dpt[3][17]*S12;
+  RLlnk0_339 = s->dpt[2][17]*S12+s->dpt[3][17]*C12;
 
 // = = Block_0_1_0_0_2_4 = = 
  
 // Link Kinematics: Distance Z , Relative Velocity ZD 
 
-  RLlnk3_242 = s->dpt[2][13]*C11-s->dpt[3][13]*S11;
-  RLlnk3_342 = s->dpt[2][13]*S11+s->dpt[3][13]*C11;
+  RLlnk3_242 = s->dpt[2][14]*C11-s->dpt[3][14]*S11;
+  RLlnk3_342 = s->dpt[2][14]*S11+s->dpt[3][14]*C11;
 
 // = = Block_0_1_0_0_2_6 = = 
  
 // Link Kinematics: Distance Z , Relative Velocity ZD 
 
-  RLlnk2_241 = s->dpt[2][22]*C18-s->dpt[3][22]*S18;
-  RLlnk2_341 = s->dpt[2][22]*S18+s->dpt[3][22]*C18;
+  RLlnk2_241 = s->dpt[2][23]*C18-s->dpt[3][23]*S18;
+  RLlnk2_341 = s->dpt[2][23]*S18+s->dpt[3][23]*C18;
 
 // = = Block_0_1_0_0_3_2 = = 
  
 // Link Kinematics: Distance Z , Relative Velocity ZD 
 
-  RLlnk4_143 = s->dpt[1][8]*C8+s->dpt[3][8]*S8;
-  RLlnk4_343 = -(s->dpt[1][8]*S8-s->dpt[3][8]*C8);
+  RLlnk4_143 = s->dpt[1][9]*C8+s->dpt[3][9]*S8;
+  RLlnk4_343 = -(s->dpt[1][9]*S8-s->dpt[3][9]*C8);
 
 // = = Block_0_1_0_1_1_4 = = 
  
 // Link Kinematics: Distance Z , Relative Velocity ZD 
 
-  Plnk21 = -(RLlnk0_239-RLlnk1_240+s->dpt[2][10]);
-  Plnk31 = -(RLlnk0_339-RLlnk1_340+s->dpt[3][10]);
+  Plnk21 = -(RLlnk0_239-RLlnk1_240+s->dpt[2][11]);
+  Plnk31 = -(RLlnk0_339-RLlnk1_340+s->dpt[3][11]);
   Z1 = sqrt(Plnk21*Plnk21+Plnk31*Plnk31);
   e21 = Plnk21/Z1;
   e31 = Plnk31/Z1;
@@ -137,8 +137,8 @@ MbsData *s, double tsim)
  
 // Link Kinematics: Distance Z , Relative Velocity ZD 
 
-  Plnk22 = -(RLlnk2_241-RLlnk3_242+s->dpt[2][11]);
-  Plnk32 = -(RLlnk2_341-RLlnk3_342+s->dpt[3][11]);
+  Plnk22 = -(RLlnk2_241-RLlnk3_242+s->dpt[2][12]);
+  Plnk32 = -(RLlnk2_341-RLlnk3_342+s->dpt[3][12]);
   Z2 = sqrt(Plnk22*Plnk22+Plnk32*Plnk32);
   e22 = Plnk22/Z2;
   e32 = Plnk32/Z2;
@@ -152,8 +152,8 @@ MbsData *s, double tsim)
  
 // Link Kinematics: Distance Z , Relative Velocity ZD 
 
-  Plnk13 = -(RLlnk4_143+s->dpt[1][1]-s->dpt[1][2]);
-  Plnk33 = -(RLlnk4_343+s->dpt[3][1]-s->dpt[3][2]);
+  Plnk13 = -(RLlnk4_143+s->dpt[1][2]-s->dpt[1][3]);
+  Plnk33 = -(RLlnk4_343+s->dpt[3][2]-s->dpt[3][3]);
   Z3 = sqrt(Plnk13*Plnk13+Plnk33*Plnk33);
   e13 = Plnk13/Z3;
   e33 = Plnk33/Z3;
@@ -171,7 +171,7 @@ MbsData *s, double tsim)
   fSlnk31 = -Flink1*(e21*S11-e31*C11);
   s->frc[2][11] = s->frc[2][11]-fSlnk21;
   s->frc[3][11] = s->frc[3][11]-fSlnk31;
-  s->trq[1][11] = s->trq[1][11]+fSlnk21*(s->dpt[3][12]-s->l[3][11])-fSlnk31*s->dpt[2][12];
+  s->trq[1][11] = s->trq[1][11]+fSlnk21*(s->dpt[3][13]-s->l[3][11])-fSlnk31*s->dpt[2][13];
 
 // = = Block_0_1_0_2_2_5 = = 
  
@@ -181,7 +181,7 @@ MbsData *s, double tsim)
   fPlnk31 = -Flink1*(e21*S12-e31*C12);
   frc[2][12] = s->frc[2][12]+fPlnk21;
   frc[3][12] = s->frc[3][12]+fPlnk31;
-  trq[1][12] = s->trq[1][12]-fPlnk21*s->dpt[3][16]+fPlnk31*s->dpt[2][16];
+  trq[1][12] = s->trq[1][12]-fPlnk21*s->dpt[3][17]+fPlnk31*s->dpt[2][17];
 
 // = = Block_0_1_0_2_3_4 = = 
  
@@ -191,7 +191,7 @@ MbsData *s, double tsim)
   fSlnk32 = -Flink2*(e22*S11-e32*C11);
   frc[2][11] = -(fSlnk22-s->frc[2][11]);
   frc[3][11] = -(fSlnk32-s->frc[3][11]);
-  trq[1][11] = s->trq[1][11]+fSlnk22*(s->dpt[3][13]-s->l[3][11])-fSlnk32*s->dpt[2][13];
+  trq[1][11] = s->trq[1][11]+fSlnk22*(s->dpt[3][14]-s->l[3][11])-fSlnk32*s->dpt[2][14];
 
 // = = Block_0_1_0_2_3_6 = = 
  
@@ -201,7 +201,7 @@ MbsData *s, double tsim)
   fPlnk32 = -Flink2*(e22*S18-e32*C18);
   frc[2][18] = s->frc[2][18]+fPlnk22;
   frc[3][18] = s->frc[3][18]+fPlnk32;
-  trq[1][18] = s->trq[1][18]-fPlnk22*s->dpt[3][22]+fPlnk32*s->dpt[2][22];
+  trq[1][18] = s->trq[1][18]-fPlnk22*s->dpt[3][23]+fPlnk32*s->dpt[2][23];
 
 // = = Block_0_1_0_2_4_1 = = 
  
@@ -211,7 +211,7 @@ MbsData *s, double tsim)
   fSlnk33 = Flink3*e33;
   frc[1][7] = s->frc[1][7]-fSlnk13;
   frc[3][7] = s->frc[3][7]-fSlnk33;
-  trq[2][7] = s->trq[2][7]-fSlnk13*(s->dpt[3][2]-s->l[3][7])+fSlnk33*(s->dpt[1][2]-s->l[1][7]);
+  trq[2][7] = s->trq[2][7]-fSlnk13*(s->dpt[3][3]-s->l[3][7])+fSlnk33*(s->dpt[1][3]-s->l[1][7]);
 
 // = = Block_0_1_0_2_4_2 = = 
  
@@ -221,7 +221,7 @@ MbsData *s, double tsim)
   fPlnk33 = Flink3*(e13*S8+e33*C8);
   frc[1][8] = s->frc[1][8]+fPlnk13;
   frc[3][8] = s->frc[3][8]+fPlnk33;
-  trq[2][8] = s->trq[2][8]+fPlnk13*s->dpt[3][8]-fPlnk33*s->dpt[1][8];
+  trq[2][8] = s->trq[2][8]+fPlnk13*s->dpt[3][9]-fPlnk33*s->dpt[1][9];
 
 // = = Block_0_2_0_0_0_0 = = 
  

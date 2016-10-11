@@ -136,6 +136,7 @@ typedef struct UserIO
 
 
 
+
 	double distance;
 	double distance_old;
 	double distance_deri;
@@ -154,14 +155,12 @@ typedef struct UserIO
 
 
 
-
 	//--------------------------------------------------------------
 
 	double V;
 	double steer;
 
 	int modeTC;
-
 
 	double reference;
 	double r;
@@ -184,8 +183,6 @@ typedef struct UserIO
 	double *q_lin;
 	double *qd_lin;
 	double *qdd_lin;
-
-
 
 
 
