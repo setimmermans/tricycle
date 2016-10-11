@@ -201,40 +201,40 @@ int main(int argc, char const *argv[])
 	/*                   DIRECT DYNANMICS                        *
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-	//mbs_data->user_IO->modeTC = 2;
+	mbs_data->user_IO->modeTC = 2;
 
 
-	////------------------------------------------
+	//------------------------------------------
 
-	//// initialize dirdyn with equilibrium
-	//QuasiEquilibrium(mbs_data, V);
+	// initialize dirdyn with equilibrium
+	QuasiEquilibrium(mbs_data, V);
 
-	//system("pause");
-	////------------------------------------------
+	system("pause");
+	//------------------------------------------
 
-	//printf("\n\n Ready for dirdyn \n");
-	//printf("q  : "); print_dvec_0(mbs_data->q, mbs_data->njoint);
-	//printf("qd : "); print_dvec_0(mbs_data->qd, mbs_data->njoint);
-	//printf("qdd: "); print_dvec_0(mbs_data->qdd, mbs_data->njoint);
-	//printf("Qq : "); print_dvec_0(mbs_data->Qq, mbs_data->njoint);
+	printf("\n\n Ready for dirdyn \n");
+	printf("q  : "); print_dvec_0(mbs_data->q, mbs_data->njoint);
+	printf("qd : "); print_dvec_0(mbs_data->qd, mbs_data->njoint);
+	printf("qdd: "); print_dvec_0(mbs_data->qdd, mbs_data->njoint);
+	printf("Qq : "); print_dvec_0(mbs_data->Qq, mbs_data->njoint);
 
-	//mbs_data->process = 3;
-	//mbs_dirdyn = mbs_new_dirdyn(mbs_data);
+	mbs_data->process = 3;
+	mbs_dirdyn = mbs_new_dirdyn(mbs_data);
 
-	//// dirdyn options (see documentations for additional options)
-	//mbs_dirdyn->options->dt0 = 1e-3;
-	//mbs_dirdyn->options->tf = simu_t;
-	//mbs_dirdyn->options->save2file = 1;
-	//mbs_dirdyn->options->animpath = PROJECT_SOURCE_DIR"/../animationR";
-	//
-	//mbs_dirdyn->options->realtime = 1;
-	//mbs_dirdyn->options->saveperiod = 10;
+	// dirdyn options (see documentations for additional options)
+	mbs_dirdyn->options->dt0 = 1e-3;
+	mbs_dirdyn->options->tf = simu_t;
+	mbs_dirdyn->options->save2file = 1;
+	mbs_dirdyn->options->animpath = PROJECT_SOURCE_DIR"/../animationR";
+	
+	mbs_dirdyn->options->realtime = 1;
+	mbs_dirdyn->options->saveperiod = 10;
 
 
-	//mbs_dirdyn->options->respath = PROJECT_SOURCE_DIR"/../resultsR/dirdyn";
-	//mbs_run_dirdyn(mbs_dirdyn, mbs_data);
-	//printf(" Dirdyn done \n");
-	//mbs_delete_dirdyn(mbs_dirdyn, mbs_data);
+	mbs_dirdyn->options->respath = PROJECT_SOURCE_DIR"/../resultsR/dirdyn";
+	mbs_run_dirdyn(mbs_dirdyn, mbs_data);
+	printf(" Dirdyn done \n");
+	mbs_delete_dirdyn(mbs_dirdyn, mbs_data);
 
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	/*                   CLOSING OPERATIONS                      *

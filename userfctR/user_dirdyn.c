@@ -43,7 +43,7 @@ void user_dirdyn_init(MbsData *mbs_data, MbsDirdyn *mbs_dd)
 void user_dirdyn_loop(MbsData *mbs_data, MbsDirdyn *mbs_dd)
 {
 	// sensors
-	int id = sensor_pilot_id;
+	int id = sensor_body_bottom_id;
 
 	// retrieve the pointer to the sensor structure defined in mbs_aux
 	MbsSensor *PtrSensor = mbs_dd->mbs_aux->psens;
