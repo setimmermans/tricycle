@@ -63,7 +63,7 @@ int main(int argc, char const *argv[])
 	MbsPart *mbs_part;
 	MbsDirdyn *mbs_dirdyn;
 	double simu_t;
-	double V, Rmin, steer;
+	double V, Rmin, steer, front_radius, rear_radius;
 	double max_V;
 
 	UserIO *uIO;
@@ -80,6 +80,8 @@ int main(int argc, char const *argv[])
 	simu_t = 10.0;
 	V = 8.0; // en m/s
 	max_V = 30; 
+	front_radius = 0.258591; // a changer quand on fait le 1/3
+	rear_radius = 0.255193; // very sensitive (need to take static eq value for nominal radii)
 
 
 	printf("Hello tricycle MBS!\n"); 
@@ -157,7 +159,7 @@ int main(int argc, char const *argv[])
 	/*					 QUASI STATIC EQUILIBRIUM	                     *
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	
-	QuasiEquilibrium(mbs_data, V);
+	QuasiEquilibrium(mbs_data, V,front_radius,rear_radius);
 	
 	system("pause");
 
@@ -166,7 +168,7 @@ int main(int argc, char const *argv[])
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 	printf("\n\n Run modal Analysis \n");
-	ModalAnalysis(mbs_data, V, "Analyse_modale\My_Modal_Analysis.txt");
+	ModalAnalysis(mbs_data, V, "Analyse_modale\My_Modal_Analysis.txt", front_radius, rear_radius);
 	printf("Print modal Result on the file for V  = %f \n", V);
 
 	system("pause");
@@ -189,7 +191,7 @@ int main(int argc, char const *argv[])
 	{
 		QuasiEquilibrium(mbs_data, speed);
 		sprintf(filename_modal, "%s/V%3.1f.txt", path, speed);
-		ModalAnalysis(mbs_data, speed, filename_modal); // Analyse Modale  
+		ModalAnalysis(mbs_data, speed, filename_modal, front_radius, rear_radius); // Analyse Modale  
 
 		speed = speed + steps;
 	}
@@ -207,7 +209,7 @@ int main(int argc, char const *argv[])
 	//------------------------------------------
 
 	// initialize dirdyn with equilibrium
-	QuasiEquilibrium(mbs_data, V);
+	QuasiEquilibrium(mbs_data, V, front_radius, rear_radius);
 
 	system("pause");
 	//------------------------------------------

@@ -30,7 +30,7 @@ extern "C" {
 #include<process.h>
 
 
-void QuasiEquilibrium(MbsData *mbs_data, double V)
+void QuasiEquilibrium(MbsData *mbs_data, double V, double front_radius, double rear_radius)
 {
 
 	mbs_data->process = 1; // equil !
@@ -39,9 +39,9 @@ void QuasiEquilibrium(MbsData *mbs_data, double V)
 	mbs_data->q[T1_body_id] = 0.0;
 	mbs_data->q[T2_body_id] = 0.0;
 
-	mbs_data->qd[R2_wheel_ft_lt_id] = V / 0.258591;
-	mbs_data->qd[R2_wheel_ft_rt_id] = V / 0.258591;
-	mbs_data->qd[R2_wheel_rr_id] = V / 0.255193; // very sensitive (need to take static eq value for nominal radii)
+	mbs_data->qd[R2_wheel_ft_lt_id] = V / front_radius;
+	mbs_data->qd[R2_wheel_ft_rt_id] = V / front_radius;
+	mbs_data->qd[R2_wheel_rr_id] = V / rear_radius; // very sensitive (need to take static eq value for nominal radii)
 
 	MbsEquil *mbs_equil = mbs_new_equil(mbs_data);
 

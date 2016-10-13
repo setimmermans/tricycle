@@ -11,7 +11,7 @@
 //	1348 Louvain-la-Neuve 
 //	http://www.robotran.be// 
 //
-//	==> Generation Date : Tue Oct 11 17:37:02 2016
+//	==> Generation Date : Wed Oct 12 11:55:10 2016
 //
 //	==> Project name : tricycle
 //	==> using XML input file 
@@ -21,8 +21,8 @@
 //	==> Function : F18 : Constraints Quadratic Velocity Terms (Jdqd)
 //	==> Flops complexity : 731
 //
-//	==> Generation Time :  0.020 seconds
-//	==> Post-Processing :  0.010 seconds
+//	==> Generation Time :  0.010 seconds
+//	==> Post-Processing :  0.020 seconds
 //
 //-------------------------------------------------------------
 //
