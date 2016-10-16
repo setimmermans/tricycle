@@ -30,7 +30,7 @@ extern "C" {
 #include<process.h>
 
 
-void QuasiEquilibrium(MbsData *mbs_data, double V, double front_radius, double rear_radius)
+void QuasiEquilibrium(MbsData *mbs_data, double V, double front_radius, double rear_radius, int Toprint)
 {
 
 	mbs_data->process = 1; // equil !
@@ -46,7 +46,7 @@ void QuasiEquilibrium(MbsData *mbs_data, double V, double front_radius, double r
 	MbsEquil *mbs_equil = mbs_new_equil(mbs_data);
 
 	// equil options (see documentations for additional options)
-	mbs_equil->options->senstol = 1e-01;
+	mbs_equil->options->senstol = 1e-1;
 	mbs_equil->options->verbose = 0;
 	mbs_equil->options->quasistatic = 1;
 	mbs_equil->options->nquch = 4;
@@ -61,8 +61,10 @@ void QuasiEquilibrium(MbsData *mbs_data, double V, double front_radius, double r
 	mbs_equil->options->xch_ptr[4] = &(mbs_data->qd[R2_wheel_ft_rt_id]);
 	mbs_run_equil(mbs_equil, mbs_data);
 
-	//mbs_print_equil(mbs_equil);
-	//printf("my speed = %f \n", mbs_data->qd[R2_wheel_ft_lt_id]/(3.1415*2));
+	if (Toprint == 1)
+	{
+		mbs_print_equil(mbs_equil);
+	}
 	mbs_delete_equil(mbs_equil, mbs_data);
 	
 	}

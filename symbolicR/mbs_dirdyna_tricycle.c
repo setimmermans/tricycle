@@ -11,7 +11,7 @@
 //	1348 Louvain-la-Neuve 
 //	http://www.robotran.be// 
 //
-//	==> Generation Date : Wed Oct 12 11:55:11 2016
+//	==> Generation Date : Fri Oct 14 16:15:43 2016
 //
 //	==> Project name : tricycle
 //	==> using XML input file 
@@ -21,8 +21,8 @@
 //	==> Function : F 1 : Direct Dynamics (Semi-Explicit formulation) : RNEA
 //	==> Flops complexity : 6567
 //
-//	==> Generation Time :  0.080 seconds
-//	==> Post-Processing :  0.090 seconds
+//	==> Generation Time :  0.090 seconds
+//	==> Post-Processing :  0.100 seconds
 //
 //-------------------------------------------------------------
 //

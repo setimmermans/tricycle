@@ -8,7 +8,7 @@
  *
  * Universite catholique de Louvain, Belgium 
  *
- * Last update : Tue Oct 11 17:30:10 2016
+ * Last update : Fri Oct 14 16:28:14 2016
  * --------------------------------------------------------
  *
  */
@@ -30,13 +30,13 @@
 
 // center of mass
 #define L_1_7 -0.6
-#define L_3_7 0.3
+#define L_3_7 1
 #define L_3_11 0.16
 
 // inertia
-#define IN_1_7 17.5
-#define IN_3_7 -7.8
-#define IN_5_7 54.6
+#define IN_1_7 194.06
+#define IN_3_7 -25.97
+#define IN_5_7 605.45
 #define IN_9_7 45.5
 #define IN_1_9 0.25
 #define IN_5_9 0.5

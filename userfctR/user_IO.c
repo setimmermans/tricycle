@@ -66,8 +66,10 @@ UserIO* mbs_new_user_IO(UserIoInfo* ioInfo)
 	uvs->steering_old=0.0;
 
 	uvs->equil_ft_lt_camber = 0.0;
+	uvs->equil_ft_lt_caster = 0.0;
 	uvs->equil_ft_lt_toe = 0.0;
 	uvs->equil_ft_rt_camber = 0.0;
+	uvs->equil_ft_rt_caster = 0.0;
 	uvs->equil_ft_rt_toe = 0.0;
 
 

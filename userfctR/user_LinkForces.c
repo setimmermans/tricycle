@@ -43,7 +43,7 @@ double user_LinkForces(double Z, double Zd, MbsData *mbs_data, double tsim, int 
 		{
 			K=K_stop;
         }
-        Flink = K*(Z-Z_0) + C*Zd;
+        Flink = mbs_data->K_factor*K*(Z-Z_0) + C*Zd;
    
 /*-- End of user code --*/    
   

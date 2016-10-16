@@ -111,8 +111,10 @@ typedef struct UserIO
 	double a_lat;
 
 	double equil_ft_lt_camber;
+	double equil_ft_lt_caster;
 	double equil_ft_lt_toe;
 	double equil_ft_rt_camber;
+	double equil_ft_rt_caster;
 	double equil_ft_rt_toe;
 
 	double EnergyC;
