@@ -49,6 +49,16 @@ void anchor_points_coord()
 	FILE *reading_file = NULL;
 	FILE* writing_file = NULL;
 
+	double scaling_factor = 1.0;
+	mbs_data->scaling_factor = scaling_factor;
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	/*              SCALING					                      *
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+	printf("\n\n Scaling the system \n");
+	Scale_data(mbs_data, scaling_factor);
+	system("pause");
+
 
 
     /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -68,7 +78,6 @@ void anchor_points_coord()
     /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 	MbsEquil *mbs_equil;
-
 
 	mbs_data->process = 2; // equil !
 	mbs_equil = mbs_new_equil(mbs_data);
@@ -113,25 +122,16 @@ void anchor_points_coord()
 		while (fgets(chaine, 1000, reading_file) != NULL) // On lit le fichier ligne par ligne tant qu'on ne reçoit pas d'erreur (NULL)
 		{
 
-			//printf("boucle \n");
 		    if( flag==0 && strcmp(chaine, "// point\n") == 0 )	// Une fois arrivé à la ligne contenant "// points"
 		    {
-
-				//printf("Premier if \n");
-
-			fseek(reading_file, 1, SEEK_CUR);		// avance le curseur d'un caractere pour passer le \n
+			fseek(reading_file, 2, SEEK_CUR);		// avance le curseur de deux caracteres pour passer le \n
 			flag = 1;					// mnt qu'on a trouvé où se trouve les points, on mais le flag ON
 		    }
-
 		    else if ( flag == 1 && strcmp(chaine, "\n") == 0 )	// à la fin de la section "// points" on stoppe la lecture
 		    {
-
-				//printf("deuxieme if \n");
 			//printf("fin de lecture des points");
 			break;
-
 		    }
-
 		    else if ( flag == 1 ){		
 			   
 			// on separe la ligne en 3 parties et on prend la 2e partie ce qui nous donne le nom
@@ -141,9 +141,9 @@ void anchor_points_coord()
 
 			// mnt il n'y a plus qu'à écrire le fichier .txt
 
-			fprintf(writing_file, "\"%sX\" = %f \n", sub_chaine, mbs_data->dpt[1][anchor_number]);
-			fprintf(writing_file, "\"%sY\" = %f \n", sub_chaine, mbs_data->dpt[2][anchor_number]);
-			fprintf(writing_file, "\"%sZ\" = %f \n", sub_chaine, mbs_data->dpt[3][anchor_number]);	
+			fprintf(writing_file, "\"%sX\" = %f \n", sub_chaine, mbs_data->dpt[1][anchor_number]*1000); // commence a 1 ! 
+			fprintf(writing_file, "\"%sY\" = %f \n", sub_chaine, mbs_data->dpt[2][anchor_number]*1000);
+			fprintf(writing_file, "\"%sZ\" = %f \n", sub_chaine, mbs_data->dpt[3][anchor_number]*1000); //*1000 pour mm de robotran	
 
 			anchor_number++;		
 
@@ -152,7 +152,7 @@ void anchor_points_coord()
         	}
 
 		fclose(writing_file);
-		printf("Fichier d'écriture a bien ete ferme\n");
+		printf("Fichier d'ecriture a bien ete ferme\n");
 	}
 
 	fclose(reading_file);

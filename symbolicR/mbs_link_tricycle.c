@@ -11,7 +11,7 @@
 //	1348 Louvain-la-Neuve 
 //	http://www.robotran.be// 
 //
-//	==> Generation Date : Fri Oct 14 16:15:44 2016
+//	==> Generation Date : Mon Oct 17 11:02:25 2016
 //
 //	==> Project name : tricycle
 //	==> using XML input file 
@@ -32,8 +32,10 @@
 #include "mbs_data.h"
 #include "mbs_project_interface.h"
  
-void mbs_link(double **frc,double **trq,double *Flnk,double *Z,double *Zd,
-MbsData *s, double tsim)
+void mbs_link(double **frc, double **trq, double *Flnk, double *Z, double *Zd,
+	MbsData *s, double tsim)
+
+
 
 // double frc[3][30];
 // double trq[3][30];
@@ -46,7 +48,6 @@ MbsData *s, double tsim)
 #define q s->q 
 #define qd s->qd 
 #define qdd s->qdd 
- 
  
 
 // === begin imp_aux === 
@@ -108,8 +109,8 @@ MbsData *s, double tsim)
  
 // Link Kinematics: Distance Z , Relative Velocity ZD 
 
-  RLlnk3_242 = s->dpt[2][23]*C18-s->dpt[3][23]*S18;
-  RLlnk3_342 = s->dpt[2][23]*S18+s->dpt[3][23]*C18;
+  RLlnk3_242 = s->dpt[2][24]*C18-s->dpt[3][24]*S18;
+  RLlnk3_342 = s->dpt[2][24]*S18+s->dpt[3][24]*C18;
 
 // = = Block_0_1_0_0_3_2 = = 
  
@@ -201,7 +202,7 @@ MbsData *s, double tsim)
   fSlnk32 = -Flink2*(e22*S18-e32*C18);
   frc[2][18] = s->frc[2][18]-fSlnk22;
   frc[3][18] = s->frc[3][18]-fSlnk32;
-  trq[1][18] = s->trq[1][18]+fSlnk22*s->dpt[3][23]-fSlnk32*s->dpt[2][23];
+  trq[1][18] = s->trq[1][18]+fSlnk22*s->dpt[3][24]-fSlnk32*s->dpt[2][24];
 
 // = = Block_0_1_0_2_4_1 = = 
  

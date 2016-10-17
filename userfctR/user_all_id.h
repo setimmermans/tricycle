@@ -8,7 +8,7 @@
  *
  * Universite catholique de Louvain, Belgium 
  *
- * Last update : Fri Oct 14 16:28:14 2016
+ * Last update : Mon Oct 17 11:02:26 2016
  * --------------------------------------------------------
  *
  */
@@ -90,32 +90,38 @@
 #define Point_0_id 14
 #define wishbone_ft_rt_dn_to_carrier_ft_rt_id 15
 #define wishbone_ft_rt_dn_to_shock_ft_rt_id 16
-#define carrier_ft_rt_to_wishbone_ft_rt_up_id 17
-#define carrier_ft_rt_to_wheel_ft_rt_id 18
-#define carrier_ft_rt_to_sterring_rod_ft_rt_id 19
-//#define origin_id 20
-#define wishbone_ft_lt_dn_to_carrier_ft_lt_id 21
-#define wishbone_ft_lt_dn_to_shock_ft_lt_id 22
-#define carrier_ft_lt_to_wishbone_ft_lt_up_id 23
-#define carrier_ft_lt_to_wheel_ft_lt_id 24
-#define carrier_ft_lt_to_sterring_rod_ft_lt_id 25
-//#define origin_id 26
-#define steering_fork_to_steering_rod_rt_id 27
-#define steering_fork_to_steering_rod_lt_id 28
-#define body_noze_up_to_wishbone_ft_rt_up_id 29
-#define body_noze_up_to_wishbone_ft_lt_up_id 30
-#define wishbone_ft_rt_up_to_carrier_ft_rt_id 31
-#define wishbone_ft_lt_up_to_carrier_ft_lt_id 32
+//#define origin_id 17
+#define carrier_ft_rt_to_wishbone_ft_rt_up_id 18
+#define carrier_ft_rt_to_wheel_ft_rt_id 19
+#define carrier_ft_rt_to_sterring_rod_ft_rt_id 20
+//#define origin_id 21
+#define wishbone_ft_lt_dn_to_carrier_ft_lt_id 22
+#define wishbone_ft_lt_dn_to_shock_ft_lt_id 23
+//#define origin_id 24
+#define carrier_ft_lt_to_wishbone_ft_lt_up_id 25
+#define carrier_ft_lt_to_wheel_ft_lt_id 26
+#define carrier_ft_lt_to_sterring_rod_ft_lt_id 27
+//#define origin_id 28
+#define steering_fork_to_steering_rod_rt_id 29
+#define steering_fork_to_steering_rod_lt_id 30
+#define body_noze_up_to_wishbone_ft_rt_up_id 31
+#define body_noze_up_to_wishbone_ft_lt_up_id 32
+#define wishbone_ft_rt_up_to_carrier_ft_rt_id 33
+#define wishbone_ft_lt_up_to_carrier_ft_lt_id 34
 
 
 // sensor
 
 #define sensor_body_bottom_id 1
 #define sensor_pilot_id 2
-#define sens_ft_rt_id 3
-#define Sensor_wheel_ft_rt_id 4
-#define sens_ft_lf_id 5
-#define Sensor_wheel_ft_lt_id 6
+#define sens_car_down_rt_id 3
+#define sens_car_up_rt_id 4
+#define sens_ft_rt_id 5
+#define Sensor_wheel_ft_rt_id 6
+#define sens_car_down_lt_id 7
+#define sens_car_up_lt_id 8
+#define sens_ft_lf_id 9
+#define Sensor_wheel_ft_lt_id 10
 
 
 // extforce

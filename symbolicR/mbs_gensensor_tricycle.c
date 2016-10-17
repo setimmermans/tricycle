@@ -11,7 +11,7 @@
 //	1348 Louvain-la-Neuve 
 //	http://www.robotran.be// 
 //
-//	==> Generation Date : Fri Oct 14 16:15:44 2016
+//	==> Generation Date : Mon Oct 17 11:02:25 2016
 //
 //	==> Project name : tricycle
 //	==> using XML input file 
@@ -21,7 +21,7 @@
 //	==> Function : F 6 : Sensors Kinematical Informations (sens) 
 //	==> Flops complexity : 8037
 //
-//	==> Generation Time :  0.130 seconds
+//	==> Generation Time :  0.120 seconds
 //	==> Post-Processing :  0.160 seconds
 //
 //-------------------------------------------------------------
@@ -1670,9 +1670,9 @@ case 16:
     OPcp15_315 = OPcp15_312+ROcp15_310*qdd[13]+ROcp15_613*qdd[14]+ROcp15_914*qdd[15]+qd[13]*(OMcp15_112*ROcp15_210-
  OMcp15_212*ROcp15_110)+qd[14]*(OMcp15_113*ROcp15_513-OMcp15_213*ROcp15_413)+qd[15]*(OMcp15_114*ROcp15_814-OMcp15_214*
  ROcp15_714);
-    RLcp15_116 = ROcp15_115*s->dpt[1][19]+ROcp15_415*s->dpt[2][19]+ROcp15_714*s->dpt[3][19];
-    RLcp15_216 = ROcp15_215*s->dpt[1][19]+ROcp15_515*s->dpt[2][19]+ROcp15_814*s->dpt[3][19];
-    RLcp15_316 = ROcp15_315*s->dpt[1][19]+ROcp15_615*s->dpt[2][19]+ROcp15_914*s->dpt[3][19];
+    RLcp15_116 = ROcp15_115*s->dpt[1][20]+ROcp15_415*s->dpt[2][20]+ROcp15_714*s->dpt[3][20];
+    RLcp15_216 = ROcp15_215*s->dpt[1][20]+ROcp15_515*s->dpt[2][20]+ROcp15_814*s->dpt[3][20];
+    RLcp15_316 = ROcp15_315*s->dpt[1][20]+ROcp15_615*s->dpt[2][20]+ROcp15_914*s->dpt[3][20];
     POcp15_116 = RLcp15_110+RLcp15_112+RLcp15_113+RLcp15_116+RLcp15_12+RLcp15_13;
     POcp15_216 = RLcp15_210+RLcp15_212+RLcp15_213+RLcp15_216+RLcp15_22+RLcp15_23;
     POcp15_316 = RLcp15_310+RLcp15_312+RLcp15_313+RLcp15_316+q[4];
@@ -1856,9 +1856,9 @@ case 17:
     OPcp16_315 = OPcp16_312+ROcp16_310*qdd[13]+ROcp16_613*qdd[14]+ROcp16_914*qdd[15]+qd[13]*(OMcp16_112*ROcp16_210-
  OMcp16_212*ROcp16_110)+qd[14]*(OMcp16_113*ROcp16_513-OMcp16_213*ROcp16_413)+qd[15]*(OMcp16_114*ROcp16_814-OMcp16_214*
  ROcp16_714);
-    RLcp16_116 = ROcp16_115*s->dpt[1][19]+ROcp16_415*s->dpt[2][19]+ROcp16_714*s->dpt[3][19];
-    RLcp16_216 = ROcp16_215*s->dpt[1][19]+ROcp16_515*s->dpt[2][19]+ROcp16_814*s->dpt[3][19];
-    RLcp16_316 = ROcp16_315*s->dpt[1][19]+ROcp16_615*s->dpt[2][19]+ROcp16_914*s->dpt[3][19];
+    RLcp16_116 = ROcp16_115*s->dpt[1][20]+ROcp16_415*s->dpt[2][20]+ROcp16_714*s->dpt[3][20];
+    RLcp16_216 = ROcp16_215*s->dpt[1][20]+ROcp16_515*s->dpt[2][20]+ROcp16_814*s->dpt[3][20];
+    RLcp16_316 = ROcp16_315*s->dpt[1][20]+ROcp16_615*s->dpt[2][20]+ROcp16_914*s->dpt[3][20];
     POcp16_116 = RLcp16_110+RLcp16_112+RLcp16_113+RLcp16_116+RLcp16_12+RLcp16_13;
     POcp16_216 = RLcp16_210+RLcp16_212+RLcp16_213+RLcp16_216+RLcp16_22+RLcp16_23;
     POcp16_316 = RLcp16_310+RLcp16_312+RLcp16_313+RLcp16_316+q[4];
@@ -2122,9 +2122,9 @@ case 19:
     OPcp18_118 = OPcp18_17+ROcp18_110*qdd[18]+qd[18]*(OMcp18_27*ROcp18_310-OMcp18_37*ROcp18_210);
     OPcp18_218 = OPcp18_27+ROcp18_210*qdd[18]-qd[18]*(OMcp18_17*ROcp18_310-OMcp18_37*ROcp18_110);
     OPcp18_318 = OPcp18_37+ROcp18_310*qdd[18]+qd[18]*(OMcp18_17*ROcp18_210-OMcp18_27*ROcp18_110);
-    RLcp18_119 = ROcp18_418*s->dpt[2][22];
-    RLcp18_219 = ROcp18_518*s->dpt[2][22];
-    RLcp18_319 = ROcp18_618*s->dpt[2][22];
+    RLcp18_119 = ROcp18_418*s->dpt[2][23];
+    RLcp18_219 = ROcp18_518*s->dpt[2][23];
+    RLcp18_319 = ROcp18_618*s->dpt[2][23];
     POcp18_119 = RLcp18_110+RLcp18_118+RLcp18_119+RLcp18_12+RLcp18_13;
     POcp18_219 = RLcp18_210+RLcp18_218+RLcp18_219+RLcp18_22+RLcp18_23;
     POcp18_319 = RLcp18_310+RLcp18_318+RLcp18_319+q[4];
@@ -2269,9 +2269,9 @@ case 20:
     OPcp19_118 = OPcp19_17+ROcp19_110*qdd[18]+qd[18]*(OMcp19_27*ROcp19_310-OMcp19_37*ROcp19_210);
     OPcp19_218 = OPcp19_27+ROcp19_210*qdd[18]-qd[18]*(OMcp19_17*ROcp19_310-OMcp19_37*ROcp19_110);
     OPcp19_318 = OPcp19_37+ROcp19_310*qdd[18]+qd[18]*(OMcp19_17*ROcp19_210-OMcp19_27*ROcp19_110);
-    RLcp19_119 = ROcp19_418*s->dpt[2][22];
-    RLcp19_219 = ROcp19_518*s->dpt[2][22];
-    RLcp19_319 = ROcp19_618*s->dpt[2][22];
+    RLcp19_119 = ROcp19_418*s->dpt[2][23];
+    RLcp19_219 = ROcp19_518*s->dpt[2][23];
+    RLcp19_319 = ROcp19_618*s->dpt[2][23];
     POcp19_119 = RLcp19_110+RLcp19_118+RLcp19_119+RLcp19_12+RLcp19_13;
     POcp19_219 = RLcp19_210+RLcp19_218+RLcp19_219+RLcp19_22+RLcp19_23;
     POcp19_319 = RLcp19_310+RLcp19_318+RLcp19_319+q[4];
@@ -2428,9 +2428,9 @@ case 21:
     OPcp20_118 = OPcp20_17+ROcp20_110*qdd[18]+qd[18]*(OMcp20_27*ROcp20_310-OMcp20_37*ROcp20_210);
     OPcp20_218 = OPcp20_27+ROcp20_210*qdd[18]-qd[18]*(OMcp20_17*ROcp20_310-OMcp20_37*ROcp20_110);
     OPcp20_318 = OPcp20_37+ROcp20_310*qdd[18]+qd[18]*(OMcp20_17*ROcp20_210-OMcp20_27*ROcp20_110);
-    RLcp20_119 = ROcp20_418*s->dpt[2][22];
-    RLcp20_219 = ROcp20_518*s->dpt[2][22];
-    RLcp20_319 = ROcp20_618*s->dpt[2][22];
+    RLcp20_119 = ROcp20_418*s->dpt[2][23];
+    RLcp20_219 = ROcp20_518*s->dpt[2][23];
+    RLcp20_319 = ROcp20_618*s->dpt[2][23];
     POcp20_119 = RLcp20_110+RLcp20_118+RLcp20_119+RLcp20_12+RLcp20_13;
     POcp20_219 = RLcp20_210+RLcp20_218+RLcp20_219+RLcp20_22+RLcp20_23;
     POcp20_319 = RLcp20_310+RLcp20_318+RLcp20_319+q[4];
@@ -2599,9 +2599,9 @@ case 22:
     OPcp21_118 = OPcp21_17+ROcp21_110*qdd[18]+qd[18]*(OMcp21_27*ROcp21_310-OMcp21_37*ROcp21_210);
     OPcp21_218 = OPcp21_27+ROcp21_210*qdd[18]-qd[18]*(OMcp21_17*ROcp21_310-OMcp21_37*ROcp21_110);
     OPcp21_318 = OPcp21_37+ROcp21_310*qdd[18]+qd[18]*(OMcp21_17*ROcp21_210-OMcp21_27*ROcp21_110);
-    RLcp21_119 = ROcp21_418*s->dpt[2][22];
-    RLcp21_219 = ROcp21_518*s->dpt[2][22];
-    RLcp21_319 = ROcp21_618*s->dpt[2][22];
+    RLcp21_119 = ROcp21_418*s->dpt[2][23];
+    RLcp21_219 = ROcp21_518*s->dpt[2][23];
+    RLcp21_319 = ROcp21_618*s->dpt[2][23];
     OMcp21_119 = OMcp21_118+ROcp21_110*qd[19];
     OMcp21_219 = OMcp21_218+ROcp21_210*qd[19];
     OMcp21_319 = OMcp21_318+ROcp21_310*qd[19];
@@ -2623,9 +2623,9 @@ case 22:
     OPcp21_321 = OPcp21_318+ROcp21_310*qdd[19]+ROcp21_619*qdd[20]+ROcp21_920*qdd[21]+qd[19]*(OMcp21_118*ROcp21_210-
  OMcp21_218*ROcp21_110)+qd[20]*(OMcp21_119*ROcp21_519-OMcp21_219*ROcp21_419)+qd[21]*(OMcp21_120*ROcp21_820-OMcp21_220*
  ROcp21_720);
-    RLcp21_122 = ROcp21_121*s->dpt[1][25]+ROcp21_421*s->dpt[2][25]+ROcp21_720*s->dpt[3][25];
-    RLcp21_222 = ROcp21_221*s->dpt[1][25]+ROcp21_521*s->dpt[2][25]+ROcp21_820*s->dpt[3][25];
-    RLcp21_322 = ROcp21_321*s->dpt[1][25]+ROcp21_621*s->dpt[2][25]+ROcp21_920*s->dpt[3][25];
+    RLcp21_122 = ROcp21_121*s->dpt[1][27]+ROcp21_421*s->dpt[2][27]+ROcp21_720*s->dpt[3][27];
+    RLcp21_222 = ROcp21_221*s->dpt[1][27]+ROcp21_521*s->dpt[2][27]+ROcp21_820*s->dpt[3][27];
+    RLcp21_322 = ROcp21_321*s->dpt[1][27]+ROcp21_621*s->dpt[2][27]+ROcp21_920*s->dpt[3][27];
     POcp21_122 = RLcp21_110+RLcp21_118+RLcp21_119+RLcp21_12+RLcp21_122+RLcp21_13;
     POcp21_222 = RLcp21_210+RLcp21_218+RLcp21_219+RLcp21_22+RLcp21_222+RLcp21_23;
     POcp21_322 = RLcp21_310+RLcp21_318+RLcp21_319+RLcp21_322+q[4];
@@ -2785,9 +2785,9 @@ case 23:
     OPcp22_118 = OPcp22_17+ROcp22_110*qdd[18]+qd[18]*(OMcp22_27*ROcp22_310-OMcp22_37*ROcp22_210);
     OPcp22_218 = OPcp22_27+ROcp22_210*qdd[18]-qd[18]*(OMcp22_17*ROcp22_310-OMcp22_37*ROcp22_110);
     OPcp22_318 = OPcp22_37+ROcp22_310*qdd[18]+qd[18]*(OMcp22_17*ROcp22_210-OMcp22_27*ROcp22_110);
-    RLcp22_119 = ROcp22_418*s->dpt[2][22];
-    RLcp22_219 = ROcp22_518*s->dpt[2][22];
-    RLcp22_319 = ROcp22_618*s->dpt[2][22];
+    RLcp22_119 = ROcp22_418*s->dpt[2][23];
+    RLcp22_219 = ROcp22_518*s->dpt[2][23];
+    RLcp22_319 = ROcp22_618*s->dpt[2][23];
     OMcp22_119 = OMcp22_118+ROcp22_110*qd[19];
     OMcp22_219 = OMcp22_218+ROcp22_210*qd[19];
     OMcp22_319 = OMcp22_318+ROcp22_310*qd[19];
@@ -2809,9 +2809,9 @@ case 23:
     OPcp22_321 = OPcp22_318+ROcp22_310*qdd[19]+ROcp22_619*qdd[20]+ROcp22_920*qdd[21]+qd[19]*(OMcp22_118*ROcp22_210-
  OMcp22_218*ROcp22_110)+qd[20]*(OMcp22_119*ROcp22_519-OMcp22_219*ROcp22_419)+qd[21]*(OMcp22_120*ROcp22_820-OMcp22_220*
  ROcp22_720);
-    RLcp22_122 = ROcp22_121*s->dpt[1][25]+ROcp22_421*s->dpt[2][25]+ROcp22_720*s->dpt[3][25];
-    RLcp22_222 = ROcp22_221*s->dpt[1][25]+ROcp22_521*s->dpt[2][25]+ROcp22_820*s->dpt[3][25];
-    RLcp22_322 = ROcp22_321*s->dpt[1][25]+ROcp22_621*s->dpt[2][25]+ROcp22_920*s->dpt[3][25];
+    RLcp22_122 = ROcp22_121*s->dpt[1][27]+ROcp22_421*s->dpt[2][27]+ROcp22_720*s->dpt[3][27];
+    RLcp22_222 = ROcp22_221*s->dpt[1][27]+ROcp22_521*s->dpt[2][27]+ROcp22_820*s->dpt[3][27];
+    RLcp22_322 = ROcp22_321*s->dpt[1][27]+ROcp22_621*s->dpt[2][27]+ROcp22_920*s->dpt[3][27];
     POcp22_122 = RLcp22_110+RLcp22_118+RLcp22_119+RLcp22_12+RLcp22_122+RLcp22_13;
     POcp22_222 = RLcp22_210+RLcp22_218+RLcp22_219+RLcp22_22+RLcp22_222+RLcp22_23;
     POcp22_322 = RLcp22_310+RLcp22_318+RLcp22_319+RLcp22_322+q[4];

@@ -1,6 +1,6 @@
 
 ##############################################################
-#	file3.gen 14/10/2016 16:15:43    messages
+#	file3.gen 17/10/2016 11:02:24    messages
 ##############################################################
  ------------------------------- 
   ROBOTRAN - Symbolic Generator 
@@ -27,14 +27,14 @@ Printing Equations...
 Printing Equations...Done 
 Deallocating Memory...  
 250 Equations removed from memory 
-Removing 6177 expressions... 
+Removing 6182 expressions... 
 0 expressions remaining in memory 
 
 --
 Done
 
 ##############################################################
-#	file7.gen 14/10/2016 16:15:43    messages
+#	file7.gen 17/10/2016 11:02:25    messages
 ##############################################################
  ------------------------------- 
   ROBOTRAN - Symbolic Generator 
@@ -60,14 +60,14 @@ Printing Equations...
 Printing Equations...Done 
 Deallocating Memory...  
 349 Equations removed from memory 
-Removing 5063 expressions... 
+Removing 5068 expressions... 
 0 expressions remaining in memory 
 
 --
 Done
 
 ##############################################################
-#	file4.gen 14/10/2016 16:15:43    messages
+#	file4.gen 17/10/2016 11:02:25    messages
 ##############################################################
  ------------------------------- 
   ROBOTRAN - Symbolic Generator 
@@ -94,14 +94,14 @@ Printing Equations...
 Printing Equations...Done 
 Deallocating Memory...  
 203 Equations removed from memory 
-Removing 6870 expressions... 
+Removing 6875 expressions... 
 0 expressions remaining in memory 
 
 --
 Done
 
 ##############################################################
-#	file1b.gen 14/10/2016 16:15:43    messages
+#	file1b.gen 17/10/2016 11:02:25    messages
 ##############################################################
  ------------------------------- 
   ROBOTRAN - Symbolic Generator 
@@ -117,8 +117,8 @@ Equations list processing...
 Selecting usefull equations 
 Building result equations list... 
 Removing useless equations... 
-637 useless equations removed 
-637 Equations removed from memory 
+947 useless equations removed 
+947 Equations removed from memory 
 Substitution of variables with a single occurence 
 Counting operations ... 
 Building hierarchical structure... 
@@ -126,15 +126,15 @@ Equations list processing...Done
 Printing Equations... 
 Printing Equations...Done 
 Deallocating Memory...  
-1272 Equations removed from memory 
-Removing 19142 expressions... 
+2259 Equations removed from memory 
+Removing 33460 expressions... 
 0 expressions remaining in memory 
 
 --
 Done
 
 ##############################################################
-#	file0.gen 14/10/2016 16:15:44    messages
+#	file0.gen 17/10/2016 11:02:25    messages
 ##############################################################
  ------------------------------- 
   ROBOTRAN - Symbolic Generator 
@@ -162,14 +162,14 @@ Printing Equations...
 Printing Equations...Done 
 Deallocating Memory...  
 1686 Equations removed from memory 
-Removing 23426 expressions... 
+Removing 23431 expressions... 
 0 expressions remaining in memory 
 
 --
 Done
 
 ##############################################################
-#	file6.gen 14/10/2016 16:15:44    messages
+#	file6.gen 17/10/2016 11:02:25    messages
 ##############################################################
  ------------------------------- 
   ROBOTRAN - Symbolic Generator 
@@ -183,14 +183,14 @@ F27 : Point to point Link3D Forces (frc,trq,Flink3D)
 Symbolic Equations Generation Aborted !!
 Deallocating Memory...  
 54 Equations removed from memory 
-Removing 566 expressions... 
+Removing 571 expressions... 
 0 expressions remaining in memory 
 
 --
 Done
 
 ##############################################################
-#	file5.gen 14/10/2016 16:15:44    messages
+#	file5.gen 17/10/2016 11:02:25    messages
 ##############################################################
  ------------------------------- 
   ROBOTRAN - Symbolic Generator 
@@ -216,14 +216,14 @@ Printing Equations...
 Printing Equations...Done 
 Deallocating Memory...  
 500 Equations removed from memory 
-Removing 8650 expressions... 
+Removing 8655 expressions... 
 0 expressions remaining in memory 
 
 --
 Done
 
 ##############################################################
-#	file2.gen 14/10/2016 16:15:44    messages
+#	file2.gen 17/10/2016 11:02:25    messages
 ##############################################################
  ------------------------------- 
   ROBOTRAN - Symbolic Generator 
@@ -250,14 +250,14 @@ Printing Equations...
 Printing Equations...Done 
 Deallocating Memory...  
 153 Equations removed from memory 
-Removing 1535 expressions... 
+Removing 1540 expressions... 
 0 expressions remaining in memory 
 
 --
 Done
 
 ##############################################################
-#	file1.gen 14/10/2016 16:15:44    messages
+#	file1.gen 17/10/2016 11:02:26    messages
 ##############################################################
  ------------------------------- 
   ROBOTRAN - Symbolic Generator 
