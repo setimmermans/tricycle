@@ -116,6 +116,8 @@ typedef struct UserIO
 	double equil_ft_rt_camber;
 	double equil_ft_rt_caster;
 	double equil_ft_rt_toe;
+	double equil_ft_rt_scrub_radius;
+	double equil_ft_lt_scrub_radius;
 
 	double EnergyC;
 

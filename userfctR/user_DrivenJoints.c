@@ -18,7 +18,9 @@
 
 void user_DrivenJoints(MbsData *mbs_data, double tsim)
 {
-
+	/*mbs_data->qd[R2_wheel_rr_id] = 0.0;
+	mbs_data->qd[R2_wheel_ft_lt_id] = 0.0;
+	mbs_data->qd[R2_wheel_ft_rt_id] = 0.0;*/
 }
 
 

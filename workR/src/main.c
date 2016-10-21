@@ -75,7 +75,7 @@ int main(int argc, char const *argv[])
 	char *path_modal, *path_K;
 	char *filename_modal, *filename_K;
 	double K_factor_init, K_factor_max;
-	double steps, speed, scaling_factor;
+	double steps, speed, scaling_factor, manual_scaling;
 
 
 
@@ -83,8 +83,8 @@ int main(int argc, char const *argv[])
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	/*                    PARAMETERS                              *
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-	simu_t = 10.0;
-	V = 8.0; // en m/s
+	simu_t = 50;
+	V = 2.0; // en m/s
 	max_V = 10; 
 	steps = 0.1;
 	speed = 0.1;
@@ -92,11 +92,14 @@ int main(int argc, char const *argv[])
 	K_factor_init = 1.0;
 	K_factor_max = 1.0;
 	scaling_factor = 1.0;
-	front_radius = 0.258591 *scaling_factor; // a changer quand on fait le 1/3
-	rear_radius = 0.255193 * scaling_factor; // very sensitive (need to take static eq value for nominal radii)
+	manual_scaling = 0.4;
+	front_radius =  0.104104;// 0.258591 *manual_scaling = 0.1036; //
+	rear_radius = 0.10359;// 0.255193 * manual_scaling; // very sensitive (need to take static eq value for nominal radii)
 
 
 	printf("Hello tricycle MBS!\n"); 
+	//printf(" Nominal Radius = %f et %f \n \n", front_radius, rear_radius);
+
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	/*                     LOADING                               *
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -115,10 +118,11 @@ int main(int argc, char const *argv[])
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	/*              SCALING					                      *
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-
-	printf("\n\n Scaling the system \n");
-	Scale_data(mbs_data, scaling_factor);
-	system("pause");
+	//
+	//printf("\n\n Ready to scale the system \n");
+	//system("pause");
+	//Scale_data(mbs_data, scaling_factor);
+	//system("pause");
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	/*              COORDINATE PARTITIONING                      *
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -143,14 +147,18 @@ int main(int argc, char const *argv[])
 
 	mbs_data->process = 2; // equil !
 	mbs_equil = mbs_new_equil(mbs_data);
-
 	// equil options (see documentations for additional options)
 	mbs_equil->options->method = 1; 
-
-	mbs_equil->options->senstol = 1e-02;
+	mbs_equil->options->senstol = 1e-01;
 	mbs_equil->options->relax = 0.6;
 	mbs_equil->options->smooth = 1;
 	mbs_equil->options->verbose = 0;
+	mbs_equil->options->equitol = 1e-2;
+	printf("\n\n Run equilibrium \n");
+	mbs_run_equil(mbs_equil, mbs_data);
+	mbs_print_equil(mbs_equil);
+	mbs_delete_equil(mbs_equil, mbs_data);
+
 
 
 	// !!! add equation in user_equil_fxe fct !!!!!!!!!
@@ -161,17 +169,10 @@ int main(int argc, char const *argv[])
 	mbs_equil->options->quch[2]=T3_body_id+1;
 	mbs_equil->options->xch_ptr[1]=&(mbs_data->user_model->shock_rr.Z_0);
 	mbs_equil->options->xch_ptr[2]=&(mbs_data->user_model->shock_ft.Z_0);*/
-
 	// 2. Added variables and equations !
-	/*mbs_equil->options->nxe=2;
-	mbs_equil_addition(mbs_equil->options);
-	mbs_equil->options->xe_ptr[1]=&(mbs_data->lrod[1]);
-	mbs_equil->options->xe_ptr[2]=&(mbs_data->lrod[2]);*/
-
-	printf("\n\n Run equilibrium \n");
-	mbs_run_equil(mbs_equil, mbs_data);
-	mbs_print_equil(mbs_equil);
-	mbs_delete_equil(mbs_equil, mbs_data);
+	//mbs_equil->options->nxe = 1;
+	//mbs_equil_addition(mbs_equil->options);
+	//mbs_equil->options->xe_ptr[1] = &(mbs_data->lrod[4]);
 
 
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -189,16 +190,23 @@ int main(int argc, char const *argv[])
 	Toprint = 1;
 	printf("\n\n Run Quasistatic Equilibrium \n");
 	QuasiEquilibrium(mbs_data, V, front_radius, rear_radius, Toprint);
+	printf("q  : "); print_dvec_0(mbs_data->q, mbs_data->njoint);
+	printf("qd : "); print_dvec_0(mbs_data->qd, mbs_data->njoint);
+	printf("qdd: "); print_dvec_0(mbs_data->qdd, mbs_data->njoint);
+	printf("Qq : "); print_dvec_0(mbs_data->Qq, mbs_data->njoint); 
 	system("pause");
 
 	///* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	///*					 MODAL ANALYSIS                      *
 	///* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-	//printf("\n\n Run modal Analysis for V  = %f \n", V );
-	//ModalAnalysis(mbs_data, V, "Analyse_modale\My_Modal_Analysis.txt", front_radius, rear_radius);
-
-	//system("pause");
+	printf("\n\n Run modal Analysis for V  = %f \n", V );
+	ModalAnalysis(mbs_data, V, "Analyse_modale\My_Modal_Analysis.txt", front_radius, rear_radius);
+	printf("q  : "); print_dvec_0(mbs_data->q, mbs_data->njoint);
+	printf("qd : "); print_dvec_0(mbs_data->qd, mbs_data->njoint);
+	printf("qdd: "); print_dvec_0(mbs_data->qdd, mbs_data->njoint);
+	printf("Qq : "); print_dvec_0(mbs_data->Qq, mbs_data->njoint);
+	system("pause");
 
 
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -231,20 +239,20 @@ int main(int argc, char const *argv[])
 	/*					LOOPS MODAL ANALYSIS ON V		          *
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-	//printf("\n\n Ready for LOOPS on Modal Analysis for V \n");
-	//system("pause");
-	//Toprint = 0;
-	//while (speed<max_V)
-	//{
-	//	QuasiEquilibrium(mbs_data, speed, front_radius, rear_radius, Toprint);
-	//	sprintf(filename_modal, "%s/V%3.1f.txt", path_modal, speed);
-	//	ModalAnalysis(mbs_data, speed, filename_modal, front_radius, rear_radius); // Analyse Modale  
+	printf("\n\n Ready for LOOPS on Modal Analysis for V \n");
+	system("pause");
+	Toprint = 0;
+	while (speed<max_V)
+	{
+		QuasiEquilibrium(mbs_data, speed, front_radius, rear_radius, Toprint);
+		sprintf(filename_modal, "%s/V%3.1f.txt", path_modal, speed);
+		ModalAnalysis(mbs_data, speed, filename_modal, front_radius, rear_radius); // Analyse Modale  
 
-	//	speed = speed + steps;
-	//}
+		speed = speed + steps;
+	}
 
-	//printf("qdd: "); print_dvec_0(mbs_data->qdd, mbs_data->njoint);
-	//system("pause");
+	printf("qdd: "); print_dvec_0(mbs_data->qdd, mbs_data->njoint);
+	system("pause");
 
 
 		
@@ -252,40 +260,38 @@ int main(int argc, char const *argv[])
 	/*                   DIRECT DYNANMICS                        *
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-	//mbs_data->user_IO->modeTC = 2;
-	//Toprint = 1;
-	//// initialize dirdyn with equilibrium
-	//QuasiEquilibrium(mbs_data, V, front_radius, rear_radius,Toprint);
+	mbs_data->user_IO->modeTC = 2;
+	Toprint = 1;
+	// initialize dirdyn with equilibrium
+	QuasiEquilibrium(mbs_data, V, front_radius, rear_radius,Toprint);
 
-	//printf("\n\n Ready for dirdyn \n");
+	printf("\n\n Ready for dirdyn \n");
+	//mbs_data->q[T3_body_id] = 0.2; // impose une hauteur
+	printf("q  : "); print_dvec_0(mbs_data->q, mbs_data->njoint);
+	printf("qd : "); print_dvec_0(mbs_data->qd, mbs_data->njoint);
+	printf("qdd: "); print_dvec_0(mbs_data->qdd, mbs_data->njoint);
+	printf("Qq : "); print_dvec_0(mbs_data->Qq, mbs_data->njoint);
 
-	//printf("q  : "); print_dvec_0(mbs_data->q, mbs_data->njoint);
-	//printf("qd : "); print_dvec_0(mbs_data->qd, mbs_data->njoint);
-	//printf("qdd: "); print_dvec_0(mbs_data->qdd, mbs_data->njoint);
-	//printf("Qq : "); print_dvec_0(mbs_data->Qq, mbs_data->njoint);
+	system("pause");
 
-	//system("pause");
+	mbs_data->process = 3;
+	mbs_dirdyn = mbs_new_dirdyn(mbs_data);
 
-	//mbs_data->process = 3;
-	//mbs_dirdyn = mbs_new_dirdyn(mbs_data);
-
-	//// dirdyn options (see documentations for additional options)
-	//mbs_dirdyn->options->dt0 = 1e-3;
-	//mbs_dirdyn->options->tf = simu_t;
-	//mbs_dirdyn->options->save2file = 1;
-	//mbs_dirdyn->options->animpath = PROJECT_SOURCE_DIR"/../animationR";
-	//
-	//mbs_dirdyn->options->realtime = 1;
-	//mbs_dirdyn->options->saveperiod = 10;
-
-
-	//mbs_dirdyn->options->respath = PROJECT_SOURCE_DIR"/../resultsR/dirdyn";
-	//mbs_run_dirdyn(mbs_dirdyn, mbs_data);
-	//printf(" Dirdyn done \n");
-	//mbs_delete_dirdyn(mbs_dirdyn, mbs_data);
+	// dirdyn options (see documentations for additional options)
+	mbs_dirdyn->options->dt0 = 1e-3;
+	mbs_dirdyn->options->tf = simu_t;
+	mbs_dirdyn->options->save2file = 1;	
+	mbs_dirdyn->options->animpath = PROJECT_SOURCE_DIR"/../animationR";
+	
+	mbs_dirdyn->options->realtime = 1;
+	mbs_dirdyn->options->saveperiod = 10;
 
 
-	//
+	mbs_dirdyn->options->respath = PROJECT_SOURCE_DIR"/../resultsR/dirdyn";
+	mbs_run_dirdyn(mbs_dirdyn, mbs_data);
+	printf(" Dirdyn done \n");
+	mbs_delete_dirdyn(mbs_dirdyn, mbs_data);
+		
 	///* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	///*                   CLOSING OPERATIONS                      *
 	///* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */

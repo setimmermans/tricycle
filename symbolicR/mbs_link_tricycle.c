@@ -11,7 +11,7 @@
 //	1348 Louvain-la-Neuve 
 //	http://www.robotran.be// 
 //
-//	==> Generation Date : Mon Oct 17 11:02:25 2016
+//	==> Generation Date : Fri Oct 21 09:46:22 2016
 //
 //	==> Project name : tricycle
 //	==> using XML input file 
@@ -21,8 +21,8 @@
 //	==> Function : F 7 : Point to point Link Forces (frc,trq,Flnk) 
 //	==> Flops complexity : 148
 //
-//	==> Generation Time :  0.000 seconds
-//	==> Post-Processing :  0.010 seconds
+//	==> Generation Time :  0.010 seconds
+//	==> Post-Processing :  0.000 seconds
 //
 //-------------------------------------------------------------
 //
@@ -32,10 +32,8 @@
 #include "mbs_data.h"
 #include "mbs_project_interface.h"
  
-void mbs_link(double **frc, double **trq, double *Flnk, double *Z, double *Zd,
-	MbsData *s, double tsim)
-
-
+void mbs_link(double **frc,double **trq,double *Flnk,double *Z,double *Zd,
+MbsData *s, double tsim)
 
 // double frc[3][30];
 // double trq[3][30];
@@ -48,6 +46,7 @@ void mbs_link(double **frc, double **trq, double *Flnk, double *Z, double *Zd,
 #define q s->q 
 #define qd s->qd 
 #define qdd s->qdd 
+ 
  
 
 // === begin imp_aux === 

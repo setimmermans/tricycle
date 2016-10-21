@@ -11,7 +11,7 @@
 //	1348 Louvain-la-Neuve 
 //	http://www.robotran.be// 
 //
-//	==> Generation Date : Mon Oct 17 11:02:24 2016
+//	==> Generation Date : Fri Oct 21 09:51:50 2016
 //
 //	==> Project name : tricycle
 //	==> using XML input file 
@@ -19,10 +19,10 @@
 //	==> Number of joints : 30
 //
 //	==> Function : F 8 : Constraints Vector (h) and Jacobian Matrix (Jac) 
-//	==> Flops complexity : 574
+//	==> Flops complexity : 659
 //
-//	==> Generation Time :  0.010 seconds
-//	==> Post-Processing :  0.020 seconds
+//	==> Generation Time :  0.020 seconds
+//	==> Post-Processing :  0.010 seconds
 //
 //-------------------------------------------------------------
 //
@@ -35,8 +35,8 @@
 void mbs_cons_hJ(double *h,double **Jac,
 MbsData *s, double tsim)
 
-// double h[8];
-// double Jac[8][30];
+// double h[11];
+// double Jac[11][30];
 { 
  
 #include "mbs_cons_hJ_tricycle.h" 
@@ -52,12 +52,26 @@ MbsData *s, double tsim)
 
 // ===== BEGIN task 0 ===== 
 
+// = = Block_0_0_0_0_0_2 = = 
+ 
+// Trigonometric Variables  
+
+  C8 = cos(q[8]);
+  S8 = sin(q[8]);
+
 // = = Block_0_0_0_0_0_3 = = 
  
 // Trigonometric Variables  
 
   C10 = cos(q[10]);
   S10 = sin(q[10]);
+
+// = = Block_0_0_0_0_0_4 = = 
+ 
+// Trigonometric Variables  
+
+  C11 = cos(q[11]);
+  S11 = sin(q[11]);
 
 // = = Block_0_0_0_0_0_5 = = 
  
@@ -119,6 +133,25 @@ MbsData *s, double tsim)
   C30 = cos(q[30]);
   S30 = sin(q[30]);
 
+// = = Block_0_1_0_0_0_2 = = 
+ 
+// Constraints and Constraints Jacobian 
+
+//
+  RL_9_140 = s->dpt[1][9]*C8+s->dpt[3][9]*S8;
+  RL_9_340 = -(s->dpt[1][9]*S8-s->dpt[3][9]*C8);
+
+// = = Block_0_1_0_0_0_4 = = 
+ 
+// Constraints and Constraints Jacobian 
+
+//
+  RL_10_241 = s->dpt[2][14]*C11-s->dpt[3][14]*S11;
+  RL_10_341 = s->dpt[2][14]*S11+s->dpt[3][14]*C11;
+//
+  RL_12_243 = s->dpt[2][13]*C11-s->dpt[3][13]*S11;
+  RL_12_343 = s->dpt[2][13]*S11+s->dpt[3][13]*C11;
+
 // = = Block_0_1_0_0_0_5 = = 
  
 // Trigonometric Variables  
@@ -175,6 +208,9 @@ MbsData *s, double tsim)
   RL_7_138 = RO_7_714*s->dpt[3][21]+s->dpt[1][21]*(RO_7_114*C15+RO_7_413*S15)-s->dpt[2][21]*(RO_7_114*S15-RO_7_413*C15);
   RL_7_238 = RO_7_814*s->dpt[3][21]+s->dpt[1][21]*(RO_7_214*C15+C12p13*S15)-s->dpt[2][21]*(RO_7_214*S15-C12p13*C15);
   RL_7_338 = RO_7_914*s->dpt[3][21]+s->dpt[1][21]*(RO_7_314*C15+RO_7_613*S15)-s->dpt[2][21]*(RO_7_314*S15-RO_7_613*C15);
+//
+  RL_13_244 = s->dpt[2][17]*C12-s->dpt[3][17]*S12;
+  RL_13_344 = s->dpt[2][17]*S12+s->dpt[3][17]*C12;
 
 // = = Block_0_1_0_0_0_6 = = 
  
@@ -230,6 +266,9 @@ MbsData *s, double tsim)
   RL_4_135 = RO_1_720*s->dpt[3][28]+s->dpt[1][28]*(RO_1_120*C21+RO_1_419*S21)-s->dpt[2][28]*(RO_1_120*S21-RO_1_419*C21);
   RL_4_235 = RO_1_820*s->dpt[3][28]+s->dpt[1][28]*(RO_1_220*C21+C18p19*S21)-s->dpt[2][28]*(RO_1_220*S21-C18p19*C21);
   RL_4_335 = RO_1_920*s->dpt[3][28]+s->dpt[1][28]*(RO_1_320*C21+RO_1_619*S21)-s->dpt[2][28]*(RO_1_320*S21-RO_1_619*C21);
+//
+  RL_11_242 = s->dpt[2][24]*C18-s->dpt[3][24]*S18;
+  RL_11_342 = s->dpt[2][24]*S18+s->dpt[3][24]*C18;
 
 // = = Block_0_1_0_0_0_7 = = 
  
@@ -301,8 +340,8 @@ MbsData *s, double tsim)
   h_7 = (0.50)*(Plp11*Plp11+Plp21*Plp21+Plp31*Plp31-s->lrod[1]*s->lrod[1]);
 //
   Jacu_7_10 = Plp11*(JT_1_119_10+RL_4_335)+Plp31*(JT_1_319_10-RL_4_135);
-  Jacu_7_18 = Plp11*(JT_1_119_18+RL_4_235*S10)+Plp21*(JT_1_219_18-RL_4_135*S10-RL_4_335*C10)+Plp31*(JT_1_319_18+RL_4_235
- *C10);
+  Jac_7_18 = Plp11*(JT_1_119_18+RL_4_235*S10)+Plp21*(JT_1_219_18-RL_4_135*S10-RL_4_335*C10)+Plp31*(JT_1_319_18+RL_4_235*
+ C10);
   Jac_7_19 = -(Plp21*(RL_4_135*S10+RL_4_335*C10)-RL_4_235*(Plp11*S10+Plp31*C10));
   Jac_7_20 = -(Plp11*(RL_4_235*RO_1_619-RL_4_335*C18p19)-Plp21*(RL_4_135*RO_1_619-RL_4_335*RO_1_419)+Plp31*(RL_4_135*
  C18p19-RL_4_235*RO_1_419));
@@ -317,7 +356,7 @@ MbsData *s, double tsim)
   h_8 = (0.50)*(Plp12*Plp12+Plp22*Plp22+Plp32*Plp32-s->lrod[2]*s->lrod[2]);
 //
   Jacu_8_10 = -(Plp12*(RL_7_312+RL_7_313+RL_7_338)-Plp32*(RL_7_112+RL_7_113+RL_7_138));
-  Jacu_8_12 = Plp22*(RL_7_138*S10+RL_7_338*C10+s->dpt[2][16]*S12)-(RL_7_213+RL_7_238)*(Plp12*S10+Plp32*C10);
+  Jac_8_12 = Plp22*(RL_7_138*S10+RL_7_338*C10+s->dpt[2][16]*S12)-(RL_7_213+RL_7_238)*(Plp12*S10+Plp32*C10);
   Jac_8_13 = Plp22*(RL_7_138*S10+RL_7_338*C10)-RL_7_238*(Plp12*S10+Plp32*C10);
   Jac_8_14 = Plp12*(RL_7_238*RO_7_613-RL_7_338*C12p13)-Plp22*(RL_7_138*RO_7_613-RL_7_338*RO_7_413)+Plp32*(RL_7_138*
  C12p13-RL_7_238*RO_7_413);
@@ -325,6 +364,26 @@ MbsData *s, double tsim)
  RO_7_814-RL_7_238*RO_7_714);
   Jacu_8_24 = Plp12*RL_6_337-Plp32*RL_6_137;
   Jacu_8_25 = Plp22*(s->dpt[1][30]*C25-s->dpt[2][30]*S25)-RL_6_237*(Plp12*C24-Plp32*S24);
+//
+  Plp13 = -(RL_9_140+s->dpt[1][2]-s->dpt[1][3]);
+  Plp33 = -(RL_9_340+s->dpt[3][2]-s->dpt[3][3]);
+  h_9 = (0.50)*(Plp13*Plp13+Plp33*Plp33-s->lrod[3]*s->lrod[3]);
+//
+  Jac_9_8 = -(Plp13*RL_9_340-Plp33*RL_9_140);
+//
+  Plp24 = RL_10_241-RL_11_242-s->dpt[2][12];
+  Plp34 = RL_10_341-RL_11_342-s->dpt[3][12];
+  h_10 = (0.50)*(Plp24*Plp24+Plp34*Plp34-s->lrod[4]*s->lrod[4]);
+//
+  Jacu_10_11 = -(Plp24*RL_10_341-Plp34*RL_10_241);
+  Jac_10_18 = Plp24*RL_11_342-Plp34*RL_11_242;
+//
+  Plp25 = RL_12_243-RL_13_244-s->dpt[2][11];
+  Plp35 = RL_12_343-RL_13_344-s->dpt[3][11];
+  h_11 = (0.50)*(Plp25*Plp25+Plp35*Plp35-s->lrod[5]*s->lrod[5]);
+//
+  Jacu_11_11 = -(Plp25*RL_12_343-Plp35*RL_12_243);
+  Jac_11_12 = Plp25*RL_13_344-Plp35*RL_13_244;
 
 // = = Block_0_3_0_0_0_0 = = 
  
@@ -338,6 +397,9 @@ MbsData *s, double tsim)
   h[6] = h_6;
   h[7] = h_7;
   h[8] = h_8;
+  h[9] = h_9;
+  h[10] = h_10;
+  h[11] = h_11;
   Jac[1][10] = -JT_1_132_10;
   Jac[1][18] = -JT_1_132_18;
   Jac[1][19] = -JT_1_132_19;
@@ -383,19 +445,24 @@ MbsData *s, double tsim)
   Jac[6][27] = JT_2_333_27;
   Jac[6][28] = JT_2_333_28;
   Jac[7][10] = Jacu_7_10;
-  Jac[7][18] = Jacu_7_18;
+  Jac[7][18] = Jac_7_18;
   Jac[7][19] = Jac_7_19;
   Jac[7][20] = Jac_7_20;
   Jac[7][21] = Jac_7_21;
   Jac[7][24] = Jacu_7_24;
   Jac[7][25] = Jacu_7_25;
   Jac[8][10] = Jacu_8_10;
-  Jac[8][12] = Jacu_8_12;
+  Jac[8][12] = Jac_8_12;
   Jac[8][13] = Jac_8_13;
   Jac[8][14] = Jac_8_14;
   Jac[8][15] = Jac_8_15;
   Jac[8][24] = Jacu_8_24;
   Jac[8][25] = Jacu_8_25;
+  Jac[9][8] = Jac_9_8;
+  Jac[10][11] = Jacu_10_11;
+  Jac[10][18] = Jac_10_18;
+  Jac[11][11] = Jacu_11_11;
+  Jac[11][12] = Jac_11_12;
 
 // ====== END Task 0 ====== 
 
