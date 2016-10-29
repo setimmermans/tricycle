@@ -57,7 +57,7 @@ extern "C" {
 
 //#define Scaled	 
 #define Dirdyn	
-#define LoopModal	
+//#define LoopModal	
 //#define Printcoord
 
 	
@@ -87,7 +87,7 @@ int main(int argc, char const *argv[])
 	/*                    PARAMETERS                              *
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	simu_t = 20;
-	V = 4.0; // en m/s
+	V = 2.0; // en m/s
 	max_V = 10; 
 	steps = 0.1;
 	speed = 0.1;
@@ -123,7 +123,7 @@ int main(int argc, char const *argv[])
 	uIO = mbs_data->user_IO;
 	mbs_data->K_factor = K_factor_init;
 	mbs_data->scaling_factor = scaling_factor;
-	mbs_data->qPrevious = 0.0;
+	mbs_data->ErrorTot = 0.0;
 
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	/*              SCALING					                      *
