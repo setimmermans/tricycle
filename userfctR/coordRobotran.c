@@ -130,6 +130,11 @@ void anchor_points_coord()
 		    }
 		    else if ( flag == 1 && strcmp(chaine, "\n") == 0 )	// à la fin de la section "// points" on stoppe la lecture
 		    {
+				fprintf(writing_file, "\"rod1\" = %f\n", mbs_data->lrod[1]*1000);
+				fprintf(writing_file, "\"rod2\" = %f\n", mbs_data->lrod[2] * 1000);
+				fprintf(writing_file, "\"rod3\" = %f\n", mbs_data->lrod[3] * 1000);
+				fprintf(writing_file, "\"rod4\" = %f\n", mbs_data->lrod[4] * 1000);
+				fprintf(writing_file, "\"rod5\" = %f\n", mbs_data->lrod[5] * 1000);
 			//printf("fin de lecture des points");
 			break;
 		    }

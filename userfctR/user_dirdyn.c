@@ -58,6 +58,7 @@ void user_dirdyn_loop(MbsData *mbs_data, MbsDirdyn *mbs_dd)
 	set_output(PtrSensor->P[2], "Sensor_pilot_PositionY");
 	set_output(PtrSensor->P[3], "Sensor_pilot_PositionZ");
 
+
 }
 
 /*! \brief user own finishing functions

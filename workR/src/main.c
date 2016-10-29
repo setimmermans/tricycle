@@ -55,7 +55,12 @@ extern "C" {
 #include "coordRobotran.h"
 
 
+//#define Scaled	 
+#define Dirdyn	
+#define LoopModal	
+//#define Printcoord
 
+	
 
 int main(int argc, char const *argv[])
 {
@@ -78,13 +83,11 @@ int main(int argc, char const *argv[])
 	double steps, speed, scaling_factor, manual_scaling;
 
 
-
-
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	/*                    PARAMETERS                              *
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-	simu_t = 50;
-	V = 2.0; // en m/s
+	simu_t = 20;
+	V = 4.0; // en m/s
 	max_V = 10; 
 	steps = 0.1;
 	speed = 0.1;
@@ -93,9 +96,15 @@ int main(int argc, char const *argv[])
 	K_factor_max = 1.0;
 	scaling_factor = 1.0;
 	manual_scaling = 0.4;
-	front_radius =  0.104104;// 0.258591 *manual_scaling = 0.1036; //
-	rear_radius = 0.10359;// 0.255193 * manual_scaling; // very sensitive (need to take static eq value for nominal radii)
 
+
+	front_radius = 0.258591;
+	rear_radius = 0.255193;
+
+#ifdef Scaled
+	front_radius =  0.104104;// 0.258591 *manual_scaling = 0.1036; //
+	rear_radius =  0.10359;// 0.255193 * manual_scaling; // very sensitive (need to take static eq value for nominal radii)
+#endif
 
 	printf("Hello tricycle MBS!\n"); 
 	//printf(" Nominal Radius = %f et %f \n \n", front_radius, rear_radius);
@@ -114,6 +123,7 @@ int main(int argc, char const *argv[])
 	uIO = mbs_data->user_IO;
 	mbs_data->K_factor = K_factor_init;
 	mbs_data->scaling_factor = scaling_factor;
+	mbs_data->qPrevious = 0.0;
 
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	/*              SCALING					                      *
@@ -196,9 +206,9 @@ int main(int argc, char const *argv[])
 	printf("Qq : "); print_dvec_0(mbs_data->Qq, mbs_data->njoint); 
 	system("pause");
 
-	///* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	///*					 MODAL ANALYSIS                      *
-	///* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	/*					 MODAL ANALYSIS                      *
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 	printf("\n\n Run modal Analysis for V  = %f \n", V );
 	ModalAnalysis(mbs_data, V, "Analyse_modale\My_Modal_Analysis.txt", front_radius, rear_radius);
@@ -238,6 +248,7 @@ int main(int argc, char const *argv[])
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	/*					LOOPS MODAL ANALYSIS ON V		          *
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+#ifdef LoopModal
 
 	printf("\n\n Ready for LOOPS on Modal Analysis for V \n");
 	system("pause");
@@ -254,18 +265,19 @@ int main(int argc, char const *argv[])
 	printf("qdd: "); print_dvec_0(mbs_data->qdd, mbs_data->njoint);
 	system("pause");
 
-
+#endif
 		
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	/*                   DIRECT DYNANMICS                        *
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-
+#ifdef Dirdyn
 	mbs_data->user_IO->modeTC = 2;
 	Toprint = 1;
 	// initialize dirdyn with equilibrium
 	QuasiEquilibrium(mbs_data, V, front_radius, rear_radius,Toprint);
-
+	
 	printf("\n\n Ready for dirdyn \n");
+	
 	//mbs_data->q[T3_body_id] = 0.2; // impose une hauteur
 	printf("q  : "); print_dvec_0(mbs_data->q, mbs_data->njoint);
 	printf("qd : "); print_dvec_0(mbs_data->qd, mbs_data->njoint);
@@ -291,7 +303,8 @@ int main(int argc, char const *argv[])
 	mbs_run_dirdyn(mbs_dirdyn, mbs_data);
 	printf(" Dirdyn done \n");
 	mbs_delete_dirdyn(mbs_dirdyn, mbs_data);
-		
+#endif
+
 	///* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	///*                   CLOSING OPERATIONS                      *
 	///* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -303,8 +316,10 @@ int main(int argc, char const *argv[])
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	/*                   ANCHOR POINT : PRINT TO A FILE           *
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-
+#ifdef Printcoord
 	anchor_points_coord();
+#endif
+	
 
 	return 0;
 }

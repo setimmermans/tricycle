@@ -99,10 +99,12 @@ void Angles(MbsData *mbs_data)
 	Nominal_radius_ft_lt = psens->P[3];
 	wheel_Y_ft_lt = psens->P[2];
 
+
+#ifdef Scaled
 	mbs_sensor(psens, mbs_data, Sensor_wheel_rr_id); // Compute the sensor for the nominal radius rr
 	Nominal_radius_rr = psens->P[3];
 	printf(" Nominal Radius = %f , %f et %f \n \n", Nominal_radius_ft_rt, Nominal_radius_ft_lt, Nominal_radius_rr);
-
+#endif
 
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	/*					 SCRUB RADIUS CALCULUS	             *

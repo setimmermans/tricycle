@@ -11,7 +11,7 @@
 //	1348 Louvain-la-Neuve 
 //	http://www.robotran.be// 
 //
-//	==> Generation Date : Fri Oct 21 09:51:50 2016
+//	==> Generation Date : Sat Oct 29 14:54:54 2016
 //
 //	==> Project name : tricycle
 //	==> using XML input file 
@@ -19,10 +19,10 @@
 //	==> Number of joints : 30
 //
 //	==> Function : F18 : Constraints Quadratic Velocity Terms (Jdqd)
-//	==> Flops complexity : 835
+//	==> Flops complexity : 731
 //
-//	==> Generation Time :  0.020 seconds
-//	==> Post-Processing :  0.010 seconds
+//	==> Generation Time :  0.010 seconds
+//	==> Post-Processing :  0.020 seconds
 //
 //-------------------------------------------------------------
 //
@@ -35,7 +35,7 @@
 void mbs_cons_jdqd(double *Jdqd,
 MbsData *s, double tsim)
 
-// double Jdqd[11];
+// double Jdqd[8];
 { 
  
 #include "mbs_cons_jdqd_tricycle.h" 
@@ -51,26 +51,12 @@ MbsData *s, double tsim)
 
 // ===== BEGIN task 0 ===== 
 
-// = = Block_0_0_0_0_0_2 = = 
- 
-// Trigonometric Variables  
-
-  C8 = cos(q[8]);
-  S8 = sin(q[8]);
-
 // = = Block_0_0_0_0_0_3 = = 
  
 // Trigonometric Variables  
 
   C10 = cos(q[10]);
   S10 = sin(q[10]);
-
-// = = Block_0_0_0_0_0_4 = = 
- 
-// Trigonometric Variables  
-
-  C11 = cos(q[11]);
-  S11 = sin(q[11]);
 
 // = = Block_0_0_0_0_0_5 = = 
  
@@ -132,25 +118,6 @@ MbsData *s, double tsim)
   C30 = cos(q[30]);
   S30 = sin(q[30]);
 
-// = = Block_0_1_0_0_0_2 = = 
- 
-// Constraints and Constraints Jacobian 
-
-//
-  RL_9_140 = s->dpt[1][9]*C8+s->dpt[3][9]*S8;
-  RL_9_340 = -(s->dpt[1][9]*S8-s->dpt[3][9]*C8);
-
-// = = Block_0_1_0_0_0_4 = = 
- 
-// Constraints and Constraints Jacobian 
-
-//
-  RL_10_241 = s->dpt[2][14]*C11-s->dpt[3][14]*S11;
-  RL_10_341 = s->dpt[2][14]*S11+s->dpt[3][14]*C11;
-//
-  RL_12_243 = s->dpt[2][13]*C11-s->dpt[3][13]*S11;
-  RL_12_343 = s->dpt[2][13]*S11+s->dpt[3][13]*C11;
-
 // = = Block_0_1_0_0_0_5 = = 
  
 // Trigonometric Variables  
@@ -183,9 +150,6 @@ MbsData *s, double tsim)
   RL_7_138 = RO_7_714*s->dpt[3][21]+s->dpt[1][21]*(RO_7_114*C15+RO_7_413*S15)-s->dpt[2][21]*(RO_7_114*S15-RO_7_413*C15);
   RL_7_238 = RO_7_814*s->dpt[3][21]+s->dpt[1][21]*(RO_7_214*C15+C12p13*S15)-s->dpt[2][21]*(RO_7_214*S15-C12p13*C15);
   RL_7_338 = RO_7_914*s->dpt[3][21]+s->dpt[1][21]*(RO_7_314*C15+RO_7_613*S15)-s->dpt[2][21]*(RO_7_314*S15-RO_7_613*C15);
-//
-  RL_13_244 = s->dpt[2][17]*C12-s->dpt[3][17]*S12;
-  RL_13_344 = s->dpt[2][17]*S12+s->dpt[3][17]*C12;
 
 // = = Block_0_1_0_0_0_6 = = 
  
@@ -215,9 +179,6 @@ MbsData *s, double tsim)
   RL_4_135 = RO_1_720*s->dpt[3][28]+s->dpt[1][28]*(RO_1_120*C21+RO_1_419*S21)-s->dpt[2][28]*(RO_1_120*S21-RO_1_419*C21);
   RL_4_235 = RO_1_820*s->dpt[3][28]+s->dpt[1][28]*(RO_1_220*C21+C18p19*S21)-s->dpt[2][28]*(RO_1_220*S21-C18p19*C21);
   RL_4_335 = RO_1_920*s->dpt[3][28]+s->dpt[1][28]*(RO_1_320*C21+RO_1_619*S21)-s->dpt[2][28]*(RO_1_320*S21-RO_1_619*C21);
-//
-  RL_11_242 = s->dpt[2][24]*C18-s->dpt[3][24]*S18;
-  RL_11_342 = s->dpt[2][24]*S18+s->dpt[3][24]*C18;
 
 // = = Block_0_1_0_0_0_7 = = 
  
@@ -363,21 +324,6 @@ MbsData *s, double tsim)
   VI_7_138 = OR_7_113+OR_7_138;
   VI_7_238 = OR_7_213+OR_7_238;
   VI_7_338 = OR_7_313+OR_7_338;
-//
-  OR_9_140 = RL_9_340*qd[8];
-  OR_9_340 = -RL_9_140*qd[8];
-//
-  OR_10_241 = -RL_10_341*qd[11];
-  OR_10_341 = RL_10_241*qd[11];
-//
-  OR_11_242 = -RL_11_342*qd[18];
-  OR_11_342 = RL_11_242*qd[18];
-//
-  OR_12_243 = -RL_12_343*qd[11];
-  OR_12_343 = RL_12_243*qd[11];
-//
-  OR_13_244 = -RL_13_344*qd[12];
-  OR_13_344 = RL_13_244*qd[12];
 
 // = = Block_0_2_0_0_0_1 = = 
  
@@ -411,17 +357,6 @@ MbsData *s, double tsim)
  s->dpt[2][16]*C10*S12-s->dpt[3][11]*C10)-(OR_6_137-VI_7_138)*(OR_6_137-VI_7_138)-(OR_6_237-VI_7_238)*(OR_6_237-VI_7_238)-(
  OR_6_337-VI_7_338)*(OR_6_337-VI_7_338)+(OM_5_325*OR_6_237+OM_7_215*OR_7_338-OM_7_312*OR_7_213-OM_7_315*OR_7_238+Ompqp_7_215*
  RL_7_338-Ompqp_7_315*RL_7_238)*(RL_6_137-RL_7_138-s->dpt[1][5]+s->dpt[1][6]-s->dpt[2][16]*S10*S12-s->dpt[3][11]*S10));
-//
-  jdqd9 = OR_9_140*(OR_9_140-qd[8]*(RL_9_340+s->dpt[3][2]-s->dpt[3][3]))+OR_9_340*OR_9_340+OR_9_340*qd[8]*(RL_9_140+
- s->dpt[1][2]-s->dpt[1][3]);
-//
-  jdqd10 = (OR_10_241-OR_11_242)*(OR_10_241-OR_11_242)+(OR_10_341-OR_11_342)*(OR_10_341-OR_11_342)+(OR_10_241*qd[11]-
- OR_11_242*qd[18])*(RL_10_341-RL_11_342-s->dpt[3][12])-(OR_10_341*qd[11]-OR_11_342*qd[18])*(RL_10_241-RL_11_242-s->dpt[2][12]
- );
-//
-  jdqd11 = (OR_12_243-OR_13_244)*(OR_12_243-OR_13_244)+(OR_12_343-OR_13_344)*(OR_12_343-OR_13_344)+(OR_12_243*qd[11]-
- OR_13_244*qd[12])*(RL_12_343-RL_13_344-s->dpt[3][11])-(OR_12_343*qd[11]-OR_13_344*qd[12])*(RL_12_243-RL_13_244-s->dpt[2][11]
- );
 
 // = = Block_0_3_0_0_0_0 = = 
  
@@ -435,9 +370,6 @@ MbsData *s, double tsim)
   Jdqd[6] = jdqd6;
   Jdqd[7] = jdqd7;
   Jdqd[8] = jdqd8;
-  Jdqd[9] = jdqd9;
-  Jdqd[10] = jdqd10;
-  Jdqd[11] = jdqd11;
 
 // ====== END Task 0 ====== 
 

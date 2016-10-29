@@ -46,7 +46,7 @@ void QuasiEquilibrium(MbsData *mbs_data, double V, double front_radius, double r
 	MbsEquil *mbs_equil = mbs_new_equil(mbs_data);
 
 	// equil options (see documentations for additional options)
-	mbs_equil->options->senstol = 1e-1;
+	mbs_equil->options->senstol = 1e-2;
 	mbs_equil->options->verbose = 1;
 	mbs_equil->options->quasistatic = 1;
 	mbs_equil->options->nquch = 4;
