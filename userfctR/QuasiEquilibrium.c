@@ -1,7 +1,7 @@
-	/* Modified by Sebastien, on the basis of Quentin's work 
+/* Modified by Sebastien, on the basis of Quentin's work
 
-	Objective: static and quasi static equilibrium
-	+ modal analysis
+Objective: static and quasi static equilibrium
++ modal analysis
 */
 
 #include <stdio.h>
@@ -30,43 +30,98 @@ extern "C" {
 #include<process.h>
 
 
-void QuasiEquilibrium(MbsData *mbs_data, double V, double front_radius, double rear_radius, int Toprint)
+void QuasiEquilibrium(MbsData *mbs_data, double V, double front_radius, double rear_radius, int Toprint, double steer)
 {
-
-	mbs_data->process = 1; // equil !
-	
-	mbs_data->qd[T1_body_id] = V;
-	mbs_data->q[T1_body_id] = 0.0;
-	mbs_data->q[T2_body_id] = 0.0;
-
-	mbs_data->qd[R2_wheel_ft_lt_id] = V / front_radius;
-	mbs_data->qd[R2_wheel_ft_rt_id] = V / front_radius;
-	mbs_data->qd[R2_wheel_rr_id] = V / rear_radius; // very sensitive (need to take static eq value for nominal radii)
-
 	MbsEquil *mbs_equil = mbs_new_equil(mbs_data);
+	mbs_data->process = 3; // equil quasi !
 
-	// equil options (see documentations for additional options)
-	mbs_equil->options->senstol = 1e-2;
-	mbs_equil->options->verbose = 1;
-	mbs_equil->options->quasistatic = 1;
-	mbs_equil->options->nquch = 4;
-	mbs_equil->options->equitol = 1e-2;
-	mbs_equil->options->itermax = 30;
-	mbs_equil_exchange(mbs_equil->options);
-	mbs_equil->options->quch[1] = T1_body_id;
-	mbs_equil->options->quch[2] = R2_wheel_ft_lt_id;
-	mbs_equil->options->quch[3] = R2_wheel_rr_id;
-	mbs_equil->options->quch[4] = R2_wheel_ft_rt_id;
-	mbs_equil->options->xch_ptr[1] = &(mbs_data->Qq[R2_wheel_rr_id]);
-	mbs_equil->options->xch_ptr[2] = &(mbs_data->qd[R2_wheel_ft_lt_id]);
-	mbs_equil->options->xch_ptr[3] = &(mbs_data->qd[R2_wheel_rr_id]);
-	mbs_equil->options->xch_ptr[4] = &(mbs_data->qd[R2_wheel_ft_rt_id]);
-	mbs_run_equil(mbs_equil, mbs_data);
-
-	if (Toprint == 1)
+	if (mbs_data->tourne == 1)
 	{
-		mbs_print_equil(mbs_equil);
+		//  curve equilibrium
+
+
+		mbs_data->q[T1_body_id] = 0.0;
+		mbs_data->q[T2_body_id] = mbs_data->Rayon;
+		mbs_data->qd[R3_body_id] = V / (mbs_data->Rayon);//tourne
+		mbs_data->q[R3_body_id] = 0.0;
+		mbs_data->qd[T1_body_id] = V ;
+		mbs_data->qd[T2_body_id] = 0.0;
+
+		mbs_data->qd[R2_wheel_ft_lt_id] = (V / front_radius);
+		mbs_data->qd[R2_wheel_ft_rt_id] = (V / front_radius);
+		mbs_data->qd[R2_wheel_rr_id] = V / rear_radius; // very sensitive (need to take static eq value for nominal radii)
+
+		// equil options (see documentations for additional options)
+		mbs_equil->options->senstol = 1e-2;
+		mbs_equil->options->verbose = Toprint;
+		mbs_equil->options->quasistatic = 1;
+		mbs_equil->options->nquch = 6;
+		mbs_equil->options->equitol = 1e-2;
+		mbs_equil->options->itermax = 30;
+		mbs_equil_exchange(mbs_equil->options);
+		mbs_equil->options->quch[1] = T1_body_id;
+		mbs_equil->options->quch[2] = R3_body_id;
+		mbs_equil->options->quch[3] = R2_wheel_rr_id;
+		mbs_equil->options->quch[4] = R2_wheel_ft_rt_id;
+		mbs_equil->options->quch[5] = R2_wheel_ft_lt_id;
+		mbs_equil->options->quch[6] = T2_body_id;
+
+
+		mbs_equil->options->xch_ptr[1] = &(mbs_data->Qq[R2_wheel_rr_id]);
+		mbs_equil->options->xch_ptr[2] = &(mbs_data->qd[R3_body_id]);
+		mbs_equil->options->xch_ptr[3] = &(mbs_data->qd[R2_wheel_rr_id]);
+		mbs_equil->options->xch_ptr[4] = &(mbs_data->qd[R2_wheel_ft_rt_id]);
+		mbs_equil->options->xch_ptr[5] = &(mbs_data->qd[R2_wheel_ft_lt_id]);
+		mbs_equil->options->xch_ptr[6] = &(mbs_data->q[R3_steering_fork_id]);
+
+
+		mbs_run_equil(mbs_equil, mbs_data);
+		if (Toprint == 1)
+		{
+			printf("q  : "); print_dvec_0(mbs_data->q, mbs_data->njoint);
+			printf("qd : "); print_dvec_0(mbs_data->qd, mbs_data->njoint);
+			printf("qdd: "); print_dvec_0(mbs_data->qdd, mbs_data->njoint);
+			printf("Qq : "); print_dvec_0(mbs_data->Qq, mbs_data->njoint);
+			printf("Tilt_ref = %f \n", mbs_data->q[R1_body_id]);
+			mbs_print_equil(mbs_equil);
+		}
+	}
+	else
+	{
+		mbs_data->qd[T1_body_id] = V;
+		mbs_data->q[T1_body_id] = 0.0;
+		mbs_data->q[T2_body_id] = 0.0;
+
+		mbs_data->qd[R2_wheel_ft_lt_id] = V / front_radius;
+		mbs_data->qd[R2_wheel_ft_rt_id] = V / front_radius;
+		mbs_data->qd[R2_wheel_rr_id] = V / rear_radius; // very sensitive (need to take static eq value for nominal radii)
+
+	
+
+		// equil options (see documentations for additional options)
+		mbs_equil->options->senstol = 1e-2;
+		mbs_equil->options->verbose = Toprint;
+		mbs_equil->options->quasistatic = 1;
+		mbs_equil->options->nquch = 4;
+		mbs_equil->options->equitol = 1e-2;
+		mbs_equil->options->itermax = 30;
+		mbs_equil_exchange(mbs_equil->options);
+		mbs_equil->options->quch[1] = T1_body_id;
+		mbs_equil->options->quch[2] = R2_wheel_ft_lt_id;
+		mbs_equil->options->quch[3] = R2_wheel_rr_id;
+		mbs_equil->options->quch[4] = R2_wheel_ft_rt_id;
+		mbs_equil->options->xch_ptr[1] = &(mbs_data->Qq[R2_wheel_rr_id]);
+		mbs_equil->options->xch_ptr[2] = &(mbs_data->qd[R2_wheel_ft_lt_id]);
+		mbs_equil->options->xch_ptr[3] = &(mbs_data->qd[R2_wheel_rr_id]);
+		mbs_equil->options->xch_ptr[4] = &(mbs_data->qd[R2_wheel_ft_rt_id]);
+
+		mbs_run_equil(mbs_equil, mbs_data);
+
+		if (Toprint == 1)
+		{
+			mbs_print_equil(mbs_equil);
+		}
 	}
 	mbs_delete_equil(mbs_equil, mbs_data);
-	
-	}
+
+}

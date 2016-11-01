@@ -19,17 +19,23 @@
 
 double* user_JointForces(MbsData *mbs_data, double tsim)
 {
-
-	double my_speed;
-	my_speed = mbs_data->qd[T1_body_id] * mbs_data->qd[T1_body_id] + mbs_data->qd[T2_body_id] * mbs_data->qd[T2_body_id];
-	// controleur sur le tilt
-	mbs_data->Qq[R1_pendulum_id] =  my_controleur(mbs_data, tsim, my_speed, mbs_data->q[R3_steering_fork_id]);
 	
+		double my_speed;
+		my_speed = mbs_data->qd[T1_body_id] * mbs_data->qd[T1_body_id] + mbs_data->qd[T2_body_id] * mbs_data->qd[T2_body_id];
+
+		if(mbs_data->user_IO->modeTC == 2) //DTC
+		{// controleur sur le tilt
+		mbs_data->Qq[R1_pendulum_id] = my_controleur(mbs_data, tsim, my_speed, mbs_data->q[R3_steering_fork_id]);
+		}
+		else
+		{
+			// no torque control 
+		}
 	//perturbation
-	if (tsim > 5.0 && tsim < 5.03)
+	/*if (tsim > 5.0 && tsim < 5.03)
 	{
 		mbs_data->Qq[R3_steering_fork_id] = -1;
-	}
+	}*/
 
 
 	/*-- End of user code --*/

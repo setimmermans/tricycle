@@ -28,5 +28,6 @@
 
 double my_controleur(MbsData *mbs_data, double tsim, double speed, double steering);
 double tilt_reference(MbsData *mbs_data, double tsim, double speed, double steering);
+double my_controleur_stc(MbsData *mbs_data, double tsim, double speed, double steering);
 
 #endif
