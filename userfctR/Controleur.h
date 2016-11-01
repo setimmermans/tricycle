@@ -26,6 +26,7 @@
 #define _CONTROLEUR_H_
 
 
-double my_controleur(MbsData *mbs_data, double tsim);	
+double my_controleur(MbsData *mbs_data, double tsim, double speed, double steering);
+double tilt_reference(MbsData *mbs_data, double tsim, double speed, double steering);
 
 #endif

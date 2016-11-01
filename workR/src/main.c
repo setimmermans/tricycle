@@ -56,6 +56,9 @@ extern "C" {
 
 
 //#define Scaled	 
+#define Normal	 
+
+//#define Tourne
 #define Dirdyn	
 //#define LoopModal	
 //#define Printcoord
@@ -69,7 +72,7 @@ int main(int argc, char const *argv[])
 	MbsPart *mbs_part;
 	MbsDirdyn *mbs_dirdyn;
 	double simu_t;
-	double V, Rmin, steer, front_radius, rear_radius;
+	double V, Rmin, steer, front_radius, rear_radius, Rayon;
 	double max_V;
 	int Toprint;
 	UserIO *uIO;
@@ -87,16 +90,17 @@ int main(int argc, char const *argv[])
 	/*                    PARAMETERS                              *
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	simu_t = 20;
-	V = 2.0; // en m/s
+	V = 0.1; // en m/s
 	max_V = 10; 
-	steps = 0.1;
+	steps = 0.01;
 	speed = 0.1;
 	Toprint = 0;
 	K_factor_init = 1.0;
 	K_factor_max = 1.0;
 	scaling_factor = 1.0;
 	manual_scaling = 0.4;
-
+	steer = 0.0;
+	Rayon = 15;
 
 	front_radius = 0.258591;
 	rear_radius = 0.255193;
@@ -124,7 +128,15 @@ int main(int argc, char const *argv[])
 	mbs_data->K_factor = K_factor_init;
 	mbs_data->scaling_factor = scaling_factor;
 	mbs_data->ErrorTot = 0.0;
+	mbs_data->user_IO->steer = steer;
+	mbs_data->speed_ref = V;
+	mbs_data->tourne = 0;
 
+#ifdef Tourne
+	mbs_data->tourne = 1;
+	mbs_data->Rayon = Rayon;
+	mbs_set_qdriven(mbs_data,R3_steering_fork_id);
+#endif
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	/*              SCALING					                      *
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -170,7 +182,7 @@ int main(int argc, char const *argv[])
 	mbs_delete_equil(mbs_equil, mbs_data);
 
 
-
+	
 	// !!! add equation in user_equil_fxe fct !!!!!!!!!
 	// 1. Variable exchange quch->xch 
 	/*mbs_equil->options->nquch=2; // nquch = nxch
@@ -256,9 +268,9 @@ int main(int argc, char const *argv[])
 	while (speed<max_V)
 	{
 		QuasiEquilibrium(mbs_data, speed, front_radius, rear_radius, Toprint);
-		sprintf(filename_modal, "%s/V%3.1f.txt", path_modal, speed);
+		sprintf(filename_modal, "%s/V%9.2f.txt", path_modal, speed);
 		ModalAnalysis(mbs_data, speed, filename_modal, front_radius, rear_radius); // Analyse Modale  
-
+		printf("filename = %s \n", filename_modal);
 		speed = speed + steps;
 	}
 

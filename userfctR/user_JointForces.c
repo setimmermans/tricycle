@@ -20,15 +20,17 @@
 double* user_JointForces(MbsData *mbs_data, double tsim)
 {
 
-	
+	double my_speed;
+	my_speed = mbs_data->qd[T1_body_id] * mbs_data->qd[T1_body_id] + mbs_data->qd[T2_body_id] * mbs_data->qd[T2_body_id];
 	// controleur sur le tilt
-	mbs_data->Qq[R1_pendulum_id] = my_controleur(mbs_data, tsim);
+	mbs_data->Qq[R1_pendulum_id] =  my_controleur(mbs_data, tsim, my_speed, mbs_data->q[R3_steering_fork_id]);
 	
 	//perturbation
 	if (tsim > 5.0 && tsim < 5.03)
 	{
-		mbs_data->Qq[R3_steering_fork_id] = -0.01;
+		mbs_data->Qq[R3_steering_fork_id] = -1;
 	}
+
 
 	/*-- End of user code --*/
 	return mbs_data->Qq;

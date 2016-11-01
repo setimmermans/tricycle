@@ -50,7 +50,7 @@ void QuasiEquilibrium(MbsData *mbs_data, double V, double front_radius, double r
 	mbs_equil->options->verbose = 1;
 	mbs_equil->options->quasistatic = 1;
 	mbs_equil->options->nquch = 4;
-	mbs_equil->options->equitol = 1e-4;
+	mbs_equil->options->equitol = 1e-2;
 	mbs_equil->options->itermax = 30;
 	mbs_equil_exchange(mbs_equil->options);
 	mbs_equil->options->quch[1] = T1_body_id;

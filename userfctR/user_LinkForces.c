@@ -14,6 +14,10 @@
 #include "user_all_id.h"
 #include "user_model.h"
 
+
+//#define Scaled	 
+#define Normal	 
+
 double user_LinkForces(double Z, double Zd, MbsData *mbs_data, double tsim, int ilnk)
 {
     double Flink, K,K_stop, C, Z_0,Z_max,Z_min;
@@ -22,7 +26,7 @@ double user_LinkForces(double Z, double Zd, MbsData *mbs_data, double tsim, int 
 
 
 	Flink=0.0;
-#ifndef Scaled
+#ifdef Normal
         if(ilnk==shock_ft_rt_id|| ilnk==shock_ft_lt_id)
 		{
 			K= um->shock_ft.K;

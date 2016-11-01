@@ -38,6 +38,8 @@ void user_realtime_plot(MbsData* mbs_data)
 	set_plot(V, "V");
 
 	set_plot(mbs_data->q[R1_body_id], "R1 body");
+
+	set_plot(mbs_data->q[R3_steering_fork_id], "Steering Fork");
 	
 }
 
