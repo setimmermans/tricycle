@@ -55,15 +55,16 @@ extern "C" {
 #include "coordRobotran.h"
 
 
-//#define Scaled	 
-#define Normal	 
+#define Scaled	 
+//#define Normal	 
 	
 //#define DTC
 #define STC
 //#define LoopModal	
-	
-//#define EntreCourbe
+
+
 //#define curveEq
+//#define EntreCourbe
 //#define LoopQuasi
 
 #define Dirdyn	
@@ -90,8 +91,8 @@ int main(int argc, char const *argv[])
 	char *path_modal, *path_K;
 	char *filename_modal, *filename_K;
 	double K_factor_init, K_factor_max;
-	double steps, speed, scaling_factor, manual_scaling;
-	double R_loop_max, R_increment;
+	double steps, speed_init, scaling_factor, manual_scaling;
+	double R_loop_max, R_loop_init,  R_increment;
 
 	// for curve quasistatic !
 	double *q_saved, *qd_saved, *Qq_saved;
@@ -100,11 +101,11 @@ int main(int argc, char const *argv[])
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	/*                    PARAMETERS                              *
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-	simu_t = 10;
-	V = 3; // en m/s
-	max_V = 10; 
+	simu_t = 30;
+	V = 5; // en m/s
+	max_V = 6; 
 	steps = 0.01;
-	speed = 0.1;
+	speed_init = 0.1;
 	Toprint = 0;
 	K_factor_init = 1.0;
 	K_factor_max = 1.0;
@@ -112,8 +113,9 @@ int main(int argc, char const *argv[])
 	manual_scaling = 0.4;
 	steer = 0.00;
 	Rayon = 50;
-	R_loop_max = 2; // 200 deja trop selon quentin rmin 15 pour  10m/s
+	R_loop_max = 100; // 200 deja trop selon quentin rmin 15 pour  10m/s
 	R_increment = 1;
+	R_loop_init = 97;
 
 	front_radius = 0.258591;
 	rear_radius = 0.255193;
@@ -146,7 +148,6 @@ int main(int argc, char const *argv[])
 	mbs_data->tourne = 0;
 	mbs_data->user_IO->modeTC = 0; //no control
 	mbs_data->Rayon = Rayon; 
-	mbs_data->R_loop = 1;
 	mbs_data->EntreEnCourbe = 0;
 
 
@@ -252,13 +253,13 @@ int main(int argc, char const *argv[])
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	//mbs_data->process = 4; // modal !
 
-	printf("\n\n Run modal Analysis for V  = %f \n", V);
-	ModalAnalysis(mbs_data, V, "Analyse_modale\My_Modal_Analysis.txt", front_radius, rear_radius);
-	printf("q  : "); print_dvec_0(mbs_data->q, mbs_data->njoint);
-	printf("qd : "); print_dvec_0(mbs_data->qd, mbs_data->njoint);
-	printf("qdd: "); print_dvec_0(mbs_data->qdd, mbs_data->njoint);
-	printf("Qq : "); print_dvec_0(mbs_data->Qq, mbs_data->njoint);
-	system("pause");
+	//printf("\n\n Run modal Analysis for V  = %f \n", V);
+	//ModalAnalysis(mbs_data, V, "Analyse_modale\My_Modal_Analysis.txt", front_radius, rear_radius);
+	//printf("q  : "); print_dvec_0(mbs_data->q, mbs_data->njoint);
+	//printf("qd : "); print_dvec_0(mbs_data->qd, mbs_data->njoint);
+	//printf("qdd: "); print_dvec_0(mbs_data->qdd, mbs_data->njoint);
+	//printf("Qq : "); print_dvec_0(mbs_data->Qq, mbs_data->njoint);
+	//system("pause");
 
 
 
@@ -267,7 +268,7 @@ int main(int argc, char const *argv[])
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 #ifdef curveEq
 	Toprint = 1;
-	printf("\n\n Run Quasistatic Equilibrium  CURVE \n");
+	printf("\n\n Run Quasistatic Equilibrium  CURVE V = %f et R = %f \n", V, mbs_data->Rayon);
 	printf("q  : "); print_dvec_0(mbs_data->q, mbs_data->njoint);
 	printf("qd : "); print_dvec_0(mbs_data->qd, mbs_data->njoint);
 	printf("qdd: "); print_dvec_0(mbs_data->qdd, mbs_data->njoint);
@@ -279,6 +280,7 @@ int main(int argc, char const *argv[])
 	printf("qdd: "); print_dvec_0(mbs_data->qdd, mbs_data->njoint);
 	printf("Qq : "); print_dvec_0(mbs_data->Qq, mbs_data->njoint); 
 	system("pause");
+
 #endif
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	/*					LOOPS QUASISTATIC EQUILIBRIUM R AND V       *
@@ -288,6 +290,12 @@ int main(int argc, char const *argv[])
 	mbs_data->process = 5; // autre
 	mbs_data->tourne = 1; // tourne
 	Toprint = 0;
+	mbs_data->Rayon = R_loop_max;
+
+	printf("q  : "); print_dvec_0(mbs_data->q, mbs_data->njoint);
+	printf("qd : "); print_dvec_0(mbs_data->qd, mbs_data->njoint);
+	printf("qdd: "); print_dvec_0(mbs_data->qdd, mbs_data->njoint);
+	printf("Qq : "); print_dvec_0(mbs_data->Qq, mbs_data->njoint);
 	system("pause");
 
 
@@ -298,21 +306,25 @@ int main(int argc, char const *argv[])
 		printf("Fichier d'ecriture a bien ete ouvert\n");
 		fprintf(writing_file_R_loop, "CurveEquilibrium\n");
 
-		while (mbs_data->R_loop < R_loop_max)
+		while (mbs_data->Rayon > R_loop_init)
 		{
-			
-			mbs_data->Rayon = mbs_data->R_loop;
-			while (speed < max_V)
+			mbs_data->speed_ref = speed_init;
+		
+			while (mbs_data->speed_ref < max_V)
 			{
-				mbs_data->speed_ref = speed;
 				//printf("speed = %f et R = %f\n", speed, mbs_data->R_loop);
-				//QuasiEquilibrium(mbs_data, speed, front_radius, rear_radius, Toprint,steer);
-				fprintf(writing_file_R_loop, "R %f V %f SteerAngle %f \n", mbs_data->R_loop, speed, mbs_data->q[R3_steering_fork_id]);
+				QuasiEquilibrium(mbs_data, mbs_data->speed_ref, front_radius, rear_radius, Toprint,steer);
+				//if (abs(mbs_data->q[R3_steering_fork_id]) >3.1415 || abs(mbs_data->q[R1_body_id])>2.0);
+				//{
+				//	mbs_data->q[R3_steering_fork_id] = -10;
+				//	mbs_data->q[R1_body_id] = -15;
+
+				//}
+				fprintf(writing_file_R_loop, "R %f V %f SteerAngle %f TiltRef %f \n", mbs_data->Rayon, mbs_data->speed_ref, mbs_data->q[R3_steering_fork_id], mbs_data->q[R1_body_id]);
 				
-				speed = speed + steps;
+				mbs_data->speed_ref = mbs_data->speed_ref + steps;
 			}
-			mbs_data->R_loop = mbs_data->R_loop + R_increment;
-			speed = 0.1;
+			mbs_data->Rayon = mbs_data->Rayon - R_increment;
 		}
 	fclose(writing_file_R_loop);
 	printf("Fichier d'ecriture a bien ete ferme\n");
@@ -323,6 +335,7 @@ int main(int argc, char const *argv[])
 	}
 	printf("qdd: "); print_dvec_0(mbs_data->qdd, mbs_data->njoint);
 	system("pause");
+	mbs_data->Rayon = R_loop_init;
 #endif
 
 
@@ -346,7 +359,7 @@ int main(int argc, char const *argv[])
 
 		//		QuasiEquilibrium(mbs_data, speed, front_radius, rear_radius, Toprint,steer);
 		//		sprintf(filename_K, "%s/K%3.1f/V%3.1f.txt", path_K,  mbs_data->K_factor, speed);
-	//mbs_data->process = 4; // equil quasi !
+	//mbs_data->process = 4; // modal
 
 		//		ModalAnalysis(mbs_data, speed, filename_K, front_radius, rear_radius); // Analyse Modale  
 
@@ -368,8 +381,10 @@ int main(int argc, char const *argv[])
 	Toprint = 0;
 	while (speed<max_V)
 	{
+		mbs_data->speed_ref = speed;
 		QuasiEquilibrium(mbs_data, speed, front_radius, rear_radius, Toprint,steer);
 		sprintf(filename_modal, "%s/V%9.2f.txt", path_modal, speed);
+		 mbs_data->process = 4; // modal
 		ModalAnalysis(mbs_data, speed, filename_modal, front_radius, rear_radius); // Analyse Modale  
 		//printf("filename = %s \n", filename_modal);
 		speed = speed + steps;
@@ -395,7 +410,7 @@ int main(int argc, char const *argv[])
 	printf("\n\n Ready for dirdyn \n");
 
 	mbs_data->process = 3; // dirdyn!
-
+	mbs_data->speed_ref = V;
 #ifdef STC
 	mbs_data->user_IO->modeTC = 1;
 #endif
@@ -415,7 +430,6 @@ int main(int argc, char const *argv[])
 	printf("qd : "); print_dvec_0(mbs_data->qd, mbs_data->njoint);
 	printf("qdd: "); print_dvec_0(mbs_data->qdd, mbs_data->njoint);
 	printf("Qq : "); print_dvec_0(mbs_data->Qq, mbs_data->njoint);
-
 	system("pause");
 
 	mbs_dirdyn = mbs_new_dirdyn(mbs_data);
@@ -455,3 +469,5 @@ int main(int argc, char const *argv[])
 	return 0;
 }
 
+
+	

@@ -11,7 +11,7 @@
 //	1348 Louvain-la-Neuve 
 //	http://www.robotran.be// 
 //
-//	==> Generation Date : Wed Nov  2 18:35:17 2016
+//	==> Generation Date : Thu Nov  3 21:22:56 2016
 //
 //	==> Project name : tricycle
 //	==> using XML input file 

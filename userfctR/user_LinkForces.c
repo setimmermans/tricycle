@@ -15,8 +15,8 @@
 #include "user_model.h"
 
 
-//#define Scaled	 
-#define Normal	 
+#define Scaled	 
+//#define Normal	 
 
 double user_LinkForces(double Z, double Zd, MbsData *mbs_data, double tsim, int ilnk)
 {

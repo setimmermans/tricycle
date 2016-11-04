@@ -21,17 +21,19 @@ void user_DrivenJoints(MbsData *mbs_data, double tsim)
 
 	if (mbs_data->process == 3) //Dirdyn
 	{
-		if (mbs_data->user_IO->modeTC == 2) //DTC
-		{
+		//printf("Dirdyn \n");
 
-			if (mbs_data->EntreEnCourbe == 1)
+
+		if (mbs_data->EntreEnCourbe == 1)
+		{
+			if (mbs_data->user_IO->modeTC == 2) //DTC en courbe
 			{
-				printf("entre en courbe \n");
+				//printf("entre en courbe \n");
 				double thePathX, thePathY, speedX, speedY, dirX, dirY, distanceX, distanceY, errorX, errorY, Z_cross, errorTot;
 				double t_start, R, vmax, Xbegin, ang_speed, K;
 
 				// The path
-				t_start = 10; //Temps d'initiation du tournant
+				t_start = 2; //Temps d'initiation du tournant
 				R = mbs_data->Rayon; // Rayon du tourant [m]
 				vmax = mbs_data->speed_ref; // Vitesse dans le tournant(vtot = vmax + vstart)
 				Xbegin = vmax * t_start;
@@ -71,18 +73,44 @@ void user_DrivenJoints(MbsData *mbs_data, double tsim)
 					mbs_data->q[R3_steering_fork_id] = min(0.05, K*errorTot);
 				}
 			}
-			else
+			else if (mbs_data->user_IO->modeTC == 1)  //STC en courbe
+			{
+
+			}
+		}
+		else // ligne droite
+		{
+			if (mbs_data->user_IO->modeTC == 1) //STC
+			{
+				// straigth line with STC
+			//	printf("straight line with STC time= %f \n", tsim);
+
+				//perturb STC
+				if (tsim > 2.0 && tsim < 2.2)
+				{
+				//	//printf("if\n");
+				//	mbs_data->q[R3_steering_fork_id] = 0.1;
+				//	//printf("torque steer = %f \n", mbs_data->Qq[R3_steering_fork_id]);
+				}
+			}
+			else if (mbs_data->user_IO->modeTC == 2) //DTC
 			{
 				// straigth line with DTC
 				mbs_data->q[R3_steering_fork_id] = 0.0;
-				mbs_data->qd[R3_steering_fork_id] = 0.0;
-				mbs_data->qdd[R3_steering_fork_id] = 0.0;
-				printf("straigth line with DTC \n");
+				//mbs_data->qd[R3_steering_fork_id] = 0.0;
+				//mbs_data->qdd[R3_steering_fork_id] = 0.0;
+				printf("straight line with DTC time= %f \n", tsim);
+
+				//pertub DTC
+				if (tsim > 2.0 && tsim < 2.2)
+				{
+					//printf("if\n");
+					mbs_data->q[R3_steering_fork_id] = 0.2;
+					//printf("torque steer = %f \n", mbs_data->Qq[R3_steering_fork_id]);
+				}
+
 			}
 		}
-
-
 	}
 }
-
 

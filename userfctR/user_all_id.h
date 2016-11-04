@@ -8,7 +8,7 @@
  *
  * Universite catholique de Louvain, Belgium 
  *
- * Last update : Wed Nov  2 18:35:25 2016
+ * Last update : Fri Nov  4 17:22:15 2016
  * --------------------------------------------------------
  *
  */
@@ -114,14 +114,15 @@
 
 #define sensor_body_bottom_id 1
 #define sensor_pilot_id 2
-#define sens_car_down_rt_id 3
-#define sens_car_up_rt_id 4
-#define sens_ft_rt_id 5
-#define Sensor_wheel_ft_rt_id 6
-#define sens_car_down_lt_id 7
-#define sens_car_up_lt_id 8
-#define sens_ft_lf_id 9
-#define Sensor_wheel_ft_lt_id 10
+#define Sensor_wheel_rr_id 3
+#define sens_car_down_rt_id 4
+#define sens_car_up_rt_id 5
+#define sens_ft_rt_id 6
+#define Sensor_wheel_ft_rt_id 7
+#define sens_car_down_lt_id 8
+#define sens_car_up_lt_id 9
+#define sens_ft_lf_id 10
+#define Sensor_wheel_ft_lt_id 11
 
 
 // extforce
@@ -133,9 +134,6 @@
 
 // links
 
-#define shock_ft_rt_id 1
-#define shock_ft_lt_id 2
-#define shock_rr_id 3
 
 
 // ============================================================ //
