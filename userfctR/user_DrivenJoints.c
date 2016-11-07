@@ -85,7 +85,7 @@ void user_DrivenJoints(MbsData *mbs_data, double tsim)
 				else if (tsim >= t_start)
 				{
 					mbs_data->EstEnCourbe = 1;
-					printf("mbs_data->q[R3_steering_fork_id]  = %f \n", mbs_data->q[R3_steering_fork_id]);
+					//printf("mbs_data->q[R3_steering_fork_id]  = %f \n", mbs_data->q[R3_steering_fork_id]);
 				}
 			}
 		}
@@ -100,8 +100,15 @@ void user_DrivenJoints(MbsData *mbs_data, double tsim)
 				if (tsim > 2.0 && tsim < 2.2)
 				{
 					//	//printf("if\n");
-					//mbs_data->q[R3_steering_fork_id] = 0.01;
+					mbs_data->q[R3_steering_fork_id] = 0.01;
 					//	//printf("torque steer = %f \n", mbs_data->Qq[R3_steering_fork_id]);
+
+				}
+				else if (tsim > 2.2)
+				{
+					mbs_data->EstEnCourbe = 1;
+					mbs_data->EntreEnCourbe = 1;
+					mbs_data->Rayon = 100;
 				}
 			}
 			else if (mbs_data->user_IO->modeTC == 2) //DTC

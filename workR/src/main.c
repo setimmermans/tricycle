@@ -58,13 +58,13 @@ extern "C" {
 #define Scaled	 
 //#define Normal	 
 	
-#define DTC
-//#define STC
+//#define DTC
+#define STC
 //#define LoopModal	
 
 
 //#define curveEq
-#define EntreCourbe
+//#define EntreCourbe
 //#define LoopQuasi
 
 #define Dirdyn	
@@ -101,8 +101,8 @@ int main(int argc, char const *argv[])
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	/*                    PARAMETERS                              *
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-	simu_t = 30;
-	V = 2; // en m/s
+	simu_t = 10;
+	V = 1; // en m/s
 	max_V = 6; 
 	steps = 0.01;
 	speed_init = 0.1;

@@ -106,6 +106,7 @@ double tilt_reference(MbsData *mbs_data, double tsim, double speed, double steer
 	{	if(mbs_data->EstEnCourbe == 1) 
 		{ 
 			the_tilt = atan(speed*speed / (mbs_data->Rayon*9.81));
+		//	printf("the tilt =%f \n ", the_tilt);
 		}
 		else // ligne droite avant et après pertubation?
 		{
@@ -122,9 +123,9 @@ double tilt_reference(MbsData *mbs_data, double tsim, double speed, double steer
 double my_controleur_stc(MbsData *mbs_data, double tsim, double speed, double steering) //STC
 {
 	double My_torque_tilt, delta_err, tilt_ref, max_torque, speed_tilt_ref, delta_speed, My_torque_steer, My_torque;
-	mbs_data->Kp = 2;//200 normal
-	mbs_data->Ki = 1;//100 normal
-	mbs_data->Kd = 1;//100 normal
+	mbs_data->Kp = 20;//200 normal
+	mbs_data->Ki = 10;//100 normal
+	mbs_data->Kd = 10;//100 normal
 	max_torque = 2.0;
 
 	tilt_ref = tilt_reference(mbs_data, tsim, speed, steering);
@@ -135,7 +136,7 @@ double my_controleur_stc(MbsData *mbs_data, double tsim, double speed, double st
 	My_torque_steer = mbs_data->Qq[R3_steering_fork_id];
 	if (mbs_data->EstEnCourbe == 1)
 	{
-		My_torque = (My_torque_tilt-My_torque_steer );//
+		My_torque = (My_torque_tilt- My_torque_steer );//
 	}
 	else
 	{
@@ -144,9 +145,9 @@ double my_controleur_stc(MbsData *mbs_data, double tsim, double speed, double st
 
 	/*if (abs(mbs_data->q[R1_body_id]) > 0.00001)
 	{*/
-	printf("Delta err*Kp %f et  My_torque = %f et Ki* ErrorTot = %f et vit R1 body = %f \n", mbs_data->Kp *delta_err, My_torque, mbs_data->Ki * mbs_data->ErrorTot, delta_speed);
+	//printf("Delta err*Kp %f et  My_torque = %f et Ki* ErrorTot = %f et vit R1 body = %f \n", mbs_data->Kp *delta_err, My_torque, mbs_data->Ki * mbs_data->ErrorTot, delta_speed);
 	//}
-	if (delta_err>0.0001)
+	if (abs(delta_err)>0.0001)
 	{
 		mbs_data->ErrorTot += delta_err * 0.001; // time step
 	}
