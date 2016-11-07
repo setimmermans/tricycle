@@ -123,8 +123,8 @@ double tilt_reference(MbsData *mbs_data, double tsim, double speed, double steer
 double my_controleur_stc(MbsData *mbs_data, double tsim, double speed, double steering) //STC
 {
 	double My_torque_tilt, delta_err, tilt_ref, max_torque, speed_tilt_ref, delta_speed, My_torque_steer, My_torque;
-	mbs_data->Kp = 20;//200 normal
-	mbs_data->Ki = 10;//100 normal
+	mbs_data->Kp = 5;//200 normal
+	mbs_data->Ki = 100;//100 normal
 	mbs_data->Kd = 10;//100 normal
 	max_torque = 2.0;
 
@@ -132,7 +132,7 @@ double my_controleur_stc(MbsData *mbs_data, double tsim, double speed, double st
 	speed_tilt_ref = 0.0;
 	delta_err = tilt_ref - mbs_data->q[R1_body_id];
 	delta_speed = speed_tilt_ref - mbs_data->qd[R1_body_id];
-	My_torque_tilt = mbs_data->Kp * delta_err + mbs_data->Kd *  delta_speed  -mbs_data->Ki * mbs_data->ErrorTot;
+	My_torque_tilt = mbs_data->Kp * delta_err + mbs_data->Kd *  delta_speed  +mbs_data->Ki * mbs_data->ErrorTot;
 	My_torque_steer = mbs_data->Qq[R3_steering_fork_id];
 	if (mbs_data->EstEnCourbe == 1)
 	{

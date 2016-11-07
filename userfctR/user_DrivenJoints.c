@@ -18,7 +18,7 @@
 
 void user_DrivenJoints(MbsData *mbs_data, double tsim)
 {
-
+	double t_pertub;
 	if (mbs_data->process == 3) //Dirdyn
 	{
 		//printf("Dirdyn \n");
@@ -32,7 +32,7 @@ void user_DrivenJoints(MbsData *mbs_data, double tsim)
 			double t_start, R, vmax, Xbegin, ang_speed, K;
 
 			// The path
-			t_start = 3; //Temps d'initiation du tournant
+			t_start = 2; //Temps d'initiation du tournant
 			R = mbs_data->Rayon; // Rayon du tourant [m]
 			vmax = mbs_data->speed_ref; // Vitesse dans le tournant(vtot = vmax + vstart)
 			Xbegin = vmax * t_start;
@@ -95,16 +95,16 @@ void user_DrivenJoints(MbsData *mbs_data, double tsim)
 			{
 				// straigth line with STC
 		//	printf("straight line with STC time= %f \n", tsim);
-
+				t_pertub = 1.0;
 				//perturb STC
-				if (tsim > 2.0 && tsim < 2.2)
+				if (tsim > t_pertub && tsim < t_pertub +0.2)
 				{
 					//	//printf("if\n");
 					mbs_data->q[R3_steering_fork_id] = 0.01;
 					//	//printf("torque steer = %f \n", mbs_data->Qq[R3_steering_fork_id]);
 
 				}
-				else if (tsim > 2.2)
+				else if (tsim > t_pertub + 0.2)
 				{
 					mbs_data->EstEnCourbe = 1;
 					mbs_data->EntreEnCourbe = 1;
@@ -120,7 +120,7 @@ void user_DrivenJoints(MbsData *mbs_data, double tsim)
 				printf("straight line with DTC time= %f \n", tsim);
 
 				//pertub DTC
-				if (tsim > 2.0 && tsim < 2.2)
+				if (tsim > t_pertub && tsim < t_pertub +0.2)
 				{
 					//printf("if\n");
 					mbs_data->q[R3_steering_fork_id] = 0.2;

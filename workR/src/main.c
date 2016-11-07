@@ -101,7 +101,7 @@ int main(int argc, char const *argv[])
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	/*                    PARAMETERS                              *
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-	simu_t = 10;
+	simu_t = 30;
 	V = 1; // en m/s
 	max_V = 6; 
 	steps = 0.01;
@@ -112,7 +112,7 @@ int main(int argc, char const *argv[])
 	scaling_factor = 1.0;
 	manual_scaling = 0.4;
 	steer = 0.00;
-	Rayon = 50;
+	Rayon = 30;
 	R_loop_max = 100; // 200 deja trop selon quentin rmin 15 pour  10m/s
 	R_increment = 1;
 	R_loop_init = 97;
