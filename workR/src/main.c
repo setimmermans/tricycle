@@ -58,13 +58,13 @@ extern "C" {
 #define Scaled	 
 //#define Normal	 
 	
-//#define DTC
-#define STC
+#define DTC
+//#define STC
 //#define LoopModal	
 
 
 //#define curveEq
-//#define EntreCourbe
+#define EntreCourbe
 //#define LoopQuasi
 
 #define Dirdyn	
@@ -102,7 +102,7 @@ int main(int argc, char const *argv[])
 	/*                    PARAMETERS                              *
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	simu_t = 30;
-	V = 5; // en m/s
+	V = 2; // en m/s
 	max_V = 6; 
 	steps = 0.01;
 	speed_init = 0.1;
@@ -149,7 +149,7 @@ int main(int argc, char const *argv[])
 	mbs_data->user_IO->modeTC = 0; //no control
 	mbs_data->Rayon = Rayon; 
 	mbs_data->EntreEnCourbe = 0;
-
+	mbs_data->EstEnCourbe = 0;
 
 	
 
@@ -268,6 +268,7 @@ int main(int argc, char const *argv[])
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 #ifdef curveEq
 	Toprint = 1;
+	mbs_data->EstEnCourbe = 1;
 	printf("\n\n Run Quasistatic Equilibrium  CURVE V = %f et R = %f \n", V, mbs_data->Rayon);
 	printf("q  : "); print_dvec_0(mbs_data->q, mbs_data->njoint);
 	printf("qd : "); print_dvec_0(mbs_data->qd, mbs_data->njoint);
@@ -279,6 +280,7 @@ int main(int argc, char const *argv[])
 	printf("qd : "); print_dvec_0(mbs_data->qd, mbs_data->njoint);
 	printf("qdd: "); print_dvec_0(mbs_data->qdd, mbs_data->njoint);
 	printf("Qq : "); print_dvec_0(mbs_data->Qq, mbs_data->njoint); 
+	mbs_data->EstEnCourbe = 0;
 	system("pause");
 
 #endif
@@ -289,6 +291,7 @@ int main(int argc, char const *argv[])
 	printf("\n\n Ready for LOOPS on quasiStatique for R and V \n");
 	mbs_data->process = 5; // autre
 	mbs_data->tourne = 1; // tourne
+	mbs_data->EstEnCourbe = 1;
 	Toprint = 0;
 	mbs_data->Rayon = R_loop_max;
 
@@ -336,6 +339,7 @@ int main(int argc, char const *argv[])
 	printf("qdd: "); print_dvec_0(mbs_data->qdd, mbs_data->njoint);
 	system("pause");
 	mbs_data->Rayon = R_loop_init;
+	mbs_data->EstEnCourbe = 0;
 #endif
 
 

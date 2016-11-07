@@ -47,7 +47,7 @@ void user_dirdyn_loop(MbsData *mbs_data, MbsDirdyn *mbs_dd)
 
 	// retrieve the pointer to the sensor structure defined in mbs_aux
 	MbsSensor *PtrSensor = mbs_dd->mbs_aux->psens;
-
+	
 	// compute the sensor (position, velocity...)
 	mbs_sensor(PtrSensor, mbs_data, id);
 
@@ -57,8 +57,6 @@ void user_dirdyn_loop(MbsData *mbs_data, MbsDirdyn *mbs_dd)
 	set_output(PtrSensor->P[1], "Sensor_pilot_PositionX");
 	set_output(PtrSensor->P[2], "Sensor_pilot_PositionY");
 	set_output(PtrSensor->P[3], "Sensor_pilot_PositionZ");
-
-
 }
 
 /*! \brief user own finishing functions
