@@ -19,7 +19,8 @@
 
 double* user_JointForces(MbsData *mbs_data, double tsim)
 {
-	
+	double t_pertub;
+	t_pertub = 10;
 		if(mbs_data->user_IO->modeTC == 2) //DTC
 		{// controleur sur le tilt
 		mbs_data->Qq[R1_pendulum_id] = my_controleur(mbs_data, tsim, mbs_data->speed_ref, mbs_data->q[R3_steering_fork_id]);
@@ -29,21 +30,33 @@ double* user_JointForces(MbsData *mbs_data, double tsim)
 		{
 			mbs_data->Qq[R3_steering_fork_id] = my_controleur_stc(mbs_data, tsim, mbs_data->speed_ref, mbs_data->q[R3_steering_fork_id]);
 			//printf("my steering controle torque STC = %f \n ", mbs_data->Qq[R3_steering_fork_id]);
+
+			//perturbation  control STC
+			if (tsim > t_pertub && tsim < t_pertub +0.2)
+			{
+				//printf("if\n");
+				mbs_data->Qq[R3_steering_fork_id] = 0.1;
+				//printf("torque steer = %f \n", mbs_data->Qq[R3_steering_fork_id]);
+			}
+
 		}
 		else
 		{//printf("no joint force \n");
 			// no torque control 
+
+			//perturbation no control
+			if (tsim > t_pertub && tsim < t_pertub + 0.2)
+			{
+				//printf("if\n");
+				mbs_data->Qq[R3_steering_fork_id] = 0.1;
+				//printf("torque steer = %f \n", mbs_data->Qq[R3_steering_fork_id]);
+			}
 		}
 
 		//printf("before if =%f \n", tsim);
 		//printf("torque before steer = %f \n", mbs_data->Qq[R3_steering_fork_id]);
-	//perturbation
-	//if (tsim > 2.0 && tsim < 2.2)
-	//{
-	//	//printf("if\n");
-	//	mbs_data->Qq[R3_steering_fork_id] = 100;
-	//	//printf("torque steer = %f \n", mbs_data->Qq[R3_steering_fork_id]);
-	//}
+
+
 
 
 	/*-- End of user code --*/

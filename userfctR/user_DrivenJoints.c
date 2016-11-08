@@ -47,6 +47,7 @@ void user_DrivenJoints(MbsData *mbs_data, double tsim)
 			}
 			else if (tsim >= t_start)
 			{
+				mbs_data->EstEnCourbe = 1;
 				thePathX = Xbegin + (vmax / ang_speed)*sin(ang_speed*(tsim - t_start));
 				thePathY = -(vmax / ang_speed)*cos(ang_speed*(tsim - t_start)) + R;
 				speedX = vmax*cos(ang_speed*(tsim - t_start));
@@ -108,7 +109,7 @@ void user_DrivenJoints(MbsData *mbs_data, double tsim)
 				{
 					mbs_data->EstEnCourbe = 1;
 					mbs_data->EntreEnCourbe = 1;
-					mbs_data->Rayon = 100;
+					mbs_data->Rayon = 10;
 				}
 			}
 			else if (mbs_data->user_IO->modeTC == 2) //DTC
@@ -118,7 +119,7 @@ void user_DrivenJoints(MbsData *mbs_data, double tsim)
 				//mbs_data->qd[R3_steering_fork_id] = 0.0;
 				//mbs_data->qdd[R3_steering_fork_id] = 0.0;
 				printf("straight line with DTC time= %f \n", tsim);
-
+				t_pertub = 2.0;
 				//pertub DTC
 				if (tsim > t_pertub && tsim < t_pertub +0.2)
 				{

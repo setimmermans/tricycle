@@ -58,18 +58,20 @@ extern "C" {
 #define Scaled	 
 //#define Normal	 
 	
-//#define DTC
-#define STC
+#define DTC
+//#define STC
+
+
 //#define LoopModal	
 
 
 //#define curveEq
-//#define EntreCourbe
+#define EntreCourbe
 //#define LoopQuasi
 
 #define Dirdyn	
 //#define Printcoord
-
+//#define ChgmntVariables
 	
 
 int main(int argc, char const *argv[])
@@ -101,18 +103,25 @@ int main(int argc, char const *argv[])
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	/*                    PARAMETERS                              *
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-	simu_t = 30;
-	V = 1; // en m/s
+	simu_t = 20;
+	V = 5; // en m/s
+	Rayon = 30;
+
+	// boucle en vitesse
 	max_V = 6; 
 	steps = 0.01;
 	speed_init = 0.1;
+
 	Toprint = 0;
+
+	// boucle en raideur
 	K_factor_init = 1.0;
 	K_factor_max = 1.0;
 	scaling_factor = 1.0;
 	manual_scaling = 0.4;
 	steer = 0.00;
-	Rayon = 30;
+
+	//boucle Rayon et vitesse
 	R_loop_max = 100; // 200 deja trop selon quentin rmin 15 pour  10m/s
 	R_increment = 1;
 	R_loop_init = 97;
@@ -191,15 +200,37 @@ int main(int argc, char const *argv[])
 	mbs_equil->options->senstol = 1e-01;
 	mbs_equil->options->relax = 0.6;
 	mbs_equil->options->smooth = 1;
-	mbs_equil->options->verbose = 0;
+	mbs_equil->options->verbose = 1;
 	mbs_equil->options->equitol = 1e-2;
+
 	printf("\n\n Run equilibrium \n");
 	mbs_run_equil(mbs_equil, mbs_data);
 	mbs_print_equil(mbs_equil);
 	mbs_delete_equil(mbs_equil, mbs_data);
+	system("pause");
+
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	/*					 STATIC EQUILIBRIUM	     AVEC CHGMT VARIABLES                *
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+#ifdef ChgmntVariables
+
+	printf("q  : "); print_dvec_0(mbs_data->q, mbs_data->njoint);
+	printf("qd : "); print_dvec_0(mbs_data->qd, mbs_data->njoint);
+	printf("qdd: "); print_dvec_0(mbs_data->qdd, mbs_data->njoint);
+	printf("Qq : "); print_dvec_0(mbs_data->Qq, mbs_data->njoint);
 
 
-	
+	mbs_data->process = 2; // equil static //
+	mbs_equil = mbs_new_equil(mbs_data);
+	// equil options (see documentations for additional options)
+	mbs_equil->options->method = 1;
+	mbs_equil->options->senstol = 1e-01;
+	mbs_equil->options->relax = 0.6;
+	mbs_equil->options->smooth = 1;
+	mbs_equil->options->verbose = 1;
+	mbs_equil->options->equitol = 1e-2;
+
+
 	// !!! add equation in user_equil_fxe fct !!!!!!!!!
 	// 1. Variable exchange quch->xch 
 	//mbs_equil->options->nquch=2; // nquch = nxch
@@ -209,10 +240,23 @@ int main(int argc, char const *argv[])
 	//mbs_equil->options->xch_ptr[1]=&(mbs_data->user_model->shock_rr.Z_0);
 	//mbs_equil->options->xch_ptr[2]=&(mbs_data->user_model->shock_ft.Z_0);
 	// 2. Added variables and equations !
-	//mbs_equil->options->nxe = 1;
-	//mbs_equil_addition(mbs_equil->options);
-	//mbs_equil->options->xe_ptr[1] = &(mbs_data->lrod[4]);
+	mbs_equil->options->nxe = 2;
+	mbs_equil_addition(mbs_equil->options);
+	mbs_equil->options->xe_ptr[1] = &(mbs_data->lrod[4]);
+	mbs_equil->options->xe_ptr[2] = &(mbs_data->lrod[5]);
+	//mbs_equil->options->xe_ptr[3] = &(mbs_data->lrod[3]);
 
+
+
+	printf("\n\n Run equilibrium \n");
+	mbs_run_equil(mbs_equil, mbs_data);
+	mbs_print_equil(mbs_equil);
+	mbs_delete_equil(mbs_equil, mbs_data);
+	printf("q  : "); print_dvec_0(mbs_data->q, mbs_data->njoint);
+	printf("qd : "); print_dvec_0(mbs_data->qd, mbs_data->njoint);
+	printf("qdd: "); print_dvec_0(mbs_data->qdd, mbs_data->njoint);
+	printf("Qq : "); print_dvec_0(mbs_data->Qq, mbs_data->njoint);
+#endif
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	/*					ANGLES	             *
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -251,15 +295,15 @@ int main(int argc, char const *argv[])
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	/*					 MODAL ANALYSIS                      *
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-	//mbs_data->process = 4; // modal !
+	mbs_data->process = 4; // modal !
 
-	//printf("\n\n Run modal Analysis for V  = %f \n", V);
-	//ModalAnalysis(mbs_data, V, "Analyse_modale\My_Modal_Analysis.txt", front_radius, rear_radius);
-	//printf("q  : "); print_dvec_0(mbs_data->q, mbs_data->njoint);
-	//printf("qd : "); print_dvec_0(mbs_data->qd, mbs_data->njoint);
-	//printf("qdd: "); print_dvec_0(mbs_data->qdd, mbs_data->njoint);
-	//printf("Qq : "); print_dvec_0(mbs_data->Qq, mbs_data->njoint);
-	//system("pause");
+	printf("\n\n Run modal Analysis for V  = %f \n", V);
+	ModalAnalysis(mbs_data, V, "Analyse_modale\My_Modal_Analysis.txt", front_radius, rear_radius);
+	printf("q  : "); print_dvec_0(mbs_data->q, mbs_data->njoint);
+	printf("qd : "); print_dvec_0(mbs_data->qd, mbs_data->njoint);
+	printf("qdd: "); print_dvec_0(mbs_data->qdd, mbs_data->njoint);
+	printf("Qq : "); print_dvec_0(mbs_data->Qq, mbs_data->njoint);
+	system("pause");
 
 
 
@@ -383,17 +427,17 @@ int main(int argc, char const *argv[])
 	printf("\n\n Ready for LOOPS on Modal Analysis for V \n");
 	system("pause");
 	Toprint = 0;
-	while (speed<max_V)
+	mbs_data->speed_ref = speed_init;
+	while (mbs_data->speed_ref<max_V)
 	{
-		mbs_data->speed_ref = speed;
-		QuasiEquilibrium(mbs_data, speed, front_radius, rear_radius, Toprint,steer);
-		sprintf(filename_modal, "%s/V%9.2f.txt", path_modal, speed);
+		QuasiEquilibrium(mbs_data, mbs_data->speed_ref, front_radius, rear_radius, Toprint,steer);
+		sprintf(filename_modal, "%s/V%9.2f.txt", path_modal, mbs_data->speed_ref);
 		 mbs_data->process = 4; // modal
-		ModalAnalysis(mbs_data, speed, filename_modal, front_radius, rear_radius); // Analyse Modale  
-		//printf("filename = %s \n", filename_modal);
-		speed = speed + steps;
+		ModalAnalysis(mbs_data, mbs_data->speed_ref, filename_modal, front_radius, rear_radius); // Analyse Modale  
+		printf("filename = %s \n", filename_modal);
+		mbs_data->speed_ref = mbs_data->speed_ref + steps;
 	}
-
+	mbs_data->speed_ref = V;
 	printf("qdd: "); print_dvec_0(mbs_data->qdd, mbs_data->njoint);
 	system("pause");
 

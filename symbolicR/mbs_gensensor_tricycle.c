@@ -11,7 +11,7 @@
 //	1348 Louvain-la-Neuve 
 //	http://www.robotran.be// 
 //
-//	==> Generation Date : Fri Nov  4 17:22:09 2016
+//	==> Generation Date : Tue Nov  8 17:14:02 2016
 //
 //	==> Project name : tricycle
 //	==> using XML input file 
@@ -21,8 +21,8 @@
 //	==> Function : F 6 : Sensors Kinematical Informations (sens) 
 //	==> Flops complexity : 8037
 //
-//	==> Generation Time :  0.130 seconds
-//	==> Post-Processing :  0.160 seconds
+//	==> Generation Time :  0.120 seconds
+//	==> Post-Processing :  0.170 seconds
 //
 //-------------------------------------------------------------
 //
