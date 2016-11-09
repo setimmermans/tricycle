@@ -16,16 +16,16 @@
 double my_controleur(MbsData *mbs_data, double tsim, double speed, double steering)
 {
 	double My_torque, delta_err, tilt_ref, max_torque, speed_tilt_ref, delta_speed;
-	mbs_data->Kp = 1000.0;
-	mbs_data->Ki = 1;
-	mbs_data->Kd = 100;
+	mbs_data->Kp = 100.0;//1000
+	mbs_data->Ki = 1;//1
+	mbs_data->Kd = 100;//100
 	max_torque = 100.0;
 
 	tilt_ref = tilt_reference(mbs_data, tsim, speed, steering);
 	speed_tilt_ref = 0.0;
 	delta_err = tilt_ref - mbs_data->q[R1_body_id];
 	delta_speed = speed_tilt_ref - mbs_data->qd[R1_body_id];
-	My_torque = -mbs_data->Kp * delta_err + mbs_data->Ki * mbs_data->ErrorTot - mbs_data->Kd *  delta_speed;
+	My_torque = -mbs_data->Kp * delta_err+ mbs_data->Ki * mbs_data->ErrorTot - mbs_data->Kd *  delta_speed;
 	if (abs(mbs_data->q[R1_body_id]) > 0.0001)
 	{
 		printf("Delta err %f et  My_torque = %f et ErrorTot = %f et tilt ref = %f\n", delta_err, My_torque, mbs_data->ErrorTot, tilt_ref);
@@ -123,9 +123,9 @@ double tilt_reference(MbsData *mbs_data, double tsim, double speed, double steer
 double my_controleur_stc(MbsData *mbs_data, double tsim, double speed, double steering) //STC
 {
 	double My_torque_tilt, delta_err, tilt_ref, max_torque, speed_tilt_ref, delta_speed, My_torque_steer, My_torque;
-	mbs_data->Kp = 5;//200 normal
-	mbs_data->Ki = 100;//100 normal
-	mbs_data->Kd = 10;//100 normal
+	mbs_data->Kp = 1;//200 normal //5 avant chgmt
+	mbs_data->Ki = 100;//100 normal // 100avant chgmt
+	mbs_data->Kd = 10;//100 normal // 10 avant chgmt
 	max_torque = 2.0;
 
 	tilt_ref = tilt_reference(mbs_data, tsim, speed, steering);
@@ -162,4 +162,15 @@ double my_controleur_stc(MbsData *mbs_data, double tsim, double speed, double st
 		return My_torque;
 	}
 
+}
+
+
+void Print_q_qd_qdd_Qq(MbsData *mbs_data)
+{
+
+
+	printf("q  : "); print_dvec_0(mbs_data->q, mbs_data->njoint);
+	printf("qd : "); print_dvec_0(mbs_data->qd, mbs_data->njoint);
+	printf("qdd: "); print_dvec_0(mbs_data->qdd, mbs_data->njoint);
+	printf("Qq : "); print_dvec_0(mbs_data->Qq, mbs_data->njoint);
 }

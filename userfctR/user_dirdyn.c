@@ -18,6 +18,7 @@
 #include "set_output.h"
 #include "user_all_id.h"
 #include "mbs_project_interface.h"
+#include "user_IO.h"
 
 /*! \brief user own initialization functions
  *
@@ -57,6 +58,12 @@ void user_dirdyn_loop(MbsData *mbs_data, MbsDirdyn *mbs_dd)
 	set_output(PtrSensor->P[1], "Sensor_pilot_PositionX");
 	set_output(PtrSensor->P[2], "Sensor_pilot_PositionY");
 	set_output(PtrSensor->P[3], "Sensor_pilot_PositionZ");
+
+
+	// ForcesNormales
+	set_output(mbs_data->user_IO->Fn_lft, "Fn_lft");
+	set_output(mbs_data->user_IO->Fn_rgt, "Fn_rgt");
+
 }
 
 /*! \brief user own finishing functions

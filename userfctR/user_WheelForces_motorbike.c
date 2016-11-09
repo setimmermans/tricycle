@@ -67,14 +67,16 @@ void user_WheelForces_motorbike(double pen, double rz, double anglis, double ang
 	{
 		Fwhl[3] = K * pen; 
 	}
-	//else if  (mbs_data->process == 12) // equil quasistatic
+	//else if(mbs_data->process == 12) // equil quasistatic
 	//{
+	//	//printf("F1 : bakker  %f \n", pen); 
 	//	Fwhl[3] = K * pen;
 	//	TIRE_param=init_TIRE_param_strct_120_70();
 	//	res_1 = mbs_motorbike_contact(Fwhl,Mwhl,anglis,angcamb,gliss,TIRE_param);
 	//}
 	else // supposed dirdyn 
 	{
+		
 		if (pen > 0.0)
 		{
 			Fwhl[3] = K*pen;

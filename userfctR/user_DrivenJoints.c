@@ -18,10 +18,10 @@
 
 void user_DrivenJoints(MbsData *mbs_data, double tsim)
 {
-	double t_pertub;
+	double t_pertub,t_f,t_c, a_c;
 	if (mbs_data->process == 3) //Dirdyn
 	{
-		//printf("Dirdyn \n");
+//		printf("Dirdyn \n");
 
 
 		if (mbs_data->EntreEnCourbe == 1) // Entre en courbe
@@ -67,13 +67,42 @@ void user_DrivenJoints(MbsData *mbs_data, double tsim)
 
 			if (mbs_data->user_IO->modeTC == 2) //DTC 
 			{
-				if (Z_cross >= 0)
+			/*	if (Z_cross >= 0)
 				{
-					mbs_data->q[R3_steering_fork_id] = max(-0.05, -K*errorTot);
+					mbs_data->q[R3_steering_fork_id] =max(-0.05, -K*errorTot);
 				}
 				else
 				{
-					mbs_data->q[R3_steering_fork_id] = min(0.05, K*errorTot);
+					mbs_data->q[R3_steering_fork_id] =   min(0.05, K*errorTot);
+				}*/
+				t_f = 1.0;
+				t_c = 0.25;
+				a_c = (-4 * mbs_data->user_IO->steer) / (((0.5*t_f - t_c) * 2)*((0.5*t_f - t_c) * 2) - t_f*t_f);
+				//printf("my ac = %f \n", a_c);
+				if (tsim < t_start)
+				{
+					mbs_data->q[R3_steering_fork_id] = 0.0;
+				}
+				else
+				{
+					mbs_data->EstEnCourbe = 1;
+					if (tsim <= t_start+t_c)
+					{
+						mbs_data->q[R3_steering_fork_id] = 0.5*a_c* (tsim - t_start)*(tsim - t_start);
+					}
+					else if (tsim > (t_start + t_c ) && tsim <= t_start + (t_f-t_c ) )
+					{
+						mbs_data->q[R3_steering_fork_id] = a_c * t_c * (tsim - t_start - 0.5*t_c);
+					}
+					else if (tsim < (t_start + t_f) && tsim >= t_start + (t_f - t_c))
+					{
+						mbs_data->q[R3_steering_fork_id] = mbs_data->user_IO->steer -0.5 *	a_c *((tsim - t_start) - t_f) *((tsim - t_start) - t_f);
+					}
+					else
+					{
+						mbs_data->q[R3_steering_fork_id] = mbs_data->q[R3_steering_fork_id];	
+					}
+					
 				}
 			}
 			else if (mbs_data->user_IO->modeTC == 1)  //STC 

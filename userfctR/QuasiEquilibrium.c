@@ -33,7 +33,7 @@ extern "C" {
 void QuasiEquilibrium(MbsData *mbs_data, double V, double front_radius, double rear_radius, int Toprint, double steer)
 {
 	MbsEquil *mbs_equil = mbs_new_equil(mbs_data);
-	mbs_data->process = 5; // equil quasi ? !
+	mbs_data->process = 12;// equil quasi ? !
 
 	if(mbs_data->tourne == 1)
 	{
@@ -78,10 +78,7 @@ void QuasiEquilibrium(MbsData *mbs_data, double V, double front_radius, double r
 		mbs_run_equil(mbs_equil, mbs_data);
 		if (Toprint == 1)
 		{
-			printf("q  : "); print_dvec_0(mbs_data->q, mbs_data->njoint);
-			printf("qd : "); print_dvec_0(mbs_data->qd, mbs_data->njoint);
-			printf("qdd: "); print_dvec_0(mbs_data->qdd, mbs_data->njoint);
-			printf("Qq : "); print_dvec_0(mbs_data->Qq, mbs_data->njoint);
+			Print_q_qd_qdd_Qq(mbs_data); // Print current value of joints
 			printf("Tilt_ref = %f \n", mbs_data->q[R1_body_id]);
 			mbs_print_equil(mbs_equil);
 		}

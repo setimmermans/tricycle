@@ -33,13 +33,16 @@ void user_realtime_plot(MbsData* mbs_data)
 {
 	double V;
 
-	V = sqrt(  mbs_data->qd[T1_body_id]* mbs_data->qd[T1_body_id] + mbs_data->qd[T2_body_id]* mbs_data->qd[T2_body_id]);
+	//V = sqrt(  mbs_data->qd[T1_body_id]* mbs_data->qd[T1_body_id] + mbs_data->qd[T2_body_id]* mbs_data->qd[T2_body_id]);
 
-	set_plot(V, "V");
+//	set_plot(V, "V");
 
 	set_plot(mbs_data->q[R1_body_id], "R1 body");
 
 	set_plot(mbs_data->q[R3_steering_fork_id], "Steering Fork");
+
+	set_plot(mbs_data->Qq[R1_pendulum_id], "Couple Pendule");
+	set_plot(mbs_data->Qq[R3_steering_fork_id], "Couple steering Fork");
 	
 }
 

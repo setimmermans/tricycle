@@ -57,13 +57,13 @@ void user_WheelForces(double rz, double anglis, double angcamb,
 	if(rnom > rz)
 	{
 	// modèle ressort
-		//Fwhl[3] = K * (rnom - rz)*cos(angcamb);
+	//	Fwhl[3] = K * (rnom - rz)*cos(angcamb);
 	// modèle Calspan
 	//mbs_calspan(Fwhl,Mwhl, anglis,angcamb);
 	// modèle Bakker
 		//mbs_bakker(Fwhl,Mwhl,anglis,angcamb,gliss);
-//		Fwhl_bis[3] = Fwhl[3];
-//		res_1 = mbs_motorbike_contact(Fwhl_bis,Mwhl_bis,anglis,angcamb,gliss);
+		//Fwhl_bis[3] = Fwhl[3];
+		//res_1 = mbs_motorbike_contact(Fwhl_bis,Mwhl_bis,anglis,angcamb,gliss);
 	}
 	}
 
