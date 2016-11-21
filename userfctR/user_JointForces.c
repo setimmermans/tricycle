@@ -42,7 +42,7 @@ double* user_JointForces(MbsData *mbs_data, double tsim)
 	}
 	else
 	{
-		//printf("no joint force \n");
+	//	printf("no joint force \n");
 		// no torque control 
 
 		//perturbation no control

@@ -10,16 +10,16 @@
 #include "Controleur.h"
 
 
-//#define Scaled	 
-#define Normal	 
+#define Scaled	 
+//#define Normal	 
 
 double my_controleur(MbsData *mbs_data, double tsim, double speed, double steering)
 {
 	double My_torque, delta_err, tilt_ref, max_torque, speed_tilt_ref, delta_speed;
 	mbs_data->Kp = 100.0;//1000
-	mbs_data->Ki = 1;//1
+	mbs_data->Ki = 10;//1
 	mbs_data->Kd = 100;//100
-	max_torque = 100.0;
+	max_torque = 10.0;
 
 	tilt_ref = tilt_reference(mbs_data, tsim, speed, steering);
 	speed_tilt_ref = 0.0;
@@ -30,8 +30,10 @@ double my_controleur(MbsData *mbs_data, double tsim, double speed, double steeri
 	{
 		printf("Delta err %f et  My_torque = %f et ErrorTot = %f et tilt ref = %f\n", delta_err, My_torque, mbs_data->ErrorTot, tilt_ref);
 	}
-	mbs_data->ErrorTot += delta_err * 0.001; // time step
-
+	if (abs(delta_err)>0.0001)
+	{
+		mbs_data->ErrorTot += delta_err * 0.001; // time step
+	}
 	if (abs(My_torque) > max_torque)
 	{
 		return max_torque*sign(My_torque);
@@ -98,6 +100,11 @@ double tilt_reference(MbsData *mbs_data, double tsim, double speed, double steer
 	//	printf("Impossible d'ouvrir le fichier CurveEquilibrium.txt \n");
 
 	//}
+	double t_f, t_c, a_c, my_tilt_control,t_start;
+	
+
+
+	
 	if (mbs_data->tourne == 0  && mbs_data->EntreEnCourbe !=1) //ligne droite 
 	{
 		the_tilt = 0.0;
@@ -106,15 +113,56 @@ double tilt_reference(MbsData *mbs_data, double tsim, double speed, double steer
 	{	if(mbs_data->EstEnCourbe == 1) 
 		{ 
 			the_tilt = atan(speed*speed / (mbs_data->Rayon*9.81));
-		//	printf("the tilt =%f \n ", the_tilt);
+			//printf("the tilt =%f \n ", the_tilt);
 		}
 		else // ligne droite avant et après pertubation?
 		{
 			the_tilt = 0.0;
 		}
 	}
-	return the_tilt;
 
+	t_f = mbs_data->speed_ref;
+	t_c = mbs_data->speed_ref / 2;
+	a_c = (-4 * the_tilt) / (((0.5*t_f - t_c) * 2)*((0.5*t_f - t_c) * 2) - t_f*t_f);
+	t_start = mbs_data->t_start; //Temps d'initiation du tournant
+
+	if (tsim < t_start)
+	{
+		my_tilt_control = 0.0;
+	}
+	else
+	{
+		mbs_data->EstEnCourbe = 1;
+		if (tsim <= t_start + t_c)
+		{
+			my_tilt_control = 0.5*a_c* (tsim - t_start)*(tsim - t_start);
+		}
+		else if (tsim > (t_start + t_c) && tsim <= t_start + (t_f - t_c))
+		{
+			my_tilt_control = a_c * t_c * (tsim - t_start - 0.5*t_c);
+		}
+		else if (tsim < (t_start + t_f) && tsim >= t_start + (t_f - t_c))
+		{
+			my_tilt_control = the_tilt - 0.5 *	a_c *((tsim - t_start) - t_f) *((tsim - t_start) - t_f);
+		}
+		else
+		{
+			my_tilt_control = the_tilt;
+			//printf("the tilt control= %f \n", my_tilt_control);
+		}
+
+	}
+
+	if (mbs_data->user_IO->modeTC == 1)
+	{
+		//printf("the tilt control =%f \n ", my_tilt_control);
+		return my_tilt_control;
+	
+	}
+	else
+	{
+		return the_tilt;
+	}
 
 
 }
@@ -123,7 +171,7 @@ double tilt_reference(MbsData *mbs_data, double tsim, double speed, double steer
 double my_controleur_stc(MbsData *mbs_data, double tsim, double speed, double steering) //STC
 {
 	double My_torque_tilt, delta_err, tilt_ref, max_torque, speed_tilt_ref, delta_speed, My_torque_steer, My_torque;
-	mbs_data->Kp = 1;//200 normal //5 avant chgmt
+	mbs_data->Kp = 10;//200 normal //5 avant chgmt
 	mbs_data->Ki = 100;//100 normal // 100avant chgmt
 	mbs_data->Kd = 10;//100 normal // 10 avant chgmt
 	max_torque = 2.0;

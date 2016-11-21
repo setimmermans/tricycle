@@ -9,7 +9,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-#include<windows.h>
+
 #include "mbs_part.h"
 #include "mbs_load_xml.h"
 #include "mbs_equil.h"
@@ -26,8 +26,7 @@ extern "C" {
 #include "mbs_project_interface.h"
 #include "mbs_linearipk.h"
 #include<stdio.h>
-#include<conio.h>
-#include<process.h>
+//#include<process.h>
 
 
 void ModalAnalysis(MbsData *mbs_data, double V, char *filename_modal, double front_radius, double rear_radius)

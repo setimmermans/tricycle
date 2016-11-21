@@ -32,7 +32,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-#include<windows.h>
+//#include<windows.h>
 #include "mbs_part.h"
 #include "mbs_load_xml.h"
 #include "mbs_equil.h"
@@ -49,10 +49,10 @@ extern "C" {
 #include "mbs_project_interface.h"
 #include "mbs_linearipk.h"
 #include<stdio.h>
-#include<conio.h>
 #include "mbs_sensor.h"
-#include<process.h>
+//#include<process.h>
 #include "coordRobotran.h"
+#include "MyPause.c"
 
 
 #define Scaled	 
@@ -71,9 +71,11 @@ extern "C" {
 //#define LoopQuasi
 
 #define EntreCourbe
+//#define DoubleBand
 #define Dirdyn	
 
 //#define Printcoord
+
 
 	
 
@@ -83,7 +85,7 @@ int main(int argc, char const *argv[])
 	MbsData *mbs_data;
 	MbsPart *mbs_part;
 	MbsDirdyn *mbs_dirdyn;
-	double simu_t;
+	double simu_t,t_start;
 	double V, Rmin, steer, front_radius, rear_radius, Rayon;
 	double max_V;
 	int Toprint;
@@ -106,9 +108,12 @@ int main(int argc, char const *argv[])
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	/*                    PARAMETERS                              *
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-	simu_t = 10;
-	V = 2; // en m/s
-	Rayon = 15; 
+	simu_t =100; //time total simu
+	t_start = 2; // tournant
+	V = 4; // vitesse de simu et d'eq quasi statique en m/s
+	Rayon = -15; //STC
+	steer =  -(V*t_start) / (Rayon * 8); //DTC
+	
 
 	// boucle en vitesse
 	max_V = 6; 
@@ -123,7 +128,7 @@ int main(int argc, char const *argv[])
 	scaling_factor = 1.0;
 	manual_scaling = 0.4;
 
-	steer = 0.1;
+
 
 	//boucle Rayon et vitesse
 	R_loop_max = 100; // 200 deja trop selon quentin rmin 15 pour  10m/s
@@ -152,6 +157,7 @@ int main(int argc, char const *argv[])
 	filename_modal = (char *)malloc(1 + strlen(path_modal) + strlen("/") + 30);
 	filename_K = (char *)malloc(1 + strlen(path_K) + strlen("/") + 30 + strlen("/") + 30 );
 	printf("*.mbs file loaded!\n");
+	printf("steer =>%f \n", steer);
 	uIO = mbs_data->user_IO;
 	mbs_data->K_factor = K_factor_init;
 	mbs_data->scaling_factor = scaling_factor;
@@ -163,17 +169,21 @@ int main(int argc, char const *argv[])
 	mbs_data->Rayon = Rayon; 
 	mbs_data->EntreEnCourbe = 0;
 	mbs_data->EstEnCourbe = 0;
-
+	mbs_data->DoubleBande = 0;
+	mbs_data->t_start = t_start;
 	
+	//printf("\n\n nJoints =%d \n", mbs_data->njoint);
 
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	/*              SCALING					                      *
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	//
 	//printf("\n\n Ready to scale the system \n");
-	//system("pause");
+	//mypause();
 	//Scale_data(mbs_data, scaling_factor);
-	//system("pause");
+	//mypause();
+
+
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	/*              COORDINATE PARTITIONING                      *
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -186,11 +196,11 @@ int main(int argc, char const *argv[])
 
 	//mbs_print_data(mbs_data);
 	printf("\n\n Coordinate partionning done \n");
-	system("pause");
+	mypause();
 
-	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	/*					 STATIC EQUILIBRIUM	                     *
-	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	///* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	///*					 STATIC EQUILIBRIUM	                     *
+	///* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	Print_q_qd_qdd_Qq(mbs_data); // Print current value of joints
 
 
@@ -208,7 +218,7 @@ int main(int argc, char const *argv[])
 	mbs_run_equil(mbs_equil, mbs_data);
 	mbs_print_equil(mbs_equil);
 	mbs_delete_equil(mbs_equil, mbs_data);
-	system("pause");
+	mypause();
 
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	/*					 STATIC EQUILIBRIUM	     AVEC CHGMT VARIABLES                *
@@ -238,18 +248,18 @@ int main(int argc, char const *argv[])
 	//mbs_equil->options->xch_ptr[1]=&(mbs_data->user_model->shock_rr.Z_0);
 	//mbs_equil->options->xch_ptr[2]=&(mbs_data->user_model->shock_ft.Z_0);
 	// 2. Added variables and equations !
-	mbs_equil->options->nxe = 5;
+	mbs_equil->options->nxe = 3;
 	mbs_equil_addition(mbs_equil->options);
-	mbs_equil->options->xe_ptr[1] = &(mbs_data->lrod[1]);
-	mbs_equil->options->xe_ptr[2] = &(mbs_data->lrod[2]);
-	mbs_equil->options->xe_ptr[3] = &(mbs_data->lrod[4]);
-	mbs_equil->options->xe_ptr[4] = &(mbs_data->lrod[5]);
-	mbs_equil->options->xe_ptr[5] = &(mbs_data->lrod[3]); 
+	// ok to find 5 rods
+	//mbs_equil->options->xe_ptr[1] = &(mbs_data->lrod[1]);
+	//mbs_equil->options->xe_ptr[2] = &(mbs_data->lrod[2]);
+	//mbs_equil->options->xe_ptr[3] = &(mbs_data->lrod[4]);
+	//mbs_equil->options->xe_ptr[4] = &(mbs_data->lrod[5]);
+	//mbs_equil->options->xe_ptr[5] = &(mbs_data->lrod[3]); 
 	//
-
-	//mbs_equil->options->xe_ptr[1] = &(mbs_data->lrod[4]);
-	//mbs_equil->options->xe_ptr[2] = &(mbs_data->lrod[5]);
-	//mbs_equil->options->xe_ptr[3] = &(mbs_data->lrod[3]); // OK pour trouver R1=R=02 rt T3 = 8cm
+	mbs_equil->options->xe_ptr[1] = &(mbs_data->lrod[4]);
+	mbs_equil->options->xe_ptr[2] = &(mbs_data->lrod[5]);
+	mbs_equil->options->xe_ptr[3] = &(mbs_data->lrod[3]); // OK pour trouver R1=R=02 rt T3 = 8cm
 	//
 
 	printf("\n\n \t Run equilibrium AVEC CHGMENT DE VARIABLE \n");
@@ -261,11 +271,12 @@ int main(int argc, char const *argv[])
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	/*					ANGLES	             *
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-
+	mypause();
 	printf("\n\n Angles Calculus \n");
 	Angles(mbs_data);
-	
-	system("pause");
+
+	printf("my_force = %f \n", mbs_data->Qq[R1_pendulum_id]);
+	mypause();
 
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	/*					 QUASI STATIC EQUILIBRIUM	STRAIGTH             *
@@ -274,12 +285,14 @@ int main(int argc, char const *argv[])
 	Toprint = 1;
 	printf("\n\n Run Quasistatic Equilibrium STRAIGTH \n");
 	Print_q_qd_qdd_Qq(mbs_data); // Print current value of joints
+	mypause();
 	mbs_data->tourne = 0;
 	QuasiEquilibrium(mbs_data, V, front_radius, rear_radius, Toprint, steer);
 	Print_q_qd_qdd_Qq(mbs_data); // Print current value of joints
-	system("pause");
+	mypause();
 
 	// saved the quasi static equilibrium
+
 	q_saved_dir = get_dvec_0(mbs_data->njoint + 1);
 	qd_saved_dir = get_dvec_0(mbs_data->njoint + 1);
 	Qq_saved_dir = get_dvec_0(mbs_data->njoint + 1);
@@ -297,7 +310,7 @@ int main(int argc, char const *argv[])
 	printf("\n\n Run modal Analysis for V  = %f \n", V);
 	ModalAnalysis(mbs_data, V, "Analyse_modale\My_Modal_Analysis.txt", front_radius, rear_radius);
 	Print_q_qd_qdd_Qq(mbs_data); // Print current value of joints
-	system("pause");
+	mypause();
 
 #endif 
 
@@ -313,7 +326,7 @@ int main(int argc, char const *argv[])
 	QuasiEquilibrium(mbs_data, V, front_radius, rear_radius, Toprint,steer);
 	Print_q_qd_qdd_Qq(mbs_data); // Print current value of joints
 	mbs_data->EstEnCourbe = 0;
-	system("pause");
+	mypause();
 
 #endif
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -328,7 +341,7 @@ int main(int argc, char const *argv[])
 	mbs_data->Rayon = R_loop_max;
 
 	Print_q_qd_qdd_Qq(mbs_data); // Print current value of joints
-	system("pause");
+	mypause();
 
 
 	writing_file_R_loop = fopen("CurveEquilibrium.txt", "w+");
@@ -368,7 +381,7 @@ int main(int argc, char const *argv[])
 		printf("Impossible d'ecrire dans le fichier CurveEquilibrium.txt \n");
 	}
 	printf("qdd: "); print_dvec_0(mbs_data->qdd, mbs_data->njoint);
-	system("pause");
+	mypause();
 	mbs_data->Rayon = R_loop_init;
 	mbs_data->speed_ref = V;
 	mbs_data->EstEnCourbe = 0;
@@ -384,7 +397,7 @@ int main(int argc, char const *argv[])
 		//printf("\n\n Ready for LOOPS on Modal Analysis for V and K \n");
 
 		//mbs_data->K_factor = K_factor_init;
-		//system("pause");
+		//mypause();
 		//Toprint = 0;
 		//while (mbs_data->K_factor < K_factor_max)
 		//{
@@ -405,7 +418,7 @@ int main(int argc, char const *argv[])
 		//	speed = 0.1;
 		//}
 		//printf("qdd: "); print_dvec_0(mbs_data->qdd, mbs_data->njoint);
-		//system("pause");
+		//mypause();
 
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	/*					LOOPS MODAL ANALYSIS ON V		          *
@@ -413,7 +426,7 @@ int main(int argc, char const *argv[])
 #ifdef LoopModal
 
 	printf("\n\n Ready for LOOPS on Modal Analysis for V \n");
-	system("pause");
+	mypause();
 	Toprint = 0;
 	mbs_data->speed_ref = speed_init;
 	while (mbs_data->speed_ref<max_V)
@@ -427,7 +440,7 @@ int main(int argc, char const *argv[])
 	}
 	mbs_data->speed_ref = V;
 	printf("qdd: "); print_dvec_0(mbs_data->qdd, mbs_data->njoint);
-	system("pause");
+	mypause();
 
 #endif
 		
@@ -460,11 +473,13 @@ int main(int argc, char const *argv[])
 #ifdef EntreCourbe
 	mbs_data->EntreEnCourbe = 1;
 #endif
-	
+#ifdef DoubleBand
+	mbs_data->DoubleBande = 1;
+#endif
 
 	//mbs_data->q[T3_body_id] = 0.2; // impose une hauteur
 	Print_q_qd_qdd_Qq(mbs_data); // Print current value of joints
-	system("pause");
+	mypause();
 
 	mbs_dirdyn = mbs_new_dirdyn(mbs_data);
 
@@ -474,7 +489,7 @@ int main(int argc, char const *argv[])
 	mbs_dirdyn->options->save2file = 1;	
 	mbs_dirdyn->options->animpath = PROJECT_SOURCE_DIR"/../animationR";
 	
-	mbs_dirdyn->options->realtime = 1;
+	mbs_dirdyn->options->realtime = 0;
 	mbs_dirdyn->options->saveperiod = 10;
 
 

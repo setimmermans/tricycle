@@ -31,7 +31,7 @@
  */
 void user_realtime_plot(MbsData* mbs_data)
 {
-	double V;
+	//double V;
 
 	//V = sqrt(  mbs_data->qd[T1_body_id]* mbs_data->qd[T1_body_id] + mbs_data->qd[T2_body_id]* mbs_data->qd[T2_body_id]);
 

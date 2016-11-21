@@ -8,7 +8,7 @@
  *
  * Universite catholique de Louvain, Belgium 
  *
- * Last update : Fri Oct 21 09:52:03 2016
+ * Last update : Thu Nov 17 09:27:23 2016
  * --------------------------------------------------------
  *
  */
@@ -38,53 +38,11 @@ struct UserModel
         double r_t_tire;
     } wheel_rr;
  
-    struct shock_ft{
-        double K;
-        double D;
-        double Z_0;
-        double Z_min;
-        double Z_max;
-        double K_stop;
-    } shock_ft;
- 
-    struct shock_rr{
-        double K;
-        double D;
-        double Z_0;
-        double Z_min;
-        double Z_max;
-        double K_stop;
-    } shock_rr;
- 
     struct tilting_ctrl{
         double K;
         double Ki;
         double Kd;
     } tilting_ctrl;
- 
-    struct steering_box{
-        double K;
-    } steering_box;
- 
-    struct BGC{
-        double carrier_ft_lt_to_sterring_rod_ft_lt_width;
-    } BGC;
- 
-    struct pincage{
-        double* pin;
-    } pincage;
- 
-    struct lqi{
-        int* e;
-        // index of the corresponding values in MBSdataStruct->ux/uxd/ux0
-    } lqi;
- 
-    struct energy{
-        int* energyE;
-        // index of the corresponding values in MBSdataStruct->ux/uxd/ux0
-        int* energyM;
-        // index of the corresponding values in MBSdataStruct->ux/uxd/ux0
-    } energy;
  
 };
 

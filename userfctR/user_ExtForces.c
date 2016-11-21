@@ -17,9 +17,9 @@
 #include "mbs_project_interface.h"
 #include "user_model.h"
 #include "user_all_id.h"
-#include "Tyre\mbs_motorbike_contact.h"
+#include "mbs_motorbike_contact.h"
 #include "mbs_matrix.h"
-#include "Tyre\wheel.h"
+#include "wheel.h"
 #include "user_IO.h"
 
 
@@ -46,7 +46,7 @@ double* user_ExtForces(double PxF[4], double RxF[4][4],
 
 	if(ixF==F_wheel_ft_lt_id || F_wheel_ft_rt_id==ixF)
 	{
-		r_tire = mbs_data->user_model->wheel_ft.r_t_tire; // adapter !!!!!!!!!!!!!!!!!!!! 
+		r_tire = mbs_data->user_model->wheel_ft.r_t_tire; // adapter !!!!!!!!!!!!!!!!!!!! =>ok
 		r_rim = mbs_data->user_model->wheel_ft.r_n_tire-mbs_data->user_model->wheel_ft.r_t_tire;
 	}
 	else if(ixF==F_wheel_rr_id)

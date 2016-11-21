@@ -1,7 +1,7 @@
 /*! 
  * \author Tims seb
- * \file Equil_eq.h
- * \brief header of Equil_eq.c
+ * \file my_DrivenJoints.h
+ * \brief header of my_DrivenJoints.c
  */
 
 #include "set_output.h"
@@ -22,10 +22,11 @@
 #include "mbs_load_xml.h"
 #include "cmake_config.h"
 
-#ifndef _EQUIL_EQ_H_
-#define _EQUIL_EQ_H_
+#ifndef _MY_DRIVENJOINTS_H_
+#define _MY_DRIVENJOINTS_H_
 
 
-void my_user_equil_fxe(MbsData *mbs_data, double* f);	
+void my_DrivenJoints_EnCourbe(MbsData *mbs_data, double tsim);	
+void my_DrivenJoints_LigneDroite(MbsData *mbs_data, double tsim);	
 
 #endif
