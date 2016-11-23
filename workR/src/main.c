@@ -27,12 +27,13 @@
 	+ modal analysis
 */
 
+
 #include <stdio.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-//#include<windows.h>
+
 #include "mbs_part.h"
 #include "mbs_load_xml.h"
 #include "mbs_equil.h"
@@ -50,16 +51,19 @@ extern "C" {
 #include "mbs_linearipk.h"
 #include<stdio.h>
 #include "mbs_sensor.h"
-//#include<process.h>
+#include "Controleur.h"
 #include "coordRobotran.h"
 #include "MyPause.c"
-
+#include "Angles_calculus.h"
+#include "ModalAnalysis.h"
+#include "QuasiEquilibrium.h"
+#include "useful_functions.h"
 
 #define Scaled	 
 //#define Normal	 
 	
-//#define DTC
-#define STC
+#define DTC
+//#define STC
 
 //#define ChgmntVariables
 
@@ -86,15 +90,15 @@ int main(int argc, char const *argv[])
 	MbsPart *mbs_part;
 	MbsDirdyn *mbs_dirdyn;
 	double simu_t,t_start;
-	double V, Rmin, steer, front_radius, rear_radius, Rayon;
+	double V,  steer, front_radius, rear_radius, Rayon;
 	double max_V;
 	int Toprint;
 	UserIO *uIO;
 	MbsEquil *mbs_equil;
-	MbsModal *mbs_modal;
+	//MbsModal *mbs_modal;
 	FILE* writing_file_R_loop = NULL;
 
-	char *filename;
+	//char *filename;
 	char *path_modal, *path_K;
 	char *filename_modal, *filename_K;
 	double K_factor_init, K_factor_max;
@@ -102,13 +106,13 @@ int main(int argc, char const *argv[])
 	double R_loop_max, R_loop_init,  R_increment;
 
 	// for curve quasistatic !
-	double *q_saved, *qd_saved, *Qq_saved;
+	//double *q_saved, *qd_saved;
 	double *q_saved_dir, *qd_saved_dir, *Qq_saved_dir;
 
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	/*                    PARAMETERS                              *
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-	simu_t =100; //time total simu
+	simu_t =10; //time total simu
 	t_start = 2; // tournant
 	V = 4; // vitesse de simu et d'eq quasi statique en m/s
 	Rayon = -15; //STC
@@ -194,6 +198,7 @@ int main(int argc, char const *argv[])
 	mbs_run_part(mbs_part, mbs_data);
 	mbs_delete_part(mbs_part);
 
+	
 	//mbs_print_data(mbs_data);
 	printf("\n\n Coordinate partionning done \n");
 	mypause();
@@ -221,7 +226,7 @@ int main(int argc, char const *argv[])
 	mypause();
 
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	/*					 STATIC EQUILIBRIUM	     AVEC CHGMT VARIABLES                *
+	/*					 STATIC EQUILIBRIUM AVEC CHGMT VARIABLES                *
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 #ifdef ChgmntVariables
 
@@ -267,15 +272,16 @@ int main(int argc, char const *argv[])
 	mbs_print_equil(mbs_equil);
 	mbs_delete_equil(mbs_equil, mbs_data);
 	Print_q_qd_qdd_Qq(mbs_data); // Print current value of joints
+	mypause();
 #endif
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	/*					ANGLES	             *
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-	mypause();
+	
 	printf("\n\n Angles Calculus \n");
 	Angles(mbs_data);
 
-	printf("my_force = %f \n", mbs_data->Qq[R1_pendulum_id]);
+	//printf("my_force = %f \n", mbs_data->Qq[R1_pendulum_id]);
 	mypause();
 
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -489,7 +495,7 @@ int main(int argc, char const *argv[])
 	mbs_dirdyn->options->save2file = 1;	
 	mbs_dirdyn->options->animpath = PROJECT_SOURCE_DIR"/../animationR";
 	
-	mbs_dirdyn->options->realtime = 0;
+	mbs_dirdyn->options->realtime = 1;
 	mbs_dirdyn->options->saveperiod = 10;
 
 

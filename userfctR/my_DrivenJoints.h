@@ -21,6 +21,7 @@
 #include "mbs_set.h"
 #include "mbs_load_xml.h"
 #include "cmake_config.h"
+#include "user_IO.h"
 
 #ifndef _MY_DRIVENJOINTS_H_
 #define _MY_DRIVENJOINTS_H_
