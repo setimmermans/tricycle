@@ -29,6 +29,8 @@ void QuasiEquilibrium(MbsData *mbs_data, double V, double front_radius, double r
 		mbs_data->qd[R2_wheel_ft_rt_id] = (V / front_radius);
 		mbs_data->qd[R2_wheel_rr_id] = V / rear_radius; // very sensitive (need to take static eq value for nominal radii)
 
+		Print_q_qd_qdd_Qq(mbs_data); // Print current value of joints
+
 		// equil options (see documentations for additional options)
 		mbs_equil->options->senstol = 1e-7;
 		mbs_equil->options->verbose = Toprint;

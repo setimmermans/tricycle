@@ -62,7 +62,7 @@ extern "C" {
 #define Scaled	 
 //#define Normal	 
 	
-#define DTC
+//#define DTC
 //#define STC
 
 //#define ChgmntVariables
@@ -74,7 +74,7 @@ extern "C" {
 //#define LoopModal	
 //#define LoopQuasi
 
-#define EntreCourbe
+//#define EntreCourbe
 //#define DoubleBand
 #define Dirdyn	
 
@@ -114,8 +114,8 @@ int main(int argc, char const *argv[])
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	simu_t =10; //time total simu
 	t_start = 2; // tournant
-	V = 4; // vitesse de simu et d'eq quasi statique en m/s
-	Rayon = -15; //STC
+	V = 1; // vitesse de simu et d'eq quasi statique en m/s
+	Rayon = -100; //STC
 	steer =  -(V*t_start) / (Rayon * 8); //DTC
 	
 
@@ -332,6 +332,7 @@ int main(int argc, char const *argv[])
 	QuasiEquilibrium(mbs_data, V, front_radius, rear_radius, Toprint,steer);
 	Print_q_qd_qdd_Qq(mbs_data); // Print current value of joints
 	mbs_data->EstEnCourbe = 0;
+	printf("my couple steering =%f my couple rear = %f et my autre couple = %f \n", mbs_data->Qq[R3_steering_fork_id], mbs_data->Qq[R2_wheel_rr_id], mbs_data->Qq[R1_pendulum_id]);
 	mypause();
 
 #endif
@@ -458,9 +459,9 @@ int main(int argc, char const *argv[])
 	Toprint = 1;
 	// initialize dirdyn with straigth line equilibrium
 
-	copy_dvec_0(q_saved_dir, &(mbs_data->q[1]), mbs_data->njoint);
-	copy_dvec_0(qd_saved_dir, &(mbs_data->qd[1]), mbs_data->njoint);
-	copy_dvec_0(Qq_saved_dir, &(mbs_data->Qq[1]), mbs_data->njoint);
+	//copy_dvec_0(q_saved_dir, &(mbs_data->q[1]), mbs_data->njoint);
+	//copy_dvec_0(qd_saved_dir, &(mbs_data->qd[1]), mbs_data->njoint);
+	//copy_dvec_0(Qq_saved_dir, &(mbs_data->Qq[1]), mbs_data->njoint);
 	
 	printf("\n\n Ready for dirdyn \n");
 
@@ -495,7 +496,7 @@ int main(int argc, char const *argv[])
 	mbs_dirdyn->options->save2file = 1;	
 	mbs_dirdyn->options->animpath = PROJECT_SOURCE_DIR"/../animationR";
 	
-	mbs_dirdyn->options->realtime = 1;
+	mbs_dirdyn->options->realtime = 0;
 	mbs_dirdyn->options->saveperiod = 10;
 
 
