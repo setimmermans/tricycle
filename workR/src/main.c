@@ -62,7 +62,7 @@ extern "C" {
 #define Scaled	 
 //#define Normal	 
 	
-//#define DTC
+#define DTC
 //#define STC
 
 //#define ChgmntVariables
@@ -74,8 +74,8 @@ extern "C" {
 //#define LoopModal	
 //#define LoopQuasi
 
-//#define EntreCourbe
-//#define DoubleBand
+#define EntreCourbe
+#define DoubleBand
 #define Dirdyn	
 
 //#define Printcoord
@@ -112,10 +112,10 @@ int main(int argc, char const *argv[])
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	/*                    PARAMETERS                              *
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-	simu_t =10; //time total simu
+	simu_t =30; //time total simu
 	t_start = 2; // tournant
-	V = 1; // vitesse de simu et d'eq quasi statique en m/s
-	Rayon = -100; //STC
+	V = 2; // vitesse de simu et d'eq quasi statique en m/s
+	Rayon = 10; //STC
 	steer =  -(V*t_start) / (Rayon * 8); //DTC
 	
 
@@ -496,7 +496,7 @@ int main(int argc, char const *argv[])
 	mbs_dirdyn->options->save2file = 1;	
 	mbs_dirdyn->options->animpath = PROJECT_SOURCE_DIR"/../animationR";
 	
-	mbs_dirdyn->options->realtime = 0;
+	mbs_dirdyn->options->realtime = 1;
 	mbs_dirdyn->options->saveperiod = 10;
 
 

@@ -29,5 +29,7 @@
 
 void my_DrivenJoints_EnCourbe(MbsData *mbs_data, double tsim);	
 void my_DrivenJoints_LigneDroite(MbsData *mbs_data, double tsim);	
+double my_DrivenJoints_Steering_smooth_consigne(MbsData *mbs_data, double tsim, double t_f, double t_c, double a_c, double t_start, double q_i, double q_f);
+double my_DrivenJoints_double_bande(MbsData *mbs_data, double tsim, double t_start);
 
 #endif
