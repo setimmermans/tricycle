@@ -31,4 +31,5 @@ void user_DrivenJoints(MbsData *mbs_data, double tsim)
 			my_DrivenJoints_LigneDroite(mbs_data, tsim);
 		}
 	}
+
 }

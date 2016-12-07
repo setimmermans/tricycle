@@ -75,7 +75,7 @@ extern "C" {
 //#define LoopQuasi
 
 #define EntreCourbe
-#define DoubleBand
+//#define DoubleBand
 #define Dirdyn	
 
 //#define Printcoord
@@ -112,10 +112,10 @@ int main(int argc, char const *argv[])
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	/*                    PARAMETERS                              *
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-	simu_t =30; //time total simu
-	t_start = 2; // tournant
-	V = 2; // vitesse de simu et d'eq quasi statique en m/s
-	Rayon = 10; //STC
+	simu_t = 20; //time total simu
+	t_start = 1; // tournant
+	V = 4; // vitesse de simu et d'eq quasi statique en m/s
+	Rayon = 15; //STC
 	steer =  -(V*t_start) / (Rayon * 8); //DTC
 	
 
@@ -143,18 +143,18 @@ int main(int argc, char const *argv[])
 	rear_radius = 0.255193;
 
 #ifdef Scaled
-	front_radius =  0.104104;// 0.258591 *manual_scaling = 0.1036; //
-	rear_radius =  0.10359;// 0.255193 * manual_scaling; // very sensitive (need to take static eq value for nominal radii)
+	front_radius = 0.099531;// 0.104104;// 0.258591 *manual_scaling = 0.1036; //
+	rear_radius = 0.099030;// 0.10359;// 0.255193 * manual_scaling; // very sensitive (need to take static eq value for nominal radii)
 #endif
 
-	printf("Hello tricycle MBS!\n"); 
+	printf("Hello tricycle scaled MBS!\n"); 
 	//printf(" Nominal Radius = %f et %f \n \n", front_radius, rear_radius);
 
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	/*                     LOADING                               *
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-	printf("Loading the tricycle data file !\n"); 
+	printf("Loading the tricycle scaled data file !\n"); 
 	mbs_data = mbs_load(PROJECT_SOURCE_DIR"/../dataR/tricycle.mbs", BUILD_PATH); 
 	path_modal = PROJECT_SOURCE_DIR"/../resultsR/AnalyseModale";
 	path_K = PROJECT_SOURCE_DIR"/../resultsR/ResultsK";
@@ -175,7 +175,8 @@ int main(int argc, char const *argv[])
 	mbs_data->EstEnCourbe = 0;
 	mbs_data->DoubleBande = 0;
 	mbs_data->t_start = t_start;
-	
+	mbs_data->q_rr_ref = 0.0;
+	mbs_data->last_tilt_torque = 0.0;
 	//printf("\n\n nJoints =%d \n", mbs_data->njoint);
 
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -261,10 +262,11 @@ int main(int argc, char const *argv[])
 	//mbs_equil->options->xe_ptr[3] = &(mbs_data->lrod[4]);
 	//mbs_equil->options->xe_ptr[4] = &(mbs_data->lrod[5]);
 	//mbs_equil->options->xe_ptr[5] = &(mbs_data->lrod[3]); 
+
 	//
-	mbs_equil->options->xe_ptr[1] = &(mbs_data->lrod[4]);
+/*	mbs_equil->options->xe_ptr[1] = &(mbs_data->lrod[4]);
 	mbs_equil->options->xe_ptr[2] = &(mbs_data->lrod[5]);
-	mbs_equil->options->xe_ptr[3] = &(mbs_data->lrod[3]); // OK pour trouver R1=R=02 rt T3 = 8cm
+	mbs_equil->options->xe_ptr[3] = &(mbs_data->lrod[3]);*/ // OK pour trouver R1=R=02 rt T3 = 8cm
 	//
 
 	printf("\n\n \t Run equilibrium AVEC CHGMENT DE VARIABLE \n");
@@ -278,7 +280,7 @@ int main(int argc, char const *argv[])
 	/*					ANGLES	             *
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	
-	printf("\n\n Angles Calculus \n");
+	printf("\n\n Calcul des angles  \n");
 	Angles(mbs_data);
 
 	//printf("my_force = %f \n", mbs_data->Qq[R1_pendulum_id]);
@@ -297,8 +299,9 @@ int main(int argc, char const *argv[])
 	Print_q_qd_qdd_Qq(mbs_data); // Print current value of joints
 	mypause();
 
+	printf("my couple rear *1000 =%f \n", mbs_data->Qq[R2_wheel_rr_id] *1000);
 	// saved the quasi static equilibrium
-
+	mbs_data->q_rr_ref = mbs_data->Qq[R2_wheel_rr_id];
 	q_saved_dir = get_dvec_0(mbs_data->njoint + 1);
 	qd_saved_dir = get_dvec_0(mbs_data->njoint + 1);
 	Qq_saved_dir = get_dvec_0(mbs_data->njoint + 1);
@@ -332,6 +335,7 @@ int main(int argc, char const *argv[])
 	QuasiEquilibrium(mbs_data, V, front_radius, rear_radius, Toprint,steer);
 	Print_q_qd_qdd_Qq(mbs_data); // Print current value of joints
 	mbs_data->EstEnCourbe = 0;
+	mbs_data->
 	printf("my couple steering =%f my couple rear = %f et my autre couple = %f \n", mbs_data->Qq[R3_steering_fork_id], mbs_data->Qq[R2_wheel_rr_id], mbs_data->Qq[R1_pendulum_id]);
 	mypause();
 
@@ -459,10 +463,26 @@ int main(int argc, char const *argv[])
 	Toprint = 1;
 	// initialize dirdyn with straigth line equilibrium
 
-	//copy_dvec_0(q_saved_dir, &(mbs_data->q[1]), mbs_data->njoint);
-	//copy_dvec_0(qd_saved_dir, &(mbs_data->qd[1]), mbs_data->njoint);
-	//copy_dvec_0(Qq_saved_dir, &(mbs_data->Qq[1]), mbs_data->njoint);
-	
+	copy_dvec_0(q_saved_dir, &(mbs_data->q[1]), mbs_data->njoint);
+	copy_dvec_0(qd_saved_dir, &(mbs_data->qd[1]), mbs_data->njoint);
+	copy_dvec_0(Qq_saved_dir, &(mbs_data->Qq[1]), mbs_data->njoint);
+	mbs_data->Qq[R2_wheel_rr_id] =mbs_data->q_rr_ref;
+
+	//mbs_data->qd[R2_wheel_rr_id] = 0.0;
+	//mbs_data->qd[R2_wheel_ft_lt_id] = 0.0; 
+	//mbs_data->qd[R2_wheel_ft_rt_id] = 0.0; 
+	//mbs_data->qd[T1_body_id] = 0.0;
+	//mbs_set_qdriven(mbs_data, R3_steering_fork_id);
+
+	//mbs_data->qd[T1_body_id] = V;
+	//mbs_data->q[T1_body_id] = 0.0;
+	//mbs_data->q[T2_body_id] = 0.0;
+
+	//mbs_data->qd[R2_wheel_ft_lt_id] = V / front_radius;
+	//mbs_data->qd[R2_wheel_ft_rt_id] = V / front_radius;
+	//mbs_data->qd[R2_wheel_rr_id] = V / rear_radius;
+
+
 	printf("\n\n Ready for dirdyn \n");
 
 	mbs_data->process = 3; // dirdyn!
@@ -509,6 +529,8 @@ int main(int argc, char const *argv[])
 	///* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	///*                   CLOSING OPERATIONS                      *
 	///* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	
+	printf(" Closing operations \n"); 
 	mbs_delete_data(mbs_data);
 	free(filename_modal);
 	free(filename_K);

@@ -90,7 +90,6 @@ void user_WheelForces_motorbike(double pen, double rz, double anglis, double ang
 
 			TIRE_param = init_TIRE_param_strct_120_70();
 			res_1 = mbs_motorbike_contact(Fwhl, Mwhl, anglis, angcamb, gliss, TIRE_param);
-			
 
 		}
 	}

@@ -121,7 +121,7 @@ double* user_ExtForces(double PxF[4], double RxF[4][4],
 	SWr[5] = Ftemp[2];
 	SWr[6] = Ftemp[3];
 
-	//	printf("rear wheel Fn:%f , Flat:%f  \n", SWr[3], SWr[2]);
+	//printf("rear wheel Fn:%f , Flat:%f et autres= %f  \n", SWr[3], SWr[2], SWr[1]);
 
     return SWr;
 }

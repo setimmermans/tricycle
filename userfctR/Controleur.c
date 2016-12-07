@@ -15,34 +15,53 @@
 
 double my_controleur(MbsData *mbs_data, double tsim, double speed, double steering)
 {
-	double My_torque, delta_err, tilt_ref, max_torque, speed_tilt_ref, delta_speed;
-	mbs_data->Kp = 100.0;//1000
-	mbs_data->Ki = 10;//1
-	mbs_data->Kd = 100;//100
-	max_torque = 10.0;
+	double My_torque, delta_err, tilt_ref, max_torque, speed_tilt_ref, delta_speed, diff_max_torque, torque_step_max;
+	mbs_data->Kp = 50.0;//100
+	mbs_data->Ki = 1.0;//1
+	mbs_data->Kd = 100;// 20;//100
+	max_torque = 15.0;
 
 	tilt_ref = tilt_reference(mbs_data, tsim, speed, steering);
 	speed_tilt_ref = 0.0;
 	delta_err = tilt_ref - mbs_data->q[R1_body_id];
 	delta_speed = speed_tilt_ref - mbs_data->qd[R1_body_id];
-	My_torque = -mbs_data->Kp * delta_err+ mbs_data->Ki * mbs_data->ErrorTot - mbs_data->Kd *  delta_speed;
-	if (abs(mbs_data->q[R1_body_id]) > 0.0001)
+	My_torque = (-mbs_data->Kp * delta_err - mbs_data->Ki * mbs_data->ErrorTot - mbs_data->Kd *  delta_speed);
+	diff_max_torque = fabs(My_torque - mbs_data->last_tilt_torque);
+	torque_step_max = 1;
+
+	if (fabs(mbs_data->q[R1_body_id]) > 0.1)
 	{
 		printf("Delta err %f et  My_torque = %f et ErrorTot = %f et tilt ref = %f\n", delta_err, My_torque, mbs_data->ErrorTot, tilt_ref);
 	}
-	if (abs(delta_err)>0.0001)
+	if (fabs(delta_err)>0.0001)
 	{
 		mbs_data->ErrorTot += delta_err * 0.001; // time step
 	}
-	if (abs(My_torque) > max_torque)
+	if (fabs(diff_max_torque) > torque_step_max)
 	{
-		return max_torque*sign(My_torque);
+		if (fabs(My_torque) > max_torque)
+		{
+			return max_torque*sign(My_torque);
+		}
+		else
+		{
+			return mbs_data->last_tilt_torque + torque_step_max*sign(My_torque); 
+		}
 	}
 	else
 	{
-		return My_torque;
+		if (fabs(My_torque) > max_torque)
+		{
+			return max_torque*sign(My_torque);
+		}
+		else
+		{
+			return My_torque;
+		}
+	
 	}
 }
+//DTC
 
 double tilt_reference(MbsData *mbs_data, double tsim, double speed, double steering)
 {
@@ -195,13 +214,13 @@ double my_controleur_stc(MbsData *mbs_data, double tsim, double speed, double st
 	{*/
 	//printf("Delta err*Kp %f et  My_torque = %f et Ki* ErrorTot = %f et vit R1 body = %f \n", mbs_data->Kp *delta_err, My_torque, mbs_data->Ki * mbs_data->ErrorTot, delta_speed);
 	//}
-	if (abs(delta_err)>0.0001)
+	if (fabs(delta_err)>0.0001)
 	{
 		mbs_data->ErrorTot += delta_err * 0.001; // time step
 	}
 	
 
-	if (abs(My_torque) > max_torque)
+	if (fabs(My_torque) > max_torque)
 	{
 		return max_torque*sign(My_torque);
 	}

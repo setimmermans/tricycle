@@ -11,7 +11,7 @@
 //	1348 Louvain-la-Neuve 
 //	http://www.robotran.be// 
 //
-//	==> Generation Date : Mon Nov 28 17:34:57 2016
+//	==> Generation Date : Mon Dec  5 17:03:59 2016
 //
 //	==> Project name : tricycle
 //	==> using XML input file 
@@ -359,9 +359,9 @@ double *SWr3;
   ROcp12_718 = ROcp12_116*S18+ROcp12_717*C18;
   ROcp12_818 = ROcp12_216*S18+ROcp12_817*C18;
   ROcp12_918 = ROcp12_316*S18+ROcp12_917*C18;
-  RLcp12_113 = ROcp12_46*s->dpt[2][13]+ROcp12_711*s->dpt[3][13];
-  RLcp12_213 = ROcp12_56*s->dpt[2][13]+ROcp12_811*s->dpt[3][13];
-  RLcp12_313 = ROcp12_911*s->dpt[3][13]+s->dpt[2][13]*S6;
+  RLcp12_113 = ROcp12_46*s->dpt[2][12]+ROcp12_711*s->dpt[3][12];
+  RLcp12_213 = ROcp12_56*s->dpt[2][12]+ROcp12_811*s->dpt[3][12];
+  RLcp12_313 = ROcp12_911*s->dpt[3][12]+s->dpt[2][12]*S6;
   OMcp12_113 = OMcp12_17+qd[13]*ROcp12_111;
   OMcp12_213 = OMcp12_27+qd[13]*ROcp12_211;
   OMcp12_313 = OMcp12_37+qd[13]*ROcp12_311;
@@ -371,9 +371,9 @@ double *SWr3;
   OPcp12_113 = OPcp12_17+qd[13]*(OMcp12_27*ROcp12_311-OMcp12_37*ROcp12_211)+qdd[13]*ROcp12_111;
   OPcp12_213 = OPcp12_27-qd[13]*(OMcp12_17*ROcp12_311-OMcp12_37*ROcp12_111)+qdd[13]*ROcp12_211;
   OPcp12_313 = OPcp12_37+qd[13]*(OMcp12_17*ROcp12_211-OMcp12_27*ROcp12_111)+qdd[13]*ROcp12_311;
-  RLcp12_114 = ROcp12_413*s->dpt[2][18];
-  RLcp12_214 = ROcp12_513*s->dpt[2][18];
-  RLcp12_314 = ROcp12_613*s->dpt[2][18];
+  RLcp12_114 = ROcp12_413*s->dpt[2][17];
+  RLcp12_214 = ROcp12_513*s->dpt[2][17];
+  RLcp12_314 = ROcp12_613*s->dpt[2][17];
   OMcp12_114 = OMcp12_113+qd[14]*ROcp12_111;
   OMcp12_214 = OMcp12_213+qd[14]*ROcp12_211;
   OMcp12_314 = OMcp12_313+qd[14]*ROcp12_311;
@@ -392,9 +392,9 @@ double *SWr3;
  ROcp12_414)-qd[16]*(OMcp12_115*ROcp12_915-OMcp12_315*ROcp12_715)+qdd[14]*ROcp12_211+qdd[15]*ROcp12_514+qdd[16]*ROcp12_815;
   OPcp12_316 = OPcp12_313+qd[14]*(OMcp12_113*ROcp12_211-OMcp12_213*ROcp12_111)+qd[15]*(OMcp12_114*ROcp12_514-OMcp12_214*
  ROcp12_414)+qd[16]*(OMcp12_115*ROcp12_815-OMcp12_215*ROcp12_715)+qdd[14]*ROcp12_311+qdd[15]*ROcp12_614+qdd[16]*ROcp12_915;
-  RLcp12_117 = ROcp12_116*s->dpt[1][22]+ROcp12_416*s->dpt[2][22]+ROcp12_715*s->dpt[3][22];
-  RLcp12_217 = ROcp12_216*s->dpt[1][22]+ROcp12_516*s->dpt[2][22]+ROcp12_815*s->dpt[3][22];
-  RLcp12_317 = ROcp12_316*s->dpt[1][22]+ROcp12_616*s->dpt[2][22]+ROcp12_915*s->dpt[3][22];
+  RLcp12_117 = ROcp12_116*s->dpt[1][21]+ROcp12_416*s->dpt[2][21]+ROcp12_715*s->dpt[3][21];
+  RLcp12_217 = ROcp12_216*s->dpt[1][21]+ROcp12_516*s->dpt[2][21]+ROcp12_815*s->dpt[3][21];
+  RLcp12_317 = ROcp12_316*s->dpt[1][21]+ROcp12_616*s->dpt[2][21]+ROcp12_915*s->dpt[3][21];
   ORcp12_117 = OMcp12_216*RLcp12_317-OMcp12_316*RLcp12_217;
   ORcp12_217 = -(OMcp12_116*RLcp12_317-OMcp12_316*RLcp12_117);
   ORcp12_317 = OMcp12_116*RLcp12_217-OMcp12_216*RLcp12_117;
@@ -541,9 +541,9 @@ double *SWr3;
   ROcp13_724 = ROcp13_122*S24+ROcp13_723*C24;
   ROcp13_824 = ROcp13_222*S24+ROcp13_823*C24;
   ROcp13_924 = ROcp13_322*S24+ROcp13_923*C24;
-  RLcp13_119 = ROcp13_46*s->dpt[2][14]+ROcp13_711*s->dpt[3][14];
-  RLcp13_219 = ROcp13_56*s->dpt[2][14]+ROcp13_811*s->dpt[3][14];
-  RLcp13_319 = ROcp13_911*s->dpt[3][14]+s->dpt[2][14]*S6;
+  RLcp13_119 = ROcp13_46*s->dpt[2][13]+ROcp13_711*s->dpt[3][13];
+  RLcp13_219 = ROcp13_56*s->dpt[2][13]+ROcp13_811*s->dpt[3][13];
+  RLcp13_319 = ROcp13_911*s->dpt[3][13]+s->dpt[2][13]*S6;
   OMcp13_119 = OMcp13_17+qd[19]*ROcp13_111;
   OMcp13_219 = OMcp13_27+qd[19]*ROcp13_211;
   OMcp13_319 = OMcp13_37+qd[19]*ROcp13_311;
@@ -553,9 +553,9 @@ double *SWr3;
   OPcp13_119 = OPcp13_17+qd[19]*(OMcp13_27*ROcp13_311-OMcp13_37*ROcp13_211)+qdd[19]*ROcp13_111;
   OPcp13_219 = OPcp13_27-qd[19]*(OMcp13_17*ROcp13_311-OMcp13_37*ROcp13_111)+qdd[19]*ROcp13_211;
   OPcp13_319 = OPcp13_37+qd[19]*(OMcp13_17*ROcp13_211-OMcp13_27*ROcp13_111)+qdd[19]*ROcp13_311;
-  RLcp13_120 = ROcp13_419*s->dpt[2][25];
-  RLcp13_220 = ROcp13_519*s->dpt[2][25];
-  RLcp13_320 = ROcp13_619*s->dpt[2][25];
+  RLcp13_120 = ROcp13_419*s->dpt[2][24];
+  RLcp13_220 = ROcp13_519*s->dpt[2][24];
+  RLcp13_320 = ROcp13_619*s->dpt[2][24];
   OMcp13_120 = OMcp13_119+qd[20]*ROcp13_111;
   OMcp13_220 = OMcp13_219+qd[20]*ROcp13_211;
   OMcp13_320 = OMcp13_319+qd[20]*ROcp13_311;
@@ -574,9 +574,9 @@ double *SWr3;
  ROcp13_420)-qd[22]*(OMcp13_121*ROcp13_921-OMcp13_321*ROcp13_721)+qdd[20]*ROcp13_211+qdd[21]*ROcp13_520+qdd[22]*ROcp13_821;
   OPcp13_322 = OPcp13_319+qd[20]*(OMcp13_119*ROcp13_211-OMcp13_219*ROcp13_111)+qd[21]*(OMcp13_120*ROcp13_520-OMcp13_220*
  ROcp13_420)+qd[22]*(OMcp13_121*ROcp13_821-OMcp13_221*ROcp13_721)+qdd[20]*ROcp13_311+qdd[21]*ROcp13_620+qdd[22]*ROcp13_921;
-  RLcp13_123 = ROcp13_122*s->dpt[1][29]+ROcp13_422*s->dpt[2][29]+ROcp13_721*s->dpt[3][29];
-  RLcp13_223 = ROcp13_222*s->dpt[1][29]+ROcp13_522*s->dpt[2][29]+ROcp13_821*s->dpt[3][29];
-  RLcp13_323 = ROcp13_322*s->dpt[1][29]+ROcp13_622*s->dpt[2][29]+ROcp13_921*s->dpt[3][29];
+  RLcp13_123 = ROcp13_122*s->dpt[1][28]+ROcp13_422*s->dpt[2][28]+ROcp13_721*s->dpt[3][28];
+  RLcp13_223 = ROcp13_222*s->dpt[1][28]+ROcp13_522*s->dpt[2][28]+ROcp13_821*s->dpt[3][28];
+  RLcp13_323 = ROcp13_322*s->dpt[1][28]+ROcp13_622*s->dpt[2][28]+ROcp13_921*s->dpt[3][28];
   ORcp13_123 = OMcp13_222*RLcp13_323-OMcp13_322*RLcp13_223;
   ORcp13_223 = -(OMcp13_122*RLcp13_323-OMcp13_322*RLcp13_123);
   ORcp13_323 = OMcp13_122*RLcp13_223-OMcp13_222*RLcp13_123;

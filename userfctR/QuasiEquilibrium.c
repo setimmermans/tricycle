@@ -12,13 +12,13 @@ void QuasiEquilibrium(MbsData *mbs_data, double V, double front_radius, double r
 	MbsEquil *mbs_equil = mbs_new_equil(mbs_data);
 	mbs_data->process = 12;// equil quasi ? !
 
-	if(mbs_data->tourne == 1)
+	if (mbs_data->tourne == 1)
 	{
 		//  curve equilibrium
 		printf("Curve equilibrium (tourne ==1 )\n");
 		mbs_data->q[T1_body_id] = 0.0;
-		mbs_data->q[T2_body_id] =  -mbs_data->Rayon;
-		mbs_data->qd[R3_body_qs_id] =    V / (mbs_data->Rayon);//tourne
+		mbs_data->q[T2_body_id] = -mbs_data->Rayon;
+		mbs_data->qd[R3_body_qs_id] = V / (mbs_data->Rayon);//tourne
 		printf("rayon = %f et omega = %f \n", -mbs_data->Rayon, mbs_data->qd[R3_body_qs_id]);
 		mbs_data->qd[T1_body_id] = 0.0; // vitesse relative par rapport a la carotte :)
 		mbs_data->qd[T2_body_id] = 0.0;
@@ -73,15 +73,17 @@ void QuasiEquilibrium(MbsData *mbs_data, double V, double front_radius, double r
 		mbs_data->qd[R2_wheel_ft_rt_id] = V / front_radius;
 		mbs_data->qd[R2_wheel_rr_id] = V / rear_radius; // very sensitive (need to take static eq value for nominal radii)
 
-	
+
+
+		mbs_data->Qq[R2_wheel_rr_id] = 0.001 * 15 * 9.81;
 
 		// equil options (see documentations for additional options)
 		mbs_equil->options->senstol = 1e-1;
 		mbs_equil->options->verbose = Toprint;
 		mbs_equil->options->quasistatic = 1;
 		mbs_equil->options->nquch = 4;
-		mbs_equil->options->equitol = 1e-3;
-		mbs_equil->options->itermax = 30;
+		mbs_equil->options->equitol = 1e-7;
+		mbs_equil->options->itermax = 20;
 		mbs_equil_exchange(mbs_equil->options);
 		mbs_equil->options->quch[1] = T1_body_id;
 		mbs_equil->options->quch[2] = R2_wheel_ft_lt_id;

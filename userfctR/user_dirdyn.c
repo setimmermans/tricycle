@@ -43,6 +43,11 @@ void user_dirdyn_init(MbsData *mbs_data, MbsDirdyn *mbs_dd)
  */
 void user_dirdyn_loop(MbsData *mbs_data, MbsDirdyn *mbs_dd)
 {
+
+	mbs_data->last_tilt_torque = mbs_data->Qq[R1_pendulum_id];
+	//printf("mbs_data->last_tilt_torque = %f \n", mbs_data->last_tilt_torque);
+	
+	
 	// sensors
 	int id = sensor_body_bottom_id;
 

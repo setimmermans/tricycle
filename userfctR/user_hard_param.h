@@ -8,7 +8,7 @@
  *
  * Universite catholique de Louvain, Belgium 
  *
- * Last update : Thu Nov 17 09:27:23 2016
+ * Last update : Mon Dec  5 11:13:29 2016
  * --------------------------------------------------------
  *
  */
@@ -24,14 +24,14 @@
 // mass
 #define M_7 14.4
 #define M_9 0.2944
-#define M_11 0.192
-#define M_17 0.2944
-#define M_23 0.2944
+#define M_12 0.192
+#define M_18 0.2944
+#define M_24 0.2944
 
 // center of mass
 #define L_1_7 -0.24
 #define L_3_7 0.12
-#define L_3_11 0.064
+#define L_3_12 0.064
 
 // inertia
 #define IN_1_7 2.8
@@ -41,19 +41,19 @@
 #define IN_1_9 0.0176
 #define IN_5_9 0.0352
 #define IN_9_9 0.0176
-#define IN_1_11 0.04
-#define IN_5_11 0.008
-#define IN_1_17 0.0176
-#define IN_5_17 0.0352
-#define IN_9_17 0.0176
-#define IN_1_23 0.0176
-#define IN_5_23 0.0352
-#define IN_9_23 0.0176
+#define IN_1_12 0.04
+#define IN_5_12 0.008
+#define IN_1_18 0.0176
+#define IN_5_18 0.0352
+#define IN_9_18 0.0176
+#define IN_1_24 0.0176
+#define IN_5_24 0.0352
+#define IN_9_24 0.0176
 
 // body point
 #define DPT_1_2 -0.4232
 #define DPT_3_2 0.044938
-#define DPT_1_3 -0.456
+#define DPT_1_3 -0.4232
 #define DPT_3_3 0.2
 #define DPT_1_4 -0.24
 #define DPT_3_4 0.12
@@ -63,44 +63,45 @@
 #define DPT_3_6 0.148086
 #define DPT_1_7 0.131422
 #define DPT_3_7 0.14
-#define DPT_1_8 -0.198519
+#define DPT_1_8 -0.206519
 #define DPT_1_9 -0.084
 #define DPT_3_9 0.06
-#define DPT_2_11 -4e-07
-#define DPT_3_11 4e-07
-#define DPT_2_12 4e-07
+#define DPT_3_11 0.05
+#define DPT_2_12 -4e-07
 #define DPT_3_12 4e-07
-#define DPT_2_13 -0.02
-#define DPT_3_13 0.1
-#define DPT_2_14 0.02
+#define DPT_2_13 4e-07
+#define DPT_3_13 4e-07
+#define DPT_2_14 -0.02
 #define DPT_3_14 0.1
-#define DPT_3_15 0.064
-#define DPT_2_16 -0.137973
-#define DPT_2_17 -0.088
-#define DPT_3_17 4e-07
-#define DPT_3_19 0.152
-#define DPT_1_20 0.011244
-#define DPT_2_20 -0.0408
-#define DPT_3_20 0.026
-#define DPT_1_21 0.048
-#define DPT_2_21 -0.0188
-#define DPT_3_21 0.14799
-#define DPT_2_23 0.137973
-#define DPT_2_24 0.088
-#define DPT_3_24 4e-07
-#define DPT_3_26 0.152
-#define DPT_1_27 0.011244
-#define DPT_2_27 0.0408
-#define DPT_3_27 0.026
-#define DPT_1_28 0.048
-#define DPT_2_28 0.0188
-#define DPT_3_28 0.14799
-#define DPT_1_30 0.048
-#define DPT_2_30 -0.012
+#define DPT_2_15 0.02
+#define DPT_3_15 0.1
+#define DPT_3_16 0.064
+#define DPT_2_17 -0.137973
+#define DPT_2_18 -0.062
+#define DPT_3_18 4e-07
+#define DPT_3_20 0.152
+#define DPT_1_21 0.011244
+#define DPT_2_21 -0.0408
+#define DPT_3_21 0.026
+#define DPT_1_22 0.048
+#define DPT_2_22 -0.0188
+#define DPT_3_22 0.13799
+#define DPT_2_24 0.137973
+#define DPT_2_25 0.062
+#define DPT_3_25 4e-07
+#define DPT_3_27 0.152
+#define DPT_1_28 0.011244
+#define DPT_2_28 0.0408
+#define DPT_3_28 0.026
+#define DPT_1_29 0.048
+#define DPT_2_29 0.0188
+#define DPT_3_29 0.13799
 #define DPT_1_31 0.048
-#define DPT_2_31 0.012
-#define DPT_2_34 -0.1246
-#define DPT_2_35 0.1246
+#define DPT_2_31 -0.012
+#define DPT_1_32 0.048
+#define DPT_2_32 0.012
+#define DPT_2_35 -0.1246
+#define DPT_2_36 0.1246
 
 // ============================================================ //
 

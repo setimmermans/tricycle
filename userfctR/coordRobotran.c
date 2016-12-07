@@ -147,9 +147,9 @@ void anchor_points_coord()
 
 			// mnt il n'y a plus qu'à écrire le fichier .txt
 
-			fprintf(writing_file, "\"%sX\" = %f \n", sub_chaine, abs( mbs_data->dpt[1][anchor_number]*1000)+0.0001); // commence a 1 ! 
-			fprintf(writing_file, "\"%sY\" = %f \n", sub_chaine, abs(mbs_data->dpt[2][anchor_number]*1000)+0.0001);
-			fprintf(writing_file, "\"%sZ\" = %f \n", sub_chaine, abs(mbs_data->dpt[3][anchor_number]*1000)+0.0001); //*1000 pour mm de robotran	
+			fprintf(writing_file, "\"%sX\" = %f \n", sub_chaine, fabs( mbs_data->dpt[1][anchor_number]*1000)+0.0001); // commence a 1 ! 
+			fprintf(writing_file, "\"%sY\" = %f \n", sub_chaine, fabs(mbs_data->dpt[2][anchor_number]*1000)+0.0001);
+			fprintf(writing_file, "\"%sZ\" = %f \n", sub_chaine, fabs(mbs_data->dpt[3][anchor_number]*1000)+0.0001); //*1000 pour mm de robotran	
 
 			anchor_number++;		
 

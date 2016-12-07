@@ -14,46 +14,9 @@
 void my_DrivenJoints_EnCourbe(MbsData *mbs_data, double tsim)
 {
 	double t_pertub, t_f, t_c, a_c;
-	double t_start, K;
-
-	//printf("entre en courbe \n");
-	//double thePathX, thePathY, speedX, speedY, dirX, dirY, distanceX, distanceY, errorX, errorY, Z_cross, errorTot;
-	//double t_start, R, vmax, Xbegin, ang_speed, K;
-
-	// The path
+	double t_start;
 	t_start = mbs_data->t_start; //Temps d'initiation du tournant
-	//R = mbs_data->Rayon; // Rayon du tourant [m]
-	//vmax = mbs_data->speed_ref; // Vitesse dans le tournant(vtot = vmax + vstart)
-	//Xbegin = vmax * t_start;
-	//ang_speed = vmax / R; // Vitesse angulaire dans le tournant
-
-	//if (tsim < t_start)
-	//{
-	//	thePathX = vmax*tsim;
-	//	thePathY = 0;
-	//	speedX = vmax;
-	//	speedY = 0;
-	//}
-	//else if (tsim >= t_start)
-	//{
-	//	mbs_data->EstEnCourbe = 1;
-	//	thePathX = Xbegin + (vmax / ang_speed)*sin(ang_speed*(tsim - t_start));
-	//	thePathY = -(vmax / ang_speed)*cos(ang_speed*(tsim - t_start)) + R;
-	//	speedX = vmax*cos(ang_speed*(tsim - t_start));
-	//	speedY = vmax*sin(ang_speed*(tsim - t_start));
-	//}
-
-	//dirX = speedX / sqrt(speedX*speedX + speedY*speedY);
-	//dirY = speedY / sqrt(speedX*speedX + speedY*speedY);
-
-	//distanceX = thePathX - mbs_data->q[T1_body_id];
-	//distanceY = thePathY - mbs_data->q[T2_body_id];
-	//errorX = mbs_data->q[T1_body_id] - (thePathX - distanceX*dirX);
-	//errorY = mbs_data->q[T2_body_id] - (thePathY - distanceY*dirY);
-	//errorTot = sqrt(errorX*errorX + errorY *errorY);
-	//Z_cross = distanceX*dirY - distanceY*dirX;
 	
-	K = 0.01;
 	double my_command;
 	if (mbs_data->user_IO->modeTC == 2) //DTC 
 	{
@@ -93,6 +56,14 @@ void my_DrivenJoints_EnCourbe(MbsData *mbs_data, double tsim)
 			a_c = (-4 * mbs_data->user_IO->steer) / (((0.5*t_f - t_c) * 2)*((0.5*t_f - t_c) * 2) - t_f*t_f);
 			mbs_data->q[R3_steering_fork_id] =  my_DrivenJoints_Steering_smooth_consigne(mbs_data, tsim, t_f, t_c, a_c,t_start, 0.0 , mbs_data->user_IO->steer);
 			
+			//if (tsim < t_start)
+			//{
+			//	mbs_data->q[R3_steering_fork_id] = 0.0;
+			//}
+			//else
+			//{
+			//	mbs_data->q[R3_steering_fork_id] = 0.005;
+			//}
 		}
 	}
 	else if (mbs_data->user_IO->modeTC == 1)  //STC 
@@ -111,69 +82,100 @@ void my_DrivenJoints_EnCourbe(MbsData *mbs_data, double tsim)
 }
 
 
-double my_DrivenJoints_double_bande(MbsData *mbs_data, double tsim,  double t_start)
+double my_DrivenJoints_double_bande(MbsData *mbs_data, double tsim, double t_start)
 {
-	double t_pertub, t_f, t_c, a_c, consigne_double_bande, t_end1,t_start2,t_end2,delta_t,t_start3, t_end3, t_start4, t_end4;
-	t_end1 = mbs_data->speed_ref+2.0;
-	delta_t = 2.0;
-	t_start2 = t_end1 + delta_t;
-	t_end2 = t_start2+2.0;
-	t_start3 = t_end2 + delta_t;
-	t_end3 = t_start3 + 2.0;
-	t_start4 = t_end3 + delta_t;
-	t_end4 = t_start4 + 10.0;
+	double consigne_double_bande, t_mid, t_mid_end;
+	consigne_double_bande = 0.0;
+	t_mid = t_start + 10.0;
+	t_mid_end = t_mid*2.0;
 	if (tsim < t_start)
-	{
+	{	
 		consigne_double_bande = 0.0;
-	}
-	else if (tsim > t_start && tsim < t_end1)
-	{
-		t_f = mbs_data->speed_ref;
-		t_c = mbs_data->speed_ref / 2;
-		a_c = (-4 * mbs_data->user_IO->steer) / (((0.5*t_f - t_c) * 2)*((0.5*t_f - t_c) * 2) - t_f*t_f);
-		consigne_double_bande = my_DrivenJoints_Steering_smooth_consigne(mbs_data, tsim, t_f, t_c, a_c, t_start,0.0, mbs_data->user_IO->steer);
 
 	}
-	else if (tsim > t_end1 && tsim <t_start2)
+	else if (tsim > t_start && tsim < t_mid)
 	{
-		consigne_double_bande = mbs_data->user_IO->steer;
+			consigne_double_bande = my_DrivenJoints_changement_bande_simple(mbs_data, tsim, t_start, 1, 0.0);
 	}
-	else if (tsim > t_start2 && tsim < t_end2)
+	else if (tsim > t_mid && tsim < t_mid_end)
 	{
-		t_f = mbs_data->speed_ref;
-		t_c =( mbs_data->speed_ref ) / 2;
-		a_c = (4 * mbs_data->user_IO->steer) / (((0.5*t_f - t_c) * 2)*((0.5*t_f - t_c) * 2) - t_f*t_f);
-		consigne_double_bande  = my_DrivenJoints_Steering_smooth_consigne(mbs_data, tsim, t_f, t_c, a_c, t_start2, mbs_data->user_IO->steer, 0.0);
+		consigne_double_bande = my_DrivenJoints_changement_bande_simple(mbs_data, tsim, t_start, -1,t_mid);
 	}
-	else if (tsim > t_end2 && tsim <t_start3)
-	{
-		consigne_double_bande = 0.0;
-	}
-	else if (tsim > t_start3 && tsim < t_end3)
-	{
-		t_f = mbs_data->speed_ref;
-		t_c = (mbs_data->speed_ref) / 2;
-		a_c = (4 * mbs_data->user_IO->steer) / (((0.5*t_f - t_c) * 2)*((0.5*t_f - t_c) * 2) - t_f*t_f);
-		consigne_double_bande = my_DrivenJoints_Steering_smooth_consigne(mbs_data, tsim, t_f, t_c, a_c, t_start3, 0.0,- mbs_data->user_IO->steer);
-	}
-	else if (tsim > t_end3 && tsim <t_start4)
-	{
-		consigne_double_bande = -mbs_data->user_IO->steer;
-	}
-	else if (tsim > t_start4 && tsim < t_end4)
-	{
-		t_f = mbs_data->speed_ref;
-		t_c = (mbs_data->speed_ref) / 2;
-		a_c = (-4 * mbs_data->user_IO->steer) / (((0.5*t_f - t_c) * 2)*((0.5*t_f - t_c) * 2) - t_f*t_f);
-		consigne_double_bande = my_DrivenJoints_Steering_smooth_consigne(mbs_data, tsim, t_f, t_c, a_c, t_start4, -mbs_data->user_IO->steer,0.1*mbs_data->user_IO->steer);
-	}
-	else
-	{
-		consigne_double_bande = 0.0;
-	}
+
 	return  consigne_double_bande;
 }
 
+double my_DrivenJoints_changement_bande_simple(MbsData *mbs_data, double tsim, double t_start, int signe, double t_mid)
+{
+	double t_f, t_c, a_c, consigne_simple_bande, t_end1, t_end2, delta_t,  t_end3,  t_end4;
+	delta_t = 2.0;
+	t_end1 = t_mid + mbs_data->speed_ref + delta_t;
+	t_end2 = t_end1 + delta_t;
+	t_end3 = t_end2 + delta_t;
+	t_end4 = t_end3 + delta_t;
+
+	t_f = mbs_data->speed_ref;
+	t_c = (mbs_data->speed_ref) / 2;
+	a_c = signe * (-4 * mbs_data->user_IO->steer) / (((0.5*t_f - t_c) * 2)*((0.5*t_f - t_c) * 2) - t_f*t_f);
+	if (signe <= 0)
+	{
+		if (tsim < t_start)
+		{
+			consigne_simple_bande = 0.0;
+		}
+		else if (tsim > t_start && tsim < t_end1)
+		{
+			consigne_simple_bande = my_DrivenJoints_Steering_smooth_consigne(mbs_data, tsim, t_f, t_c, a_c, t_start+ t_mid, 0.0, -mbs_data->user_IO->steer);
+
+		}
+		else if (tsim > t_end1 && tsim < t_end2)
+		{
+			consigne_simple_bande = my_DrivenJoints_Steering_smooth_consigne(mbs_data, tsim, t_f, t_c, -a_c, t_end1, -mbs_data->user_IO->steer, 0.0);
+		}
+		else if (tsim > t_end2 && tsim < t_end3)
+		{
+			consigne_simple_bande = my_DrivenJoints_Steering_smooth_consigne(mbs_data, tsim, t_f, t_c, -a_c, t_end2, 0.0, mbs_data->user_IO->steer);
+		}
+		else if (tsim > t_end3 && tsim < t_end4)
+		{
+			consigne_simple_bande = my_DrivenJoints_Steering_smooth_consigne(mbs_data, tsim, t_f, t_c, a_c, t_end3, mbs_data->user_IO->steer, 0.0);// 0.1*mbs_data->user_IO->steer);
+		}
+		else
+		{
+			consigne_simple_bande = 0.0;
+		}
+	}
+	else
+	{
+		if (tsim < t_start)
+		{
+			consigne_simple_bande = 0.0;
+		}
+		else if (tsim > t_start && tsim < t_end1)
+		{
+			consigne_simple_bande = my_DrivenJoints_Steering_smooth_consigne(mbs_data, tsim, t_f, t_c, a_c, t_start, 0.0, mbs_data->user_IO->steer);
+
+		}
+		else if (tsim > t_end1 && tsim < t_end2)
+		{
+			consigne_simple_bande = my_DrivenJoints_Steering_smooth_consigne(mbs_data, tsim, t_f, t_c, -a_c, t_end1, mbs_data->user_IO->steer, 0.0);
+		}
+		else if (tsim > t_end2 && tsim < t_end3)
+		{
+			consigne_simple_bande = my_DrivenJoints_Steering_smooth_consigne(mbs_data, tsim, t_f, t_c, -a_c, t_end2, 0.0, -mbs_data->user_IO->steer);
+		}
+		else if (tsim > t_end3 && tsim < t_end4)
+		{
+			consigne_simple_bande = my_DrivenJoints_Steering_smooth_consigne(mbs_data, tsim, t_f, t_c, a_c, t_end3, -mbs_data->user_IO->steer, 0.0);// 0.1*mbs_data->user_IO->steer);
+		}
+		else
+		{
+			consigne_simple_bande = 0.0;
+		}
+	}
+	return consigne_simple_bande;
+
+}
 
 double my_DrivenJoints_Steering_smooth_consigne(MbsData *mbs_data, double tsim, double t_f, double t_c, double a_c, double t_start, double q_i, double q_f)
 { 
@@ -203,7 +205,18 @@ double my_DrivenJoints_Steering_smooth_consigne(MbsData *mbs_data, double tsim, 
 		}
 		else
 		{
-			consigne_smooth  = consigne_smooth;
+			if (mbs_data->DoubleBande == 0)
+			{
+
+				consigne_smooth = mbs_data->user_IO->steer; // ???????????? consigne_smooth;
+				//printf("consigne smoothe = %f \n", consigne_smooth);
+			}
+			else
+			{
+				consigne_smooth = mbs_data->user_IO->steer;
+			//	printf("consigne smoothe = %f \n", consigne_smooth);
+			}
+
 		}
 
 	}
@@ -224,9 +237,12 @@ void my_DrivenJoints_LigneDroite(MbsData *mbs_data, double tsim)
 		//perturb STC
 		if (tsim > t_pertub && tsim < t_pertub + 0.2)
 		{
-			//	//printf("if\n");
-			mbs_data->q[R3_steering_fork_id] = 0.01;
+			//	pertub position:
+			//mbs_data->q[R3_steering_fork_id] = 0.01;
 			//	//printf("torque steer = %f \n", mbs_data->Qq[R3_steering_fork_id]);
+
+			//	pertub vitesse:
+			mbs_data->qd[T1_body_id] = mbs_data->qd[T1_body_id] + 0.5;
 
 		}
 		else if (tsim > t_pertub + 0.2)
@@ -247,8 +263,11 @@ void my_DrivenJoints_LigneDroite(MbsData *mbs_data, double tsim)
 		//pertub DTC
 		if (tsim > t_pertub && tsim < t_pertub + 0.2)
 		{
-			//printf("if\n");
-			mbs_data->q[R3_steering_fork_id] = 0.02;
+			// perturb position
+			//mbs_data->q[R3_steering_fork_id] = 0.02;
+
+			//	pertub vitesse:
+			//mbs_data->qd[T1_body_id] = mbs_data->qd[T1_body_id] + 0.5;
 			//printf("torque steer = %f \n", mbs_data->Qq[R3_steering_fork_id]);
 		}
 
