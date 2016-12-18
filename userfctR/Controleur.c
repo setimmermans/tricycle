@@ -16,9 +16,9 @@
 double my_controleur(MbsData *mbs_data, double tsim, double speed, double steering)
 {
 	double My_torque, delta_err, tilt_ref, max_torque, speed_tilt_ref, delta_speed, diff_max_torque, torque_step_max;
-	mbs_data->Kp = 50.0;//100
+	mbs_data->Kp = 100.0;//100
 	mbs_data->Ki = 1.0;//1
-	mbs_data->Kd = 100;// 20;//100
+	mbs_data->Kd = 20;// 20;//100
 	max_torque = 15.0;
 
 	tilt_ref = tilt_reference(mbs_data, tsim, speed, steering);
@@ -63,9 +63,55 @@ double my_controleur(MbsData *mbs_data, double tsim, double speed, double steeri
 }
 //DTC
 
+double my_controleur_stc(MbsData *mbs_data, double tsim, double speed, double steering) //STC
+{
+	double My_torque_tilt, delta_err, tilt_ref, max_torque, speed_tilt_ref, delta_speed, My_torque_steer, My_torque;
+	mbs_data->Kp = 10;//200 normal //5 avant chgmt
+	mbs_data->Ki =  0.5;// 0.5;// 10;//100 normal // 100avant chgmt
+	mbs_data->Kd = 10.0;// *sqrt(mbs_data->speed_ref / 2);// 10;//100 normal // 10 avant chgmt
+	max_torque = 20.0;
+
+	tilt_ref = tilt_reference(mbs_data, tsim, speed, steering);
+	speed_tilt_ref = 0.0;
+	delta_err = tilt_ref - mbs_data->q[R1_body_id];
+	delta_speed = speed_tilt_ref - mbs_data->qd[R1_body_id];
+	My_torque_tilt = mbs_data->Kp * delta_err + mbs_data->Kd *  delta_speed  +mbs_data->Ki * mbs_data->ErrorTot;
+	My_torque_steer = mbs_data->Qq[R3_steering_fork_id];
+	if (mbs_data->EstEnCourbe == 1)
+	{
+		My_torque = (My_torque_tilt);// My_torque_steer );//
+	}
+	else
+	{
+		My_torque = (My_torque_tilt);// -My_torque_steer );//
+	}
+
+	if (abs(mbs_data->q[R1_body_id]) > 0.00001)
+	{
+	printf("Delta err*Kp %f et  My_torque = %f et Ki* ErrorTot = %f et vit R1 body = %f \n", mbs_data->Kp *delta_err, My_torque, mbs_data->Ki * mbs_data->ErrorTot, delta_speed);
+	}
+
+	if (fabs(delta_err)>0.0001)
+	{
+		mbs_data->ErrorTot += delta_err * 0.001; // time step
+	}
+	
+
+	if (fabs(My_torque) > max_torque)
+	{
+		return max_torque*sign(My_torque);
+	}
+	else
+	{
+		return My_torque;
+	}
+
+}
+
 double tilt_reference(MbsData *mbs_data, double tsim, double speed, double steering)
 {
-	double the_tilt;
+	double the_tilt, my_tilt_control;
+
 	// look up table CurveEquilibrium.txt
 	//FILE *reading_file_SteerAngle = NULL;
 	//char chaine[1000] = "";
@@ -76,11 +122,8 @@ double tilt_reference(MbsData *mbs_data, double tsim, double speed, double steer
 	//Rayon_file = 0.0;
 	//speed_file = 0.0;
 	//steer_file = 0.0;
-
 	//reading_file_SteerAngle = fopen(PROJECT_BINARY_DIR"/CurveEquilibrium.txt", "r");
-
 	//if (reading_file_SteerAngle != NULL)
-
 	//{
 	//	//printf("Fichier CurveEquilibrium.txt a bien ete ouvert\n");
 	//	while (fgets(chaine, 1000, reading_file_SteerAngle) != NULL) // On lit le fichier ligne par ligne tant qu'on ne reçoit pas d'erreur (NULL)
@@ -108,37 +151,66 @@ double tilt_reference(MbsData *mbs_data, double tsim, double speed, double steer
 	//			steer_file = atof(sub_chaine);
 	//			//printf("R = %f et V = %f et steer = %f \n", Rayon_file, speed_file, steer_file);
 	//		}
-
 	//	}
 	//	fclose(reading_file_SteerAngle);
 	//	//printf("Fichier de lecture CurveEquilibrium a bien ete ferme\n");
 	//}
 	//else
-
 	//{
 	//	printf("Impossible d'ouvrir le fichier CurveEquilibrium.txt \n");
+	//} 
 
-	//}
-	double t_f, t_c, a_c, my_tilt_control,t_start;
-	
+	// lecture fichier database tilt et v et R=> fonctionne pas
 
 
-	
-	if (mbs_data->tourne == 0  && mbs_data->EntreEnCourbe !=1) //ligne droite 
+
+	if (mbs_data->tourne == 0 && mbs_data->EntreEnCourbe != 1) //ligne droite 
 	{
 		the_tilt = 0.0;
 	}
 	else
-	{	if(mbs_data->EstEnCourbe == 1) 
-		{ 
-			the_tilt = atan(speed*speed / (mbs_data->Rayon*9.81));
+	{
+		if (mbs_data->EstEnCourbe == 1)
+		{
+			//the_tilt = atan(speed*speed / (mbs_data->Rayon*9.81));
+			the_tilt =  - atan(speed*speed *mbs_data->user_IO->steer  / (0.4*9.81));
 			//printf("the tilt =%f \n ", the_tilt);
 		}
-		else // ligne droite avant et après pertubation?
+		else // ligne droite avant pertubation?
 		{
 			the_tilt = 0.0;
 		}
 	}
+
+
+	if (mbs_data->user_IO->modeTC == 1) //STC
+	{
+		my_tilt_control = EntreEnCourbe_STC_tilt_ref(mbs_data, tsim, the_tilt); 
+		//printf("the tilt control =%f et time =%f  \n ", my_tilt_control, tsim);
+		//if (tsim > 14.99)
+		//{
+		//	printf("the tilt  =%f \n ", my_tilt_control);
+		//}
+		return my_tilt_control;
+
+	}
+	else
+	{
+		//if (tsim > 14.99)
+		//{
+		//	printf("the tilt  =%f \n ", the_tilt);
+		//}
+		return the_tilt;
+	}
+
+
+}
+
+
+double EntreEnCourbe_STC_tilt_ref(MbsData *mbs_data, double tsim, double the_tilt) //STC
+{
+	// entre en courbe
+	double t_f, t_c, a_c, my_tilt_control, t_start;
 
 	t_f = mbs_data->speed_ref;
 	t_c = mbs_data->speed_ref / 2;
@@ -167,69 +239,17 @@ double tilt_reference(MbsData *mbs_data, double tsim, double speed, double steer
 		else
 		{
 			my_tilt_control = the_tilt;
-			//printf("the tilt control= %f \n", my_tilt_control);
+
 		}
 
 	}
-
-	if (mbs_data->user_IO->modeTC == 1)
-	{
-		//printf("the tilt control =%f \n ", my_tilt_control);
-		return my_tilt_control;
-	
-	}
-	else
-	{
-		return the_tilt;
-	}
-
+	//printf("the tilt control= %f \n", my_tilt_control);
+	return my_tilt_control;
 
 }
 
 
-double my_controleur_stc(MbsData *mbs_data, double tsim, double speed, double steering) //STC
-{
-	double My_torque_tilt, delta_err, tilt_ref, max_torque, speed_tilt_ref, delta_speed, My_torque_steer, My_torque;
-	mbs_data->Kp = 10;//200 normal //5 avant chgmt
-	mbs_data->Ki = 100;//100 normal // 100avant chgmt
-	mbs_data->Kd = 10;//100 normal // 10 avant chgmt
-	max_torque = 2.0;
 
-	tilt_ref = tilt_reference(mbs_data, tsim, speed, steering);
-	speed_tilt_ref = 0.0;
-	delta_err = tilt_ref - mbs_data->q[R1_body_id];
-	delta_speed = speed_tilt_ref - mbs_data->qd[R1_body_id];
-	My_torque_tilt = mbs_data->Kp * delta_err + mbs_data->Kd *  delta_speed  +mbs_data->Ki * mbs_data->ErrorTot;
-	My_torque_steer = mbs_data->Qq[R3_steering_fork_id];
-	if (mbs_data->EstEnCourbe == 1)
-	{
-		My_torque = (My_torque_tilt- My_torque_steer );//
-	}
-	else
-	{
-		My_torque = (My_torque_tilt -My_torque_steer );//
-	}
-
-	/*if (abs(mbs_data->q[R1_body_id]) > 0.00001)
-	{*/
-	//printf("Delta err*Kp %f et  My_torque = %f et Ki* ErrorTot = %f et vit R1 body = %f \n", mbs_data->Kp *delta_err, My_torque, mbs_data->Ki * mbs_data->ErrorTot, delta_speed);
-	//}
-	if (fabs(delta_err)>0.0001)
-	{
-		mbs_data->ErrorTot += delta_err * 0.001; // time step
-	}
-	
-
-	if (fabs(My_torque) > max_torque)
-	{
-		return max_torque*sign(My_torque);
-	}
-	else
-	{
-		return My_torque;
-	}
-
-}
 
 
 void Print_q_qd_qdd_Qq(MbsData *mbs_data)

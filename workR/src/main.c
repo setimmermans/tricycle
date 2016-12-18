@@ -58,6 +58,7 @@ extern "C" {
 #include "ModalAnalysis.h"
 #include "QuasiEquilibrium.h"
 #include "useful_functions.h"
+#include "ComparaisonDTC_STC.h"
 
 #define Scaled	 
 //#define Normal	 
@@ -65,19 +66,21 @@ extern "C" {
 #define DTC
 //#define STC
 
-//#define ChgmntVariables
-
+//#define ChgmntVariablesHauteur
+//#define ChgmntVariablesCarrossage
+#define ChgmntVariablesPincage
 //#define curveEq
 
 //#define ModalAnalysis
 
-//#define LoopModal	
+#define LoopModal	
 //#define LoopQuasi
 
-#define EntreCourbe
+//#define EntreCourbe
 //#define DoubleBand
 #define Dirdyn	
 
+//#define Comp_DTC_STC
 //#define Printcoord
 
 
@@ -103,24 +106,25 @@ int main(int argc, char const *argv[])
 	char *filename_modal, *filename_K;
 	double K_factor_init, K_factor_max;
 	double steps, speed_init, scaling_factor, manual_scaling;
-	double R_loop_max, R_loop_init,  R_increment;
+	double R_loop_max, R_loop_init,  R_increment,L;
 
 	// for curve quasistatic !
 	//double *q_saved, *qd_saved;
-	double *q_saved_dir, *qd_saved_dir, *Qq_saved_dir;
+	double *q_saved_dir, *qd_saved_dir, *Qq_saved_dir, *qdd_saved_dir;
 
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	/*                    PARAMETERS                              *
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-	simu_t = 20; //time total simu
-	t_start = 1; // tournant
-	V = 4; // vitesse de simu et d'eq quasi statique en m/s
+	simu_t = 1; //time total simu
+	t_start = 2; // tournant
+	V = 1; // vitesse de simu et d'eq quasi statique en m/s
 	Rayon = 15; //STC
-	steer =  -(V*t_start) / (Rayon * 8); //DTC
+	L = 0.35;
+	steer = L / Rayon; //  -(V*t_start) / (Rayon * 8); //DTC
 	
 
 	// boucle en vitesse
-	max_V = 6; 
+	max_V = 4; 
 	steps = 0.01;
 	speed_init = 0.1;
 
@@ -143,8 +147,8 @@ int main(int argc, char const *argv[])
 	rear_radius = 0.255193;
 
 #ifdef Scaled
-	front_radius = 0.099531;// 0.104104;// 0.258591 *manual_scaling = 0.1036; //
-	rear_radius = 0.099030;// 0.10359;// 0.255193 * manual_scaling; // very sensitive (need to take static eq value for nominal radii)
+	front_radius = 0.099528;// 0.104104;// 0.258591 *manual_scaling = 0.1036; //
+	rear_radius = 0.099039;// 0.10359;// 0.255193 * manual_scaling; // very sensitive (need to take static eq value for nominal radii)
 #endif
 
 	printf("Hello tricycle scaled MBS!\n"); 
@@ -177,6 +181,8 @@ int main(int argc, char const *argv[])
 	mbs_data->t_start = t_start;
 	mbs_data->q_rr_ref = 0.0;
 	mbs_data->last_tilt_torque = 0.0;
+	mbs_data->equilrod = 0;
+	mbs_data->type_model = 1; // model reduit
 	//printf("\n\n nJoints =%d \n", mbs_data->njoint);
 
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -224,68 +230,302 @@ int main(int argc, char const *argv[])
 	mbs_run_equil(mbs_equil, mbs_data);
 	mbs_print_equil(mbs_equil);
 	mbs_delete_equil(mbs_equil, mbs_data);
+
+	//q_saved_dir = get_dvec_0(mbs_data->njoint + 1);
+
+	//copy_dvec_0(&(mbs_data->q[1]), q_saved_dir, mbs_data->njoint);
+	mbs_data->q_rr_ref = mbs_data->Qq[R2_wheel_rr_id];
+	q_saved_dir = get_dvec_0(mbs_data->njoint + 1);
+	qd_saved_dir = get_dvec_0(mbs_data->njoint + 1);
+	qdd_saved_dir = get_dvec_0(mbs_data->njoint + 1);
+	Qq_saved_dir = get_dvec_0(mbs_data->njoint + 1);
+	copy_dvec_0(&(mbs_data->q[1]), q_saved_dir, mbs_data->njoint);
+	copy_dvec_0(&(mbs_data->qd[1]), qd_saved_dir, mbs_data->njoint);
+	copy_dvec_0(&(mbs_data->Qq[1]), Qq_saved_dir, mbs_data->njoint);
+	copy_dvec_0(&(mbs_data->qdd[1]), qdd_saved_dir, mbs_data->njoint);
+
 	mypause();
 
-	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	/*					 STATIC EQUILIBRIUM AVEC CHGMT VARIABLES                *
-	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-#ifdef ChgmntVariables
+	
 
-	Print_q_qd_qdd_Qq(mbs_data); // Print current value of joints
-
-
-	mbs_data->process = 2; // equil static //
-	mbs_equil = mbs_new_equil(mbs_data);
-	// equil options (see documentations for additional options)
-	mbs_equil->options->method = 1;
-	mbs_equil->options->senstol = 1e-01;
-	mbs_equil->options->relax = 0.6;
-	mbs_equil->options->smooth = 1;
-	mbs_equil->options->verbose = 1;
-	mbs_equil->options->equitol = 1e-8;
-
-
-	// !!! add equation in user_equil_fxe fct !!!!!!!!!
-	// 1. Variable exchange quch->xch 
-	//mbs_equil->options->nquch=2; // nquch = nxch
-	//mbs_equil_substitution(mbs_equil->options);
-	//mbs_equil->options->quch[1]=R2_body_id+1;
-	//mbs_equil->options->quch[2]=T3_body_id+1;
-	//mbs_equil->options->xch_ptr[1]=&(mbs_data->user_model->shock_rr.Z_0);
-	//mbs_equil->options->xch_ptr[2]=&(mbs_data->user_model->shock_ft.Z_0);
-	// 2. Added variables and equations !
-	mbs_equil->options->nxe = 3;
-	mbs_equil_addition(mbs_equil->options);
-	// ok to find 5 rods
-	//mbs_equil->options->xe_ptr[1] = &(mbs_data->lrod[1]);
-	//mbs_equil->options->xe_ptr[2] = &(mbs_data->lrod[2]);
-	//mbs_equil->options->xe_ptr[3] = &(mbs_data->lrod[4]);
-	//mbs_equil->options->xe_ptr[4] = &(mbs_data->lrod[5]);
-	//mbs_equil->options->xe_ptr[5] = &(mbs_data->lrod[3]); 
-
-	//
-/*	mbs_equil->options->xe_ptr[1] = &(mbs_data->lrod[4]);
-	mbs_equil->options->xe_ptr[2] = &(mbs_data->lrod[5]);
-	mbs_equil->options->xe_ptr[3] = &(mbs_data->lrod[3]);*/ // OK pour trouver R1=R=02 rt T3 = 8cm
-	//
-
-	printf("\n\n \t Run equilibrium AVEC CHGMENT DE VARIABLE \n");
-	mbs_run_equil(mbs_equil, mbs_data);
-	mbs_print_equil(mbs_equil);
-	mbs_delete_equil(mbs_equil, mbs_data);
-	Print_q_qd_qdd_Qq(mbs_data); // Print current value of joints
-	mypause();
-#endif
+	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	/*					ANGLES	             *
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-	
-	printf("\n\n Calcul des angles  \n");
+
+	printf("\n\n Calcul des angles AVANT CHGMT DE VARIABLES 1 \n");
 	Angles(mbs_data);
 
 	//printf("my_force = %f \n", mbs_data->Qq[R1_pendulum_id]);
 	mypause();
 
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	/*					 STATIC EQUILIBRIUM AVEC CHGMT VARIABLES  1              *
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+#ifdef ChgmntVariablesHauteur
+
+
+	mbs_data->equilrod = 2;  // ==1  to find pincage==0
+	// == 2  to find R1=R2=0 et T3=0.08cm
+	// == 3 pour 5 rods
+
+
+	if (mbs_data->equilrod != 0)
+	{
+		Print_q_qd_qdd_Qq(mbs_data); // Print current value of joints
+
+
+		mbs_data->process = 2; // equil static //
+		mbs_equil = mbs_new_equil(mbs_data);
+		// equil options (see documentations for additional options)
+		mbs_equil->options->method = 1;
+		mbs_equil->options->senstol = 1e-01;
+		mbs_equil->options->relax = 0.6;
+		mbs_equil->options->smooth = 1;
+		mbs_equil->options->verbose = 1;
+		mbs_equil->options->equitol = 1e-8;
+
+		if (mbs_data->equilrod == 1) // to find pinçage==0
+		{
+			mbs_equil->options->nxe = 2;
+			mbs_equil_addition(mbs_equil->options);
+			mbs_equil->options->xe_ptr[1] = &(mbs_data->lrod[1]);
+			mbs_equil->options->xe_ptr[2] = &(mbs_data->lrod[2]);
+
+		}
+		else if (mbs_data->equilrod == 2) // to find R1=R2=0 et T3=0.08cm
+		{
+			mbs_equil->options->nxe = 3;
+			mbs_equil_addition(mbs_equil->options);
+			mbs_equil->options->xe_ptr[1] = &(mbs_data->lrod[4]);
+			mbs_equil->options->xe_ptr[2] = &(mbs_data->lrod[5]);
+			mbs_equil->options->xe_ptr[3] = &(mbs_data->lrod[3]);
+		}
+		else if (mbs_data->equilrod == 3) // to find 5rods
+		{
+			mbs_equil->options->nxe = 5;
+			mbs_equil_addition(mbs_equil->options);
+			// ok to find 5 rods
+			mbs_equil->options->xe_ptr[1] = &(mbs_data->lrod[1]);
+			mbs_equil->options->xe_ptr[2] = &(mbs_data->lrod[2]);
+			mbs_equil->options->xe_ptr[3] = &(mbs_data->lrod[4]);
+			mbs_equil->options->xe_ptr[4] = &(mbs_data->lrod[5]);
+			mbs_equil->options->xe_ptr[5] = &(mbs_data->lrod[3]);
+		}
+
+
+
+		printf("\n\n \t Run equilibrium AVEC CHGMENT DE VARIABLE 1 \n");
+		mbs_run_equil(mbs_equil, mbs_data);
+		mbs_print_equil(mbs_equil);
+		mbs_delete_equil(mbs_equil, mbs_data);
+		Print_q_qd_qdd_Qq(mbs_data); // Print current value of joints
+	}
+		mbs_data->q_rr_ref = mbs_data->Qq[R2_wheel_rr_id];
+		q_saved_dir = get_dvec_0(mbs_data->njoint + 1);
+		qd_saved_dir = get_dvec_0(mbs_data->njoint + 1);
+		qdd_saved_dir = get_dvec_0(mbs_data->njoint + 1);
+		Qq_saved_dir = get_dvec_0(mbs_data->njoint + 1);
+		copy_dvec_0(&(mbs_data->q[1]), q_saved_dir, mbs_data->njoint);
+		copy_dvec_0(&(mbs_data->qd[1]), qd_saved_dir, mbs_data->njoint);
+		copy_dvec_0(&(mbs_data->Qq[1]), Qq_saved_dir, mbs_data->njoint);
+		copy_dvec_0(&(mbs_data->qdd[1]), qdd_saved_dir, mbs_data->njoint);
+	
+	mypause();
+
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	/*					ANGLES	             *
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	
+	printf("\n\n Calcul des angles  apres  equil 1 \n");
+	Angles(mbs_data);
+
+	//printf("my_force = %f \n", mbs_data->Qq[R1_pendulum_id]);
+	mypause();
+#endif
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	/*					 STATIC EQUILIBRIUM AVEC CHGMT VARIABLES     carrossage            *
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+#ifdef ChgmntVariablesCarrossage
+
+
+	mbs_data->equilrod = 4;  // ==1  to find pincage==0
+							 // == 2  to find R1=R2=0 et T3=0.08cm
+							 // == 3 pour 5 rods
+							 // ==4 pour carrossage
+
+
+	if (mbs_data->equilrod != 0)
+	{
+		Print_q_qd_qdd_Qq(mbs_data); // Print current value of joints
+
+
+		mbs_data->process = 2; // equil static //
+		mbs_equil = mbs_new_equil(mbs_data);
+		// equil options (see documentations for additional options)
+		mbs_equil->options->method = 1;
+		mbs_equil->options->senstol = 1e-01;
+		mbs_equil->options->relax = 0.6;
+		mbs_equil->options->smooth = 1;
+		mbs_equil->options->verbose = 1;
+		mbs_equil->options->equitol = 1e-8;
+
+		if (mbs_data->equilrod == 1) // to find pinçage==0
+		{
+			mbs_equil->options->nxe = 2;
+			mbs_equil_addition(mbs_equil->options);
+			mbs_equil->options->xe_ptr[1] = &(mbs_data->lrod[1]);
+			mbs_equil->options->xe_ptr[2] = &(mbs_data->lrod[2]);
+
+		}
+		else if (mbs_data->equilrod == 2) // to find R1=R2=0 et T3=0.08cm
+		{
+			mbs_equil->options->nxe = 3;
+			mbs_equil_addition(mbs_equil->options);
+			mbs_equil->options->xe_ptr[1] = &(mbs_data->lrod[4]);
+			mbs_equil->options->xe_ptr[2] = &(mbs_data->lrod[5]);
+			mbs_equil->options->xe_ptr[3] = &(mbs_data->lrod[3]);
+		}
+		else if (mbs_data->equilrod == 3) // to find 5rods
+		{
+			mbs_equil->options->nxe = 5;
+			mbs_equil_addition(mbs_equil->options);
+			// ok to find 5 rods
+			mbs_equil->options->xe_ptr[1] = &(mbs_data->lrod[1]);
+			mbs_equil->options->xe_ptr[2] = &(mbs_data->lrod[2]);
+			mbs_equil->options->xe_ptr[3] = &(mbs_data->lrod[4]);
+			mbs_equil->options->xe_ptr[4] = &(mbs_data->lrod[5]);
+			mbs_equil->options->xe_ptr[5] = &(mbs_data->lrod[3]);
+		}
+		else if (mbs_data->equilrod == 4) // to find pinçage  =  et carrossage = 
+		{
+			mbs_equil->options->nxe = 2;
+			mbs_equil_addition(mbs_equil->options);
+			mbs_equil->options->xe_ptr[1] = &(mbs_data->lrod[4]);
+			mbs_equil->options->xe_ptr[2] = &(mbs_data->lrod[5]);
+			//mbs_equil->options->xe_ptr[3] = &(mbs_data->lrod[4]);
+			//mbs_equil->options->xe_ptr[4] = &(mbs_data->lrod[5]);
+
+		}
+
+
+
+		printf("\n\n \t Run equilibrium  CHGMENT DE VARIABLE  carrossage \n");
+		mbs_run_equil(mbs_equil, mbs_data);
+		mbs_print_equil(mbs_equil);
+		mbs_delete_equil(mbs_equil, mbs_data);
+		Print_q_qd_qdd_Qq(mbs_data); // Print current value of joints
+	}
+	mbs_data->q_rr_ref = mbs_data->Qq[R2_wheel_rr_id];
+	q_saved_dir = get_dvec_0(mbs_data->njoint + 1);
+	qd_saved_dir = get_dvec_0(mbs_data->njoint + 1);
+	qdd_saved_dir = get_dvec_0(mbs_data->njoint + 1);
+	Qq_saved_dir = get_dvec_0(mbs_data->njoint + 1);
+	copy_dvec_0(&(mbs_data->q[1]), q_saved_dir, mbs_data->njoint);
+	copy_dvec_0(&(mbs_data->qd[1]), qd_saved_dir, mbs_data->njoint);
+	copy_dvec_0(&(mbs_data->Qq[1]), Qq_saved_dir, mbs_data->njoint);
+	copy_dvec_0(&(mbs_data->qdd[1]), qdd_saved_dir, mbs_data->njoint);
+
+	mypause();
+
+
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	/*					ANGLES	             *
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+	printf("\n\n Calcul des angles APRES  CHGMT DE VARIABLES carrossage   \n");
+	Angles(mbs_data);
+
+	//printf("my_force = %f \n", mbs_data->Qq[R1_pendulum_id]);
+	mypause();
+#endif
+
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	/*					 STATIC EQUILIBRIUM AVEC CHGMT VARIABLES          2        *
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+#ifdef ChgmntVariablesPincage
+
+
+	mbs_data->equilrod = 1;  // ==1  to find pincage==0
+							 // == 2  to find R1=R2=0 et T3=0.08cm
+							 // == 3 pour 5 rods
+
+
+	if (mbs_data->equilrod != 0)
+	{
+		Print_q_qd_qdd_Qq(mbs_data); // Print current value of joints
+
+
+		mbs_data->process = 2; // equil static //
+		mbs_equil = mbs_new_equil(mbs_data);
+		// equil options (see documentations for additional options)
+		mbs_equil->options->method = 1;
+		mbs_equil->options->senstol = 1e-01;
+		mbs_equil->options->relax = 0.6;
+		mbs_equil->options->smooth = 1;
+		mbs_equil->options->verbose = 1;
+		mbs_equil->options->equitol = 1e-8;
+
+
+		if (mbs_data->equilrod == 1) // to find pinçage==0
+		{
+			mbs_equil->options->nxe = 2;
+			mbs_equil_addition(mbs_equil->options);
+			mbs_equil->options->xe_ptr[1] = &(mbs_data->lrod[1]);
+			mbs_equil->options->xe_ptr[2] = &(mbs_data->lrod[2]);
+
+		}
+		else if (mbs_data->equilrod == 2) // to find R1=R2=0 et T3=0.08cm
+		{
+			mbs_equil->options->nxe = 3;
+			mbs_equil_addition(mbs_equil->options);
+			mbs_equil->options->xe_ptr[1] = &(mbs_data->lrod[4]);
+			mbs_equil->options->xe_ptr[2] = &(mbs_data->lrod[5]);
+			mbs_equil->options->xe_ptr[3] = &(mbs_data->lrod[3]);
+		}
+		else if (mbs_data->equilrod == 3) // to find 5rods
+		{
+			mbs_equil->options->nxe = 5;
+			mbs_equil_addition(mbs_equil->options);
+			// ok to find 5 rods
+			mbs_equil->options->xe_ptr[1] = &(mbs_data->lrod[1]);
+			mbs_equil->options->xe_ptr[2] = &(mbs_data->lrod[2]);
+			mbs_equil->options->xe_ptr[3] = &(mbs_data->lrod[4]);
+			mbs_equil->options->xe_ptr[4] = &(mbs_data->lrod[5]);
+			mbs_equil->options->xe_ptr[5] = &(mbs_data->lrod[3]);
+		}
+
+
+		printf("\n\n \t Run equilibrium AVEC CHGMENT DE VARIABLE 2 \n");
+		mbs_run_equil(mbs_equil, mbs_data);
+		mbs_print_equil(mbs_equil);
+		mbs_delete_equil(mbs_equil, mbs_data);
+		Print_q_qd_qdd_Qq(mbs_data); // Print current value of joints
+	}
+	mbs_data->q_rr_ref = mbs_data->Qq[R2_wheel_rr_id];
+	q_saved_dir = get_dvec_0(mbs_data->njoint + 1);
+	qd_saved_dir = get_dvec_0(mbs_data->njoint + 1);
+	qdd_saved_dir = get_dvec_0(mbs_data->njoint + 1);
+	Qq_saved_dir = get_dvec_0(mbs_data->njoint + 1);
+	copy_dvec_0(&(mbs_data->q[1]), q_saved_dir, mbs_data->njoint);
+	copy_dvec_0(&(mbs_data->qd[1]), qd_saved_dir, mbs_data->njoint);
+	copy_dvec_0(&(mbs_data->Qq[1]), Qq_saved_dir, mbs_data->njoint);
+	copy_dvec_0(&(mbs_data->qdd[1]), qdd_saved_dir, mbs_data->njoint);
+
+	mypause();
+
+
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	/*					ANGLES	             *
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+	printf("\n\n Calcul des angles  apres 2eme equil \n");
+	Angles(mbs_data);
+
+	//printf("my_force = %f \n", mbs_data->Qq[R1_pendulum_id]);
+	mypause();
+
+#endif
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	/*					 QUASI STATIC EQUILIBRIUM	STRAIGTH             *
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -304,10 +544,12 @@ int main(int argc, char const *argv[])
 	mbs_data->q_rr_ref = mbs_data->Qq[R2_wheel_rr_id];
 	q_saved_dir = get_dvec_0(mbs_data->njoint + 1);
 	qd_saved_dir = get_dvec_0(mbs_data->njoint + 1);
+	qdd_saved_dir = get_dvec_0(mbs_data->njoint + 1);
 	Qq_saved_dir = get_dvec_0(mbs_data->njoint + 1);
 	copy_dvec_0(&(mbs_data->q[1]), q_saved_dir, mbs_data->njoint);
 	copy_dvec_0(&(mbs_data->qd[1]), qd_saved_dir, mbs_data->njoint);
 	copy_dvec_0(&(mbs_data->Qq[1]), Qq_saved_dir, mbs_data->njoint);
+	copy_dvec_0(&(mbs_data->qdd[1]), qdd_saved_dir, mbs_data->njoint);
 
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	/*					 MODAL ANALYSIS                      *
@@ -320,7 +562,6 @@ int main(int argc, char const *argv[])
 	ModalAnalysis(mbs_data, V, "Analyse_modale\My_Modal_Analysis.txt", front_radius, rear_radius);
 	Print_q_qd_qdd_Qq(mbs_data); // Print current value of joints
 	mypause();
-
 #endif 
 
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -455,10 +696,20 @@ int main(int argc, char const *argv[])
 
 #endif
 		
+
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	/*                   DIRECT DYNANMICS                        *
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 #ifdef Dirdyn
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	/*					ANGLES	             *
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+	printf("\n\n Calcul des angles AVANT DIRDYN \n");
+	Angles(mbs_data);
+
+	//printf("my_force = %f \n", mbs_data->Qq[R1_pendulum_id]);
+
 
 	Toprint = 1;
 	// initialize dirdyn with straigth line equilibrium
@@ -466,7 +717,10 @@ int main(int argc, char const *argv[])
 	copy_dvec_0(q_saved_dir, &(mbs_data->q[1]), mbs_data->njoint);
 	copy_dvec_0(qd_saved_dir, &(mbs_data->qd[1]), mbs_data->njoint);
 	copy_dvec_0(Qq_saved_dir, &(mbs_data->Qq[1]), mbs_data->njoint);
+	copy_dvec_0(qdd_saved_dir, &(mbs_data->qdd[1]), mbs_data->njoint);
 	mbs_data->Qq[R2_wheel_rr_id] =mbs_data->q_rr_ref;
+	mbs_data->q[R1_body_id] = 0.0;
+
 
 	//mbs_data->qd[R2_wheel_rr_id] = 0.0;
 	//mbs_data->qd[R2_wheel_ft_lt_id] = 0.0; 
@@ -515,17 +769,43 @@ int main(int argc, char const *argv[])
 	mbs_dirdyn->options->tf = simu_t;
 	mbs_dirdyn->options->save2file = 1;	
 	mbs_dirdyn->options->animpath = PROJECT_SOURCE_DIR"/../animationR";
-	
 	mbs_dirdyn->options->realtime = 1;
-	mbs_dirdyn->options->saveperiod = 10;
+#ifdef Comp_DTC_STC
+	mbs_dirdyn->options->realtime = 0;
+#endif
+	mbs_dirdyn->options->saveperiod = 1;
 
 
 	mbs_dirdyn->options->respath = PROJECT_SOURCE_DIR"/../resultsR/dirdyn";
 	mbs_run_dirdyn(mbs_dirdyn, mbs_data);
 	printf(" Dirdyn done \n");
 	mbs_delete_dirdyn(mbs_dirdyn, mbs_data);
+
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	/*					ANGLES	             *
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+	printf("\n\n Calcul des angles APRES DIRDYN \n");
+	Angles(mbs_data);
+
+	//printf("my_force = %f \n", mbs_data->Qq[R1_pendulum_id]);
+
+#endif
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	/*                   DIRECT DYNANMICS  COMPARAISON                       *
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	
+#ifdef Comp_DTC_STC
+
+#ifdef EntreCourbe
+	mbs_data->EntreEnCourbe = 1;
+#endif
+#ifdef DoubleBand
+	mbs_data->DoubleBande = 1;
 #endif
 
+	ComparaisonDTC_STC(mbs_data, q_saved_dir, qd_saved_dir, Qq_saved_dir, qdd_saved_dir, V, simu_t);
+#endif
 	///* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	///*                   CLOSING OPERATIONS                      *
 	///* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */

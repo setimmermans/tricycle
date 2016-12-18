@@ -29,10 +29,23 @@ double* user_JointForces(MbsData *mbs_data, double tsim)
 	//	mbs_data->qd[T1_body_id] = mbs_data->speed_ref*0.7;
 	//}
 
+	double R1_perturb;
+	if (mbs_data->speed_ref > 2)
+	{
+		R1_perturb = 2.5;
+	}
+	else
+	{
+		R1_perturb =2.5;
+	}
+
+
+	double t_pertub;
+	t_pertub = 150;
 
 	if (mbs_data->process == 3) //dirdyn controle de vitesse / couple
 	{
-		double Kp_rr,V;
+		double Kp_rr, V;
 		V = sqrt(mbs_data->qd[T1_body_id] * mbs_data->qd[T1_body_id] + mbs_data->qd[T2_body_id] * mbs_data->qd[T2_body_id]);
 
 		Kp_rr = 10;
@@ -41,47 +54,51 @@ double* user_JointForces(MbsData *mbs_data, double tsim)
 	}
 
 
-
-
-
-	double t_pertub;
-	t_pertub = 100;
-	if (mbs_data->user_IO->modeTC == 2) //DTC
-	{// controleur sur le tilt
-		mbs_data->Qq[R1_pendulum_id] = my_controleur(mbs_data, tsim, mbs_data->speed_ref, mbs_data->q[R3_steering_fork_id]);
-		//printf("my tilting controle torque DTC = %f \n ", mbs_data->Qq[R1_pendulum_id]);
-	} //DTC
-	else if (mbs_data->user_IO->modeTC == 1) //STC
+	if (mbs_data->process == 3) //dirdyn controle de vitesse / couple
 	{
-		mbs_data->Qq[R3_steering_fork_id] = my_controleur_stc(mbs_data, tsim, mbs_data->speed_ref, mbs_data->q[R3_steering_fork_id]);
-		//printf("my steering controle torque STC = %f \n ", mbs_data->Qq[R3_steering_fork_id]);
-
-		//perturbation  control STC
-		if (tsim > t_pertub && tsim < t_pertub + 0.2)
+		if (mbs_data->user_IO->modeTC == 2) //DTC
 		{
-			//printf("if\n");
-			mbs_data->Qq[R3_steering_fork_id] = 0.1;
-			//printf("torque steer = %f \n", mbs_data->Qq[R3_steering_fork_id]);
-		}
+			////perturbation  control DTC
+			mbs_data->Qq[R1_body_id] = 0.0;
+			if (tsim > t_pertub && tsim < t_pertub + 0.1)
+			{
+				mbs_data->Qq[R1_body_id] = R1_perturb;
+			}
+			// controleur sur le tilt
+			mbs_data->Qq[R1_pendulum_id] = my_controleur(mbs_data, tsim, mbs_data->speed_ref, mbs_data->q[R3_steering_fork_id]);
+			//printf("my tilting controle torque DTC = %f \n ", mbs_data->Qq[R1_pendulum_id]);
 
-	} //STC
-
-	else
-	{
-	//	printf("no joint force \n");
-		// no torque control 
-
-		//perturbation no control
-		if (tsim > t_pertub && tsim < t_pertub + 0.2)
+		} //DTC
+		else if (mbs_data->user_IO->modeTC == 1) //STC
 		{
-			//printf("if\n");
-			//mbs_data->Qq[R3_steering_fork_id] = 0.1;
-			//printf("torque steer = %f \n", mbs_data->Qq[R3_steering_fork_id]);
-		}
-	} // no control
+			mbs_data->Qq[R3_steering_fork_id] = my_controleur_stc(mbs_data, tsim, mbs_data->speed_ref, mbs_data->q[R3_steering_fork_id]);
+			//printf("my steering controle torque STC = %f \n ", mbs_data->Qq[R3_steering_fork_id]);
 
+			//perturbation  control STC
+			mbs_data->Qq[R1_body_id] = 0.0;
+			if (tsim > t_pertub && tsim < t_pertub + 0.2)
+			{
+				mbs_data->Qq[R1_body_id] = R1_perturb;
+			}
 
-/*-- End of user code --*/
+		} //STC
+
+		else
+		{
+			//	printf("no joint force \n");
+				// no torque control 
+
+				//perturbation no control
+			if (tsim > t_pertub && tsim < t_pertub + 0.2)
+			{
+				//printf("if\n");
+				mbs_data->Qq[R1_body_id] = R1_perturb;
+				//printf("torque steer = %f \n", mbs_data->Qq[R3_steering_fork_id]);
+			}
+		} // no control
+	}
+
+	/*-- End of user code --*/
 	return mbs_data->Qq;
 }
 

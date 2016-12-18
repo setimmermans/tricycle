@@ -76,6 +76,11 @@ void my_DrivenJoints_EnCourbe(MbsData *mbs_data, double tsim)
 		else if (tsim >= t_start)
 		{
 			mbs_data->EstEnCourbe = 1;
+			/*	t_f = mbs_data->speed_ref;
+			t_c = mbs_data->speed_ref / 2;
+			a_c = (-4 * mbs_data->user_IO->steer) / (((0.5*t_f - t_c) * 2)*((0.5*t_f - t_c) * 2) - t_f*t_f);
+			mbs_data->q[R3_steering_fork_id] = my_DrivenJoints_Steering_smooth_consigne(mbs_data, tsim, t_f, t_c, a_c, t_start, 0.0, mbs_data->user_IO->steer);
+*/
 			//printf("mbs_data->q[R3_steering_fork_id]  = %f \n", mbs_data->q[R3_steering_fork_id]);
 		}
 	}
@@ -229,28 +234,29 @@ void my_DrivenJoints_LigneDroite(MbsData *mbs_data, double tsim)
 {
 	double t_pertub;
 	//printf("straight line  time= %f \n", tsim);
+	// pas de perturb ici, voir dans joint forces !!!! R1_body
 	if (mbs_data->user_IO->modeTC == 1) //STC
 	{
 		// straigth line with STC
 		//	printf("straight line with STC time= %f \n", tsim);
 		t_pertub = 1.0;
 		//perturb STC
-		if (tsim > t_pertub && tsim < t_pertub + 0.2)
-		{
-			//	pertub position:
-			//mbs_data->q[R3_steering_fork_id] = 0.01;
-			//	//printf("torque steer = %f \n", mbs_data->Qq[R3_steering_fork_id]);
+		//if (tsim > t_pertub && tsim < t_pertub + 0.2)
+		//{
+		//	//	pertub position:
+		//	//mbs_data->q[R3_steering_fork_id] = 0.01;
+		//	//	//printf("torque steer = %f \n", mbs_data->Qq[R3_steering_fork_id]);
 
-			//	pertub vitesse:
-			mbs_data->qd[T1_body_id] = mbs_data->qd[T1_body_id] + 0.5;
+		//	//	pertub vitesse:
+		//	//mbs_data->qd[T1_body_id] = mbs_data->qd[T1_body_id] + 0.5;
 
-		}
-		else if (tsim > t_pertub + 0.2)
-		{
-			mbs_data->EstEnCourbe = 1;
-			mbs_data->EntreEnCourbe = 1;
-			mbs_data->Rayon = 10;
-		}
+		//}
+		//else if (tsim > t_pertub + 0.2)
+		//{
+		//	mbs_data->EstEnCourbe = 1;
+		//	mbs_data->EntreEnCourbe = 1;
+		//	mbs_data->Rayon = 10;
+		//}
 	}
 	else if (mbs_data->user_IO->modeTC == 2) //DTC
 	{
@@ -259,17 +265,17 @@ void my_DrivenJoints_LigneDroite(MbsData *mbs_data, double tsim)
 		//mbs_data->qd[R3_steering_fork_id] = 0.0;
 		//mbs_data->qdd[R3_steering_fork_id] = 0.0;
 		//printf("straight line with DTC time= %f \n", tsim);
-		t_pertub = 2.0;
-		//pertub DTC
-		if (tsim > t_pertub && tsim < t_pertub + 0.2)
-		{
-			// perturb position
-			//mbs_data->q[R3_steering_fork_id] = 0.02;
+		//t_pertub = 1.5;
+		////pertub DTC
+		//if (tsim > t_pertub && tsim < t_pertub + 0.2)
+		//{
+		//	// perturb position
+		//	mbs_data->q[R3_steering_fork_id] = 0.02;
 
-			//	pertub vitesse:
-			//mbs_data->qd[T1_body_id] = mbs_data->qd[T1_body_id] + 0.5;
-			//printf("torque steer = %f \n", mbs_data->Qq[R3_steering_fork_id]);
-		}
+		//	//	pertub vitesse:
+		//	//mbs_data->qd[T1_body_id] = mbs_data->qd[T1_body_id] + 0.5;
+		//	//printf("torque steer = %f \n", mbs_data->Qq[R3_steering_fork_id]);
+		//}
 
 	}
 

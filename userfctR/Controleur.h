@@ -31,5 +31,6 @@ double my_controleur(MbsData *mbs_data, double tsim, double speed, double steeri
 double tilt_reference(MbsData *mbs_data, double tsim, double speed, double steering);
 double my_controleur_stc(MbsData *mbs_data, double tsim, double speed, double steering);
 void Print_q_qd_qdd_Qq(MbsData *mbs_data);
+double EntreEnCourbe_STC_tilt_ref(MbsData *mbs_data, double tsim, double the_tilt);
 
 #endif

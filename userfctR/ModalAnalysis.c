@@ -22,7 +22,7 @@ void ModalAnalysis(MbsData *mbs_data, double V, char *filename_modal, double fro
 	//mbs_data->qd[R2_wheel_rr_id] = V / rear_radius; // very sensitive (need to take static eq value for nominal radii)
 
 	// modal options (see documentations for additional options) ? 
-	mbs_modal->options->verbose = 1;
+	mbs_modal->options->verbose = 0;
 	mbs_run_modal(mbs_modal, mbs_data);
 		
 	mbs_modal_save_result(mbs_modal, mbs_data, filename_modal);

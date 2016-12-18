@@ -36,7 +36,7 @@ void QuasiEquilibrium(MbsData *mbs_data, double V, double front_radius, double r
 		mbs_equil->options->verbose = Toprint;
 		mbs_equil->options->quasistatic = 1;
 		mbs_equil->options->nquch = 5;
-		mbs_equil->options->equitol = 1e-8;
+		mbs_equil->options->equitol = 1e-3;
 		mbs_equil->options->smooth = 1;
 		mbs_equil->options->itermax = 30;
 		mbs_equil_exchange(mbs_equil->options);
@@ -64,7 +64,7 @@ void QuasiEquilibrium(MbsData *mbs_data, double V, double front_radius, double r
 	}
 	else
 	{
-		printf("Tourne !=1 ==> equilibre ligne droite  \n");
+		//printf("Tourne !=1 ==> equilibre ligne droite  \n");
 		mbs_data->qd[T1_body_id] = V;
 		mbs_data->q[T1_body_id] = 0.0;
 		mbs_data->q[T2_body_id] = 0.0;
@@ -82,7 +82,7 @@ void QuasiEquilibrium(MbsData *mbs_data, double V, double front_radius, double r
 		mbs_equil->options->verbose = Toprint;
 		mbs_equil->options->quasistatic = 1;
 		mbs_equil->options->nquch = 4;
-		mbs_equil->options->equitol = 1e-7;
+		mbs_equil->options->equitol = 1e-4;
 		mbs_equil->options->itermax = 20;
 		mbs_equil_exchange(mbs_equil->options);
 		mbs_equil->options->quch[1] = T1_body_id;

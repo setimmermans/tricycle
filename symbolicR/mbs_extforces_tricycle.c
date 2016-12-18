@@ -11,7 +11,7 @@
 //	1348 Louvain-la-Neuve 
 //	http://www.robotran.be// 
 //
-//	==> Generation Date : Mon Dec  5 17:03:59 2016
+//	==> Generation Date : Sun Dec 18 11:20:57 2016
 //
 //	==> Project name : tricycle
 //	==> using XML input file 
@@ -19,10 +19,10 @@
 //	==> Number of joints : 31
 //
 //	==> Function : F19 : External Forces
-//	==> Flops complexity : 1581
+//	==> Flops complexity : 1593
 //
 //	==> Generation Time :  0.030 seconds
-//	==> Post-Processing :  0.020 seconds
+//	==> Post-Processing :  0.030 seconds
 //
 //-------------------------------------------------------------
 //
@@ -371,9 +371,9 @@ double *SWr3;
   OPcp12_113 = OPcp12_17+qd[13]*(OMcp12_27*ROcp12_311-OMcp12_37*ROcp12_211)+qdd[13]*ROcp12_111;
   OPcp12_213 = OPcp12_27-qd[13]*(OMcp12_17*ROcp12_311-OMcp12_37*ROcp12_111)+qdd[13]*ROcp12_211;
   OPcp12_313 = OPcp12_37+qd[13]*(OMcp12_17*ROcp12_211-OMcp12_27*ROcp12_111)+qdd[13]*ROcp12_311;
-  RLcp12_114 = ROcp12_413*s->dpt[2][17];
-  RLcp12_214 = ROcp12_513*s->dpt[2][17];
-  RLcp12_314 = ROcp12_613*s->dpt[2][17];
+  RLcp12_114 = ROcp12_413*s->dpt[2][17]+ROcp12_713*s->dpt[3][17];
+  RLcp12_214 = ROcp12_513*s->dpt[2][17]+ROcp12_813*s->dpt[3][17];
+  RLcp12_314 = ROcp12_613*s->dpt[2][17]+ROcp12_913*s->dpt[3][17];
   OMcp12_114 = OMcp12_113+qd[14]*ROcp12_111;
   OMcp12_214 = OMcp12_213+qd[14]*ROcp12_211;
   OMcp12_314 = OMcp12_313+qd[14]*ROcp12_311;
@@ -553,9 +553,9 @@ double *SWr3;
   OPcp13_119 = OPcp13_17+qd[19]*(OMcp13_27*ROcp13_311-OMcp13_37*ROcp13_211)+qdd[19]*ROcp13_111;
   OPcp13_219 = OPcp13_27-qd[19]*(OMcp13_17*ROcp13_311-OMcp13_37*ROcp13_111)+qdd[19]*ROcp13_211;
   OPcp13_319 = OPcp13_37+qd[19]*(OMcp13_17*ROcp13_211-OMcp13_27*ROcp13_111)+qdd[19]*ROcp13_311;
-  RLcp13_120 = ROcp13_419*s->dpt[2][24];
-  RLcp13_220 = ROcp13_519*s->dpt[2][24];
-  RLcp13_320 = ROcp13_619*s->dpt[2][24];
+  RLcp13_120 = ROcp13_419*s->dpt[2][24]+ROcp13_719*s->dpt[3][24];
+  RLcp13_220 = ROcp13_519*s->dpt[2][24]+ROcp13_819*s->dpt[3][24];
+  RLcp13_320 = ROcp13_619*s->dpt[2][24]+ROcp13_919*s->dpt[3][24];
   OMcp13_120 = OMcp13_119+qd[20]*ROcp13_111;
   OMcp13_220 = OMcp13_219+qd[20]*ROcp13_211;
   OMcp13_320 = OMcp13_319+qd[20]*ROcp13_311;
