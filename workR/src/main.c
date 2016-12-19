@@ -73,11 +73,11 @@ extern "C" {
 
 //#define ModalAnalysis
 
-#define LoopModal	
+//#define LoopModal	
 //#define LoopQuasi
 
-//#define EntreCourbe
-//#define DoubleBand
+#define EntreCourbe
+#define DoubleBand
 #define Dirdyn	
 
 //#define Comp_DTC_STC
@@ -115,7 +115,7 @@ int main(int argc, char const *argv[])
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	/*                    PARAMETERS                              *
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-	simu_t = 1; //time total simu
+	simu_t = 30; //time total simu
 	t_start = 2; // tournant
 	V = 1; // vitesse de simu et d'eq quasi statique en m/s
 	Rayon = 15; //STC
@@ -183,6 +183,7 @@ int main(int argc, char const *argv[])
 	mbs_data->last_tilt_torque = 0.0;
 	mbs_data->equilrod = 0;
 	mbs_data->type_model = 1; // model reduit
+	mbs_data->last_tilt_ref = 0.0;
 	//printf("\n\n nJoints =%d \n", mbs_data->njoint);
 
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -687,7 +688,7 @@ int main(int argc, char const *argv[])
 		sprintf(filename_modal, "%s/V%9.2f.txt", path_modal, mbs_data->speed_ref);
 		 mbs_data->process = 4; // modal
 		ModalAnalysis(mbs_data, mbs_data->speed_ref, filename_modal, front_radius, rear_radius); // Analyse Modale  
-		printf("filename = %s \n", filename_modal);
+		//printf("filename = %s \n", filename_modal);
 		mbs_data->speed_ref = mbs_data->speed_ref + steps;
 	}
 	mbs_data->speed_ref = V;

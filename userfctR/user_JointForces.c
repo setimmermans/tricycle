@@ -40,9 +40,11 @@ double* user_JointForces(MbsData *mbs_data, double tsim)
 	}
 
 
-	double t_pertub;
+	double t_pertub,sigma, mu,my_dt;
 	t_pertub = 150;
-
+	my_dt = 0.5;
+	sigma = 1 / (R1_perturb*sqrt(2 * 3.1415));
+	mu = t_pertub + my_dt;
 	if (mbs_data->process == 3) //dirdyn controle de vitesse / couple
 	{
 		double Kp_rr, V;
@@ -60,9 +62,9 @@ double* user_JointForces(MbsData *mbs_data, double tsim)
 		{
 			////perturbation  control DTC
 			mbs_data->Qq[R1_body_id] = 0.0;
-			if (tsim > t_pertub && tsim < t_pertub + 0.1)
+			if (tsim > t_pertub && tsim < t_pertub + my_dt)
 			{
-				mbs_data->Qq[R1_body_id] = R1_perturb;
+				mbs_data->Qq[R1_body_id] = R1_perturb * exp(-(tsim - (t_pertub + my_dt/2))*(tsim - (t_pertub + my_dt/2)) / (2.0*sigma *sigma)); //gaussienne
 			}
 			// controleur sur le tilt
 			mbs_data->Qq[R1_pendulum_id] = my_controleur(mbs_data, tsim, mbs_data->speed_ref, mbs_data->q[R3_steering_fork_id]);
@@ -76,9 +78,9 @@ double* user_JointForces(MbsData *mbs_data, double tsim)
 
 			//perturbation  control STC
 			mbs_data->Qq[R1_body_id] = 0.0;
-			if (tsim > t_pertub && tsim < t_pertub + 0.2)
+			if (tsim > t_pertub && tsim < t_pertub + my_dt)
 			{
-				mbs_data->Qq[R1_body_id] = R1_perturb;
+				mbs_data->Qq[R1_body_id] = R1_perturb * exp(-(tsim - (t_pertub + my_dt/2))*(tsim - (t_pertub + my_dt/2)) / (2.0*sigma *sigma)); //gaussienne
 			}
 
 		} //STC
