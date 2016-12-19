@@ -115,9 +115,9 @@ int main(int argc, char const *argv[])
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	/*                    PARAMETERS                              *
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-	simu_t = 30; //time total simu
-	t_start = 2; // tournant
-	V = 1; // vitesse de simu et d'eq quasi statique en m/s
+	simu_t = 10; //time total simu
+	t_start = 1.5; // tournant
+	V = 4; // vitesse de simu et d'eq quasi statique en m/s
 	Rayon = 15; //STC
 	L = 0.35;
 	steer = L / Rayon; //  -(V*t_start) / (Rayon * 8); //DTC
@@ -185,6 +185,7 @@ int main(int argc, char const *argv[])
 	mbs_data->type_model = 1; // model reduit
 	mbs_data->last_tilt_ref = 0.0;
 	//printf("\n\n nJoints =%d \n", mbs_data->njoint);
+	mbs_data->ErrorTot_y = 0.0;
 
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	/*              SCALING					                      *
@@ -504,11 +505,11 @@ int main(int argc, char const *argv[])
 		Print_q_qd_qdd_Qq(mbs_data); // Print current value of joints
 	}
 	mbs_data->q_rr_ref = mbs_data->Qq[R2_wheel_rr_id];
-	q_saved_dir = get_dvec_0(mbs_data->njoint + 1);
+	//q_saved_dir = get_dvec_0(mbs_data->njoint + 1);
 	qd_saved_dir = get_dvec_0(mbs_data->njoint + 1);
 	qdd_saved_dir = get_dvec_0(mbs_data->njoint + 1);
 	Qq_saved_dir = get_dvec_0(mbs_data->njoint + 1);
-	copy_dvec_0(&(mbs_data->q[1]), q_saved_dir, mbs_data->njoint);
+	//copy_dvec_0(&(mbs_data->q[1]), q_saved_dir, mbs_data->njoint);
 	copy_dvec_0(&(mbs_data->qd[1]), qd_saved_dir, mbs_data->njoint);
 	copy_dvec_0(&(mbs_data->Qq[1]), Qq_saved_dir, mbs_data->njoint);
 	copy_dvec_0(&(mbs_data->qdd[1]), qdd_saved_dir, mbs_data->njoint);
@@ -543,11 +544,11 @@ int main(int argc, char const *argv[])
 	printf("my couple rear *1000 =%f \n", mbs_data->Qq[R2_wheel_rr_id] *1000);
 	// saved the quasi static equilibrium
 	mbs_data->q_rr_ref = mbs_data->Qq[R2_wheel_rr_id];
-	q_saved_dir = get_dvec_0(mbs_data->njoint + 1);
+	//q_saved_dir = get_dvec_0(mbs_data->njoint + 1);
 	qd_saved_dir = get_dvec_0(mbs_data->njoint + 1);
 	qdd_saved_dir = get_dvec_0(mbs_data->njoint + 1);
 	Qq_saved_dir = get_dvec_0(mbs_data->njoint + 1);
-	copy_dvec_0(&(mbs_data->q[1]), q_saved_dir, mbs_data->njoint);
+	//copy_dvec_0(&(mbs_data->q[1]), q_saved_dir, mbs_data->njoint);
 	copy_dvec_0(&(mbs_data->qd[1]), qd_saved_dir, mbs_data->njoint);
 	copy_dvec_0(&(mbs_data->Qq[1]), Qq_saved_dir, mbs_data->njoint);
 	copy_dvec_0(&(mbs_data->qdd[1]), qdd_saved_dir, mbs_data->njoint);
@@ -721,6 +722,7 @@ int main(int argc, char const *argv[])
 	copy_dvec_0(qdd_saved_dir, &(mbs_data->qdd[1]), mbs_data->njoint);
 	mbs_data->Qq[R2_wheel_rr_id] =mbs_data->q_rr_ref;
 	mbs_data->q[R1_body_id] = 0.0;
+	mbs_data->q[R3_steering_fork_id] = 0.0;
 
 
 	//mbs_data->qd[R2_wheel_rr_id] = 0.0;

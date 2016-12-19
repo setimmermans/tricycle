@@ -25,6 +25,7 @@ void ComparaisonDTC_STC(MbsData *mbs_data, double *q_saved_dir, double *qd_saved
 	mbs_data->Qq[R2_wheel_rr_id] = mbs_data->q_rr_ref;
 	mbs_data->q[R1_body_id] = 0.0;
 
+	mbs_data->ErrorTot_y = 0.0;
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	/*                   DIRECT DYNANMICS    STC                    *
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -68,6 +69,7 @@ void ComparaisonDTC_STC(MbsData *mbs_data, double *q_saved_dir, double *qd_saved
 	mbs_data->ErrorTot = 0.0;
 	mbs_data->last_tilt_torque = 0.0;
 	mbs_data->EstEnCourbe = 0;
+	mbs_data->ErrorTot_y = 0.0;
 
 	// initialize dirdyn with straigth line equilibrium
 	copy_dvec_0(q_saved_dir, &(mbs_data->q[1]), mbs_data->njoint);
