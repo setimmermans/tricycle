@@ -63,8 +63,8 @@ extern "C" {
 #define Scaled	 
 //#define Normal	 
 	
-#define DTC
-//#define STC
+//#define DTC
+#define STC
 
 //#define ChgmntVariablesHauteur
 //#define ChgmntVariablesCarrossage
@@ -77,10 +77,10 @@ extern "C" {
 //#define LoopQuasi
 
 #define EntreCourbe
-#define DoubleBand
-#define Dirdyn	
+//#define DoubleBand
+//#define Dirdyn	
 
-//#define Comp_DTC_STC
+#define Comp_DTC_STC
 //#define Printcoord
 
 
@@ -115,12 +115,12 @@ int main(int argc, char const *argv[])
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	/*                    PARAMETERS                              *
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-	simu_t = 20; //time total simu
-	t_start = 1.5; // tournant
+	simu_t =  10; //time total simu
+	t_start = 0.5; // tournant
 	V = 4; // vitesse de simu et d'eq quasi statique en m/s
-	Rayon = 15; //STC
+	Rayon = 10; //STC
 	L = 0.35;
-	steer = L / Rayon; //  -(V*t_start) / (Rayon * 8); //DTC
+	steer = -L / Rayon; //  -(V*t_start) / (Rayon * 8); //DTC
 	
 
 	// boucle en vitesse

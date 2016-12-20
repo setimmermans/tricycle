@@ -70,7 +70,7 @@ void ComparaisonDTC_STC(MbsData *mbs_data, double *q_saved_dir, double *qd_saved
 	mbs_data->last_tilt_torque = 0.0;
 	mbs_data->EstEnCourbe = 0;
 	mbs_data->ErrorTot_y = 0.0;
-
+	
 	// initialize dirdyn with straigth line equilibrium
 	copy_dvec_0(q_saved_dir, &(mbs_data->q[1]), mbs_data->njoint);
 	copy_dvec_0(qd_saved_dir, &(mbs_data->qd[1]), mbs_data->njoint);
@@ -90,7 +90,7 @@ void ComparaisonDTC_STC(MbsData *mbs_data, double *q_saved_dir, double *qd_saved
 
 
 	Print_q_qd_qdd_Qq(mbs_data); // Print current value of joints
-	mypause();
+
 
 	mbs_dirdyn = mbs_new_dirdyn(mbs_data);
 

@@ -17,8 +17,8 @@ double my_controleur(MbsData *mbs_data, double tsim, double speed, double steeri
 {
 	double My_torque, delta_err, tilt_ref, max_torque, speed_tilt_ref, delta_speed, diff_max_torque, torque_step_max;
 	mbs_data->Kp = 100.0;//100
-	mbs_data->Ki = 0.0;// 1.0;//1
-	mbs_data->Kd = 20;// 20;//100
+	mbs_data->Ki = 20;// 1.0;//1
+	mbs_data->Kd = 30;// 20;//100
 	max_torque = 15.0;
 
 	tilt_ref = tilt_reference(mbs_data, tsim, speed, steering);
@@ -67,21 +67,21 @@ double my_controleur(MbsData *mbs_data, double tsim, double speed, double steeri
 double my_controleur_stc(MbsData *mbs_data, double tsim, double speed, double steering) //STC
 {
 	double My_torque_tilt, delta_err, tilt_ref, max_torque, speed_tilt_ref, delta_speed, My_torque_steer, My_torque;
-	mbs_data->Kp = 10;//200 normal //5 avant chgmt
-	mbs_data->Ki =  0.5;// 0.5;// 10;//100 normal // 100avant chgmt
-	mbs_data->Kd = 5.0;// *sqrt(mbs_data->speed_ref / 2);// 10;//100 normal // 10 avant chgmt
+	mbs_data->Kp = 20;// *mbs_data->speed_ref;//200 normal //5 avant chgmt
+	mbs_data->Ki =  1.0;// 0.5;// 10;//100 normal // 100avant chgmt
+	mbs_data->Kd = 10.0;// *sqrt(mbs_data->speed_ref / 2);// 10;//100 normal // 10 avant chgmt
 	max_torque = 20.0;
 
 	tilt_ref = tilt_reference(mbs_data, tsim, speed, steering);
-	speed_tilt_ref = (mbs_data->last_tilt_ref - tilt_ref) / 0.001;
+	speed_tilt_ref = 0.0;// (mbs_data->last_tilt_ref - tilt_ref) / 0.001;
 	mbs_data->last_tilt_ref = tilt_ref;
 	delta_err = tilt_ref - mbs_data->q[R1_body_id];
 	delta_speed = speed_tilt_ref - mbs_data->qd[R1_body_id];
 	My_torque_tilt = mbs_data->Kp * delta_err + mbs_data->Kd *  delta_speed  +mbs_data->Ki * mbs_data->ErrorTot;
-	My_torque_steer = mbs_data->Qq[R3_steering_fork_id];
+	//My_torque_steer = mbs_data->Qq[R3_steering_fork_id];
 	if (mbs_data->EstEnCourbe == 1)
 	{
-		My_torque = (My_torque_tilt);// My_torque_steer );//
+		My_torque = (My_torque_tilt);// -My_torque_steer);//
 	}
 	else
 	{
@@ -113,7 +113,8 @@ double my_controleur_stc(MbsData *mbs_data, double tsim, double speed, double st
 double tilt_reference(MbsData *mbs_data, double tsim, double speed, double steering)
 {
 	double the_tilt, my_tilt_control;
-
+	the_tilt = 0.0;
+	my_tilt_control = 0.0;
 	// look up table CurveEquilibrium.txt
 	//FILE *reading_file_SteerAngle = NULL;
 	//char chaine[1000] = "";
@@ -174,16 +175,25 @@ double tilt_reference(MbsData *mbs_data, double tsim, double speed, double steer
 	{
 		if (mbs_data->EstEnCourbe == 1)
 		{
-			//the_tilt = atan(speed*speed / (mbs_data->Rayon*9.81));
-			the_tilt =  - atan(speed*speed *mbs_data->user_IO->steer  / (0.4*9.81));
-			//printf("the tilt =%f \n ", the_tilt);
+			the_tilt = -atan(speed*speed / (mbs_data->Rayon*9.81));
+			if (mbs_data->user_IO->modeTC == 2) // DTC
+			{
+				the_tilt = -atan(speed*speed * (-mbs_data->q[R3_steering_fork_id] ) / (0.35*9.81)); ///////////::quidddddddddddddddddddddd
+			}
+			
+			
+			if (mbs_data->DoubleBande == 1)
+			{
+				the_tilt = -atan(speed*speed *mbs_data->q[R3_steering_fork_id] / (9.81* 0.35));
+			}
+		//printf("the tilt =%f \n ", the_tilt);
 		}
 		else // ligne droite avant pertubation?
 		{
 			the_tilt = 0.0;
 		}
 	}
-
+	my_tilt_control = EntreEnCourbe_STC_tilt_ref(mbs_data, tsim, the_tilt);
 
 	if (mbs_data->user_IO->modeTC == 1) //STC
 	{
@@ -191,10 +201,11 @@ double tilt_reference(MbsData *mbs_data, double tsim, double speed, double steer
 		//printf("the tilt control =%f et time =%f  \n ", my_tilt_control, tsim);
 		//if (tsim > 14.99)
 		//{
-		//	printf("the tilt  =%f \n ", my_tilt_control);
+		//	printf("the tilt control  =%f \n ", my_tilt_control);
 		//}
-		return my_tilt_control;
-
+		//return my_tilt_control;
+			return my_tilt_control;
+			//return the_tilt;
 	}
 	else
 	{
@@ -202,6 +213,7 @@ double tilt_reference(MbsData *mbs_data, double tsim, double speed, double steer
 		//{
 		//	printf("the tilt  =%f \n ", the_tilt);
 		//}
+		//return my_tilt_control;
 		return the_tilt;
 	}
 
@@ -249,9 +261,6 @@ double EntreEnCourbe_STC_tilt_ref(MbsData *mbs_data, double tsim, double the_til
 	return my_tilt_control;
 
 }
-
-
-
 
 
 void Print_q_qd_qdd_Qq(MbsData *mbs_data)

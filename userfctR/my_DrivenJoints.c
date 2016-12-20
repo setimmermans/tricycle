@@ -23,7 +23,6 @@ void my_DrivenJoints_EnCourbe(MbsData *mbs_data, double tsim)
 		{
 			//mbs_data->q[R3_steering_fork_id] =  my_DrivenJoints_double_bande(mbs_data, tsim, t_start);
 			mbs_data->q[R3_steering_fork_id] = my_DrivenJoints_controleur_y(mbs_data, tsim, t_start);
-
 			//printf("my_steering_consigne = %f\n", mbs_data->q[R3_steering_fork_id]);
 			//if (tsim > t_start)
 			//{
@@ -48,8 +47,15 @@ void my_DrivenJoints_EnCourbe(MbsData *mbs_data, double tsim)
 			t_f = mbs_data->speed_ref;
 			t_c = mbs_data->speed_ref / 2;
 			a_c = (-4 * mbs_data->user_IO->steer) / (((0.5*t_f - t_c) * 2)*((0.5*t_f - t_c) * 2) - t_f*t_f);
-			mbs_data->q[R3_steering_fork_id] = 0.0;// my_DrivenJoints_Steering_smooth_consigne(mbs_data, tsim, t_f, t_c, a_c, t_start, 0.0, mbs_data->user_IO->steer);
+			if (tsim > t_start)
+			{
+				mbs_data->q[R3_steering_fork_id] = my_DrivenJoints_Steering_smooth_consigne(mbs_data, tsim, t_f, t_c, a_c, t_start, 0.0, mbs_data->user_IO->steer);
 
+			}
+			else
+			{
+				mbs_data->q[R3_steering_fork_id] = 0.0;// my_DrivenJoints_Steering_smooth_consigne(mbs_data, tsim, t_f, t_c, a_c, t_start, 0.0, mbs_data->user_IO->steer);
+			}
 		}
 	}
 	else if (mbs_data->user_IO->modeTC == 1)  //STC 
@@ -71,30 +77,32 @@ double my_DrivenJoints_controleur_y(MbsData *mbs_data, double tsim, double t_sta
 	double Kp_y_ref, my_steering_consigne, y_consigne, Kd_y_ref,  Ki_y_ref, y_consigne_vit, delta_err_y, t_end_premier_bande;
 	Kp_y_ref = 1;
 	Ki_y_ref = 0.1;
-	Kd_y_ref = 0.1;
+	Kd_y_ref = 0;
 
 	double delta_y;
 	double t_f, t_c, a_c;
 	delta_y = 1.0;
-	t_f = 6.0;
+	t_f = mbs_data->speed_ref;
 	t_c = t_f / 2;
 	a_c = (-4*delta_y) / (((0.5*t_f - t_c) * 2)*((0.5*t_f - t_c) * 2) - t_f*t_f);
-	t_end_premier_bande = t_f + 2.0;
+	t_end_premier_bande = t_start + t_f + 2.0;
 
 	y_consigne = 0.0;
 	y_consigne_vit = 0.0;
 	my_steering_consigne = 0.0;
 
-	if (tsim > t_start ) //&& tsim <t_end_premier_bande)
+	if (tsim > t_start && tsim <t_end_premier_bande)
 	{
-		y_consigne = my_DrivenJoints_Steering_smooth_consigne(mbs_data, tsim, t_f, t_c, a_c, t_start, 0.0, delta_y);
+		y_consigne = my_DrivenJoints_Steering_smooth_consigne_y(mbs_data, tsim, t_f, t_c, a_c, t_start, 0.0, delta_y,1.0);
 		y_consigne_vit = my_DrivenJoints_Steering_smooth_consigne_vit(mbs_data, tsim, t_f, t_c, a_c, t_start, 0.0, a_c*t_c);
 	}
-	//else if (tsim > t_end_premier_bande && tsim < tsim < t_end_premier_bande + t_f)
-	//{
-		//y_consigne = my_DrivenJoints_Steering_smooth_consigne(mbs_data, tsim, t_f, t_c, -a_c, t_start, delta_y, 0.0 );
-		//y_consigne_vit = my_DrivenJoints_Steering_smooth_consigne_vit(mbs_data, tsim, t_f, t_c, -a_c, t_start, -a_c*t_c, 0.0);
-	//}
+	else if (tsim > t_end_premier_bande && tsim < (t_end_premier_bande + t_f))
+	{
+		y_consigne = my_DrivenJoints_Steering_smooth_consigne_y(mbs_data, tsim, t_f, t_c, a_c, t_end_premier_bande, delta_y, 0.0,-1.0);
+		y_consigne_vit = my_DrivenJoints_Steering_smooth_consigne_vit(mbs_data, tsim, t_f,  t_c, -a_c, t_end_premier_bande, 0.0, -a_c*t_c);
+	}
+
+
 	delta_err_y = (mbs_data->q[T2_body_id] - y_consigne);
 	if (fabs(delta_err_y)>0.0001)
 	{
@@ -109,7 +117,7 @@ double my_DrivenJoints_controleur_y(MbsData *mbs_data, double tsim, double t_sta
 	{
 		my_steering_consigne = -Kp_y_ref * delta_err_y -Kd_y_ref * (mbs_data->qd[T2_body_id] - y_consigne_vit) - Ki_y_ref *mbs_data->ErrorTot_y;
 	}
-	//printf("my_steering_consigne = %f, y consigne = %f, y_consigne vitesse = %f \n", my_steering_consigne, y_consigne, y_consigne_vit);
+	printf("my_steering_consigne = %f, y consigne = %f, y_consigne vitesse = %f , error y =%f et error VIT y = %f et time =%f \n", my_steering_consigne, y_consigne, y_consigne_vit, delta_err_y, mbs_data->ErrorTot_y, tsim);
 	return  my_steering_consigne;
 }
 
@@ -227,14 +235,17 @@ double my_DrivenJoints_Steering_smooth_consigne(MbsData *mbs_data, double tsim, 
 	if (tsim <= t_start + t_c)
 	{
 		consigne_smooth = q_i + 0.5*a_c* (tsim - t_start)*(tsim - t_start);
+		
 	}
 	else if (tsim > (t_start + t_c) && tsim <= t_start + (t_f - t_c))
 	{
 		consigne_smooth = a_c * t_c * (tsim - t_start - 0.5*t_c);
+		
 	}
 	else if (tsim < (t_start + t_f) && tsim >= t_start + (t_f - t_c))
 	{
 		consigne_smooth = q_f - 0.5 *	a_c *((tsim - t_start) - t_f) *((tsim - t_start) - t_f);
+		
 	}
 	else
 	{
@@ -247,15 +258,58 @@ double my_DrivenJoints_Steering_smooth_consigne(MbsData *mbs_data, double tsim, 
 		else
 		{
 			consigne_smooth = q_f;// mbs_data->user_IO->steer;
-		//	printf("consigne smoothe = %f \n", consigne_smooth);
+			//printf("consigne smoothe = %f \n", consigne_smooth);
 		}
 
 	}
 
 	//	}
+	
 	return consigne_smooth;
 
 }
+
+double my_DrivenJoints_Steering_smooth_consigne_y(MbsData *mbs_data, double tsim, double t_f, double t_c, double a_c, double t_start, double q_i, double q_f, double signe)
+{
+	double consigne_smooth, a_c_init;
+	consigne_smooth = 0.0;
+	a_c_init = 0.0;
+
+	if (signe < 0)
+	{
+		a_c_init =(q_i-q_f) /2;
+	}
+
+	mbs_data->EstEnCourbe = 1;
+	if (tsim <= t_start + t_c)
+	{
+		consigne_smooth = q_i + signe*  0.5*a_c* (tsim - t_start)*(tsim - t_start);
+		//printf("consigne smoothe = %f et a_c = %f et q_i = %f et time diff calcul =%f \n", consigne_smooth, a_c, q_f, 0.5 *	a_c *((tsim - t_start) - t_f) *((tsim - t_start) - t_f));
+	}
+	else if (tsim > (t_start + t_c) && tsim <= t_start + (t_f - t_c))
+	{
+		consigne_smooth = a_c_init + signe* a_c * t_c * (tsim - t_start - 0.5*t_c);
+		//printf("a_c_init = %f  et consigne smoothe = %f  et time diff calcul =%f et ime =%f \n", a_c_init , consigne_smooth, (tsim - t_start - 0.5*t_c), tsim);
+	}
+	else if (tsim < (t_start + t_f) && tsim >= t_start + (t_f - t_c))
+	{
+		consigne_smooth = q_f -  signe * 0.5 *	a_c *((tsim - t_start) - t_f) *((tsim - t_start) - t_f);
+		//printf("consigne smoothe = %f et a_c = %f et q_f = %f et time diff calcul =%f \n", consigne_smooth, a_c, q_f, -0.5 *	a_c *((tsim - t_start) - t_f) *((tsim - t_start) - t_f));
+	}
+	else
+	{
+			consigne_smooth = q_f;// mbs_data->user_IO->steer;
+			//printf("consigne smoothe = %f \n", consigne_smooth);
+
+	}
+
+	//	}
+
+	return consigne_smooth;
+
+}
+
+
 
 double my_DrivenJoints_Steering_smooth_consigne_vit(MbsData *mbs_data, double tsim, double t_f, double t_c, double a_c, double t_start, double q_i, double q_f)
 {
