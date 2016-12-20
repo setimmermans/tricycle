@@ -115,7 +115,7 @@ int main(int argc, char const *argv[])
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	/*                    PARAMETERS                              *
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-	simu_t = 10; //time total simu
+	simu_t = 20; //time total simu
 	t_start = 1.5; // tournant
 	V = 4; // vitesse de simu et d'eq quasi statique en m/s
 	Rayon = 15; //STC

@@ -30,7 +30,7 @@ double my_controleur(MbsData *mbs_data, double tsim, double speed, double steeri
 	diff_max_torque = fabs(My_torque - mbs_data->last_tilt_torque);
 	torque_step_max = 1;
 	//printf("Delta err %f et  My_torque = %f et ErrorTot = %f et tilt ref = %f et speed_tilt_ref =%f \n", delta_err, My_torque, mbs_data->ErrorTot, tilt_ref, speed_tilt_ref);
-	if (fabs(mbs_data->q[R1_body_id]) > 0.1)
+	if (fabs(mbs_data->q[R1_body_id]) > 1)
 	{
 		printf("Delta err %f et  My_torque = %f et ErrorTot = %f et tilt ref = %f et speed_tilt_ref =%f \n", delta_err, My_torque, mbs_data->ErrorTot, tilt_ref, speed_tilt_ref);
 	}
