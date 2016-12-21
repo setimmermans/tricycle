@@ -68,7 +68,7 @@ extern "C" {
 
 //#define ChgmntVariablesHauteur
 //#define ChgmntVariablesCarrossage
-#define ChgmntVariablesPincage
+//#define ChgmntVariablesPincage
 //#define curveEq
 
 //#define ModalAnalysis
@@ -115,8 +115,8 @@ int main(int argc, char const *argv[])
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	/*                    PARAMETERS                              *
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-	simu_t =  10; //time total simu
-	t_start = 0.5; // tournant
+	simu_t = 20; //time total simu
+	t_start = 1.5; // tournant
 	V = 4; // vitesse de simu et d'eq quasi statique en m/s
 	Rayon = 10; //STC
 	L = 0.35;
@@ -124,7 +124,7 @@ int main(int argc, char const *argv[])
 	
 
 	// boucle en vitesse
-	max_V = 4; 
+	max_V = 1; 
 	steps = 0.01;
 	speed_init = 0.1;
 
@@ -186,7 +186,9 @@ int main(int argc, char const *argv[])
 	mbs_data->last_tilt_ref = 0.0;
 	//printf("\n\n nJoints =%d \n", mbs_data->njoint);
 	mbs_data->ErrorTot_y = 0.0;
-
+	mbs_data->last_pen_ft_lt = 0.0;
+	mbs_data->last_pen_ft_rt = 0.0;
+	mbs_data->last_pen_rr = 0.0;
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	/*              SCALING					                      *
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -544,11 +546,11 @@ int main(int argc, char const *argv[])
 	printf("my couple rear *1000 =%f \n", mbs_data->Qq[R2_wheel_rr_id] *1000);
 	// saved the quasi static equilibrium
 	mbs_data->q_rr_ref = mbs_data->Qq[R2_wheel_rr_id];
-	//q_saved_dir = get_dvec_0(mbs_data->njoint + 1);
+	q_saved_dir = get_dvec_0(mbs_data->njoint + 1);
 	qd_saved_dir = get_dvec_0(mbs_data->njoint + 1);
 	qdd_saved_dir = get_dvec_0(mbs_data->njoint + 1);
 	Qq_saved_dir = get_dvec_0(mbs_data->njoint + 1);
-	//copy_dvec_0(&(mbs_data->q[1]), q_saved_dir, mbs_data->njoint);
+	copy_dvec_0(&(mbs_data->q[1]), q_saved_dir, mbs_data->njoint);
 	copy_dvec_0(&(mbs_data->qd[1]), qd_saved_dir, mbs_data->njoint);
 	copy_dvec_0(&(mbs_data->Qq[1]), Qq_saved_dir, mbs_data->njoint);
 	copy_dvec_0(&(mbs_data->qdd[1]), qdd_saved_dir, mbs_data->njoint);

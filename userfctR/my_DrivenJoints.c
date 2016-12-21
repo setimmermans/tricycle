@@ -76,13 +76,13 @@ double my_DrivenJoints_controleur_y(MbsData *mbs_data, double tsim, double t_sta
 {
 	double Kp_y_ref, my_steering_consigne, y_consigne, Kd_y_ref,  Ki_y_ref, y_consigne_vit, delta_err_y, t_end_premier_bande;
 	Kp_y_ref = 1;
-	Ki_y_ref = 0.1;
-	Kd_y_ref = 0;
+	Ki_y_ref = 1;
+	Kd_y_ref = 0.1;
 
 	double delta_y;
 	double t_f, t_c, a_c;
 	delta_y = 1.0;
-	t_f = mbs_data->speed_ref;
+	t_f = 4.0;
 	t_c = t_f / 2;
 	a_c = (-4*delta_y) / (((0.5*t_f - t_c) * 2)*((0.5*t_f - t_c) * 2) - t_f*t_f);
 	t_end_premier_bande = t_start + t_f + 2.0;

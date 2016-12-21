@@ -41,7 +41,7 @@ double* user_JointForces(MbsData *mbs_data, double tsim)
 
 
 	double t_pertub,sigma, mu,my_dt;
-	t_pertub = 1.50;
+	t_pertub = 150;
 	my_dt = 0.5;
 	sigma = 1 / (R1_perturb*sqrt(2 * 3.1415));
 	mu = t_pertub + my_dt;
@@ -94,8 +94,9 @@ double* user_JointForces(MbsData *mbs_data, double tsim)
 			if (tsim > t_pertub && tsim < t_pertub + my_dt)
 			{
 				//printf("if\n");
-				mbs_data->Qq[R1_body_id] = R1_perturb * exp(-(tsim - (t_pertub + my_dt / 2))*(tsim - (t_pertub + my_dt / 2)) / (2.0*sigma *sigma)); //gaussienne
-				//printf("torque steer = %f \n", mbs_data->Qq[R3_steering_fork_id]);
+				//mbs_data->Qq[R1_body_id] = R1_perturb * exp(-(tsim - (t_pertub + my_dt / 2))*(tsim - (t_pertub + my_dt / 2)) / (2.0*sigma *sigma)); //gaussienne
+				mbs_data->Qq[R3_steering_fork_id] = 0.01;
+					//printf("torque steer = %f \n", mbs_data->Qq[R3_steering_fork_id]);
 			}
 		} // no control
 	}
