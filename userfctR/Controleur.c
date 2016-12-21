@@ -16,7 +16,7 @@
 double my_controleur(MbsData *mbs_data, double tsim, double speed, double steering)
 {
 	double My_torque, delta_err, tilt_ref, max_torque, speed_tilt_ref, delta_speed, diff_max_torque, torque_step_max;
-	mbs_data->Kp = 100.0;//* mbs_data->speed_ref;//100
+	mbs_data->Kp = 200.0;//* mbs_data->speed_ref;//100
 	mbs_data->Ki = 20;// 1.0;//1
 	mbs_data->Kd =  30;// 20;//100
 	max_torque = 150.0;

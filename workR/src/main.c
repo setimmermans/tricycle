@@ -78,7 +78,7 @@ extern "C" {
 
 #define EntreCourbe
 //#define DoubleBand
-//#define Dirdyn	
+#define Dirdyn	
 
 #define Comp_DTC_STC
 //#define Printcoord
@@ -118,7 +118,7 @@ int main(int argc, char const *argv[])
 	simu_t = 20; //time total simu
 	t_start = 1.5; // tournant
 	V = 4; // vitesse de simu et d'eq quasi statique en m/s
-	Rayon = 10; //STC
+	Rayon = 15; //STC
 	L = 0.35;
 	steer = -L / Rayon; //  -(V*t_start) / (Rayon * 8); //DTC
 	
@@ -774,10 +774,10 @@ int main(int argc, char const *argv[])
 	mbs_dirdyn->options->tf = simu_t;
 	mbs_dirdyn->options->save2file = 1;	
 	mbs_dirdyn->options->animpath = PROJECT_SOURCE_DIR"/../animationR";
-	mbs_dirdyn->options->realtime = 1;
-#ifdef Comp_DTC_STC
 	mbs_dirdyn->options->realtime = 0;
-#endif
+//#ifdef Comp_DTC_STC
+//	mbs_dirdyn->options->realtime = 0;
+//#endif
 	mbs_dirdyn->options->saveperiod = 1;
 
 

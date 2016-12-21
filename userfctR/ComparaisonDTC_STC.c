@@ -52,7 +52,7 @@ void ComparaisonDTC_STC(MbsData *mbs_data, double *q_saved_dir, double *qd_saved
 	mbs_dirdyn->options->save2file = 1;
 	mbs_dirdyn->options->animpath = "C:/Users/sebtims/Documents/MBProjects/tricycle/animationR/STC";
 
-	mbs_dirdyn->options->realtime = 0;
+	mbs_dirdyn->options->realtime = 1;
 	mbs_dirdyn->options->saveperiod = 1;
 
 
@@ -67,22 +67,25 @@ void ComparaisonDTC_STC(MbsData *mbs_data, double *q_saved_dir, double *qd_saved
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 
-	mbs_data->EntreEnCourbe = mbs_data->EntreEnCourbe;
-	mbs_data->DoubleBande = mbs_data->DoubleBande;
+	//MbsDirdyn *mbs_dirdyn;
 	mbs_data->ErrorTot = 0.0;
 	mbs_data->last_tilt_torque = 0.0;
 	mbs_data->EstEnCourbe = 0;
-	mbs_data->ErrorTot_y = 0.0;
-	mbs_data->last_pen_ft_lt = 0.0;
-	mbs_data->last_pen_ft_rt = 0.0;
-	mbs_data->last_pen_rr = 0.0;
+	mbs_data->ErrorTot = 0.0;
+	mbs_data->last_tilt_torque = 0.0;
+	mbs_data->EstEnCourbe = 0;
 	// initialize dirdyn with straigth line equilibrium
 	copy_dvec_0(q_saved_dir, &(mbs_data->q[1]), mbs_data->njoint);
 	copy_dvec_0(qd_saved_dir, &(mbs_data->qd[1]), mbs_data->njoint);
-	copy_dvec_0(qdd_saved_dir, &(mbs_data->qdd[1]), mbs_data->njoint);
 	copy_dvec_0(Qq_saved_dir, &(mbs_data->Qq[1]), mbs_data->njoint);
+	copy_dvec_0(qdd_saved_dir, &(mbs_data->qdd[1]), mbs_data->njoint);
 	mbs_data->Qq[R2_wheel_rr_id] = mbs_data->q_rr_ref;
 	mbs_data->q[R1_body_id] = 0.0;
+
+	mbs_data->last_pen_ft_lt = 0.0;
+	mbs_data->last_pen_ft_rt = 0.0;
+	mbs_data->last_pen_rr = 0.0;
+	mbs_data->ErrorTot_y = 0.0;
 
 	
 	printf("\n\n Ready for dirdyn DTC \n");
