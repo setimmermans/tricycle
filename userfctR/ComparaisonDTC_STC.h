@@ -27,6 +27,6 @@
 #define _COMPARAISONDTC_STC_H_
 
 
-void ComparaisonDTC_STC(MbsData *mbs_data, double *q_saved_dir, double *qd_saved_dir, double *Qq_saved_dir, double *qdd_saved_dir, double V, double simu_t);
+void ComparaisonDTC_STC(MbsData *mbs_data, double *q_saved_dir, double *qd_saved_dir, double *Qq_saved_dir, double *qdd_saved_dir, double V, double simu_t, int my_mode);
 
 #endif

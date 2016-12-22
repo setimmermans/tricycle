@@ -18,13 +18,16 @@ void Angles(MbsData *mbs_data)
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	/*					 Variables             *
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-	double Nominal_radius_ft_rt, Nominal_radius_ft_lt, Nominal_radius_rr, wheel_Y_ft_rt, wheel_Y_ft_lt;
+	double Nominal_radius_ft_rt, Nominal_radius_ft_lt, Nominal_radius_rr, wheel_Y_ft_rt, wheel_Y_ft_lt, wheel_Z_ft_rt, wheel_Z_ft_lt, wheel_X_ft_rt, wheel_X_ft_lt;
 	Nominal_radius_ft_rt = 0.0;
 	Nominal_radius_ft_lt = 0.0;
 	Nominal_radius_rr = 0.0;
 	wheel_Y_ft_rt = 0.0;
 	wheel_Y_ft_lt = 0.0;
-
+	wheel_Z_ft_rt = 0.0;
+	wheel_Z_ft_lt = 0.0;
+	wheel_X_ft_lt = 0.0;
+	wheel_X_ft_rt = 0.0; 
 
 	double X_carrrier_up_left, X_carrrier_up_right, Y_carrrier_up_left, Y_carrrier_up_right, Z_carrrier_up_left, Z_carrrier_up_right; // carrier up
 	X_carrrier_up_left = 0.0;
@@ -94,11 +97,18 @@ void Angles(MbsData *mbs_data)
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	mbs_sensor(psens, mbs_data, Sensor_wheel_ft_rt_id); // Compute the sensor for the nominal radius ft rt
 	Nominal_radius_ft_rt = psens->P[3];
+	wheel_X_ft_rt = psens->P[1];
 	wheel_Y_ft_rt = psens->P[2];
+	wheel_Z_ft_rt = psens->P[3];
 
 	mbs_sensor(psens, mbs_data, Sensor_wheel_ft_lt_id); // Compute the sensor for the nominal radius ft lt 
 	Nominal_radius_ft_lt = psens->P[3];
+	wheel_X_ft_lt = psens->P[1];
 	wheel_Y_ft_lt = psens->P[2];
+	wheel_Z_ft_lt = psens->P[3];
+
+
+	printf(" Angles : New chasse  (chasse) = %f , droite (chasse) = %f  \n", atan2(X_carrrier_up_right - wheel_X_ft_rt, Z_carrrier_up_right - wheel_Z_ft_rt) * 180 / 3.141592, atan2(X_carrrier_up_left - wheel_X_ft_lt, Z_carrrier_up_left - wheel_Z_ft_lt) * 180 / 3.141592);
 
 
 #ifdef Scaled

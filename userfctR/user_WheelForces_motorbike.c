@@ -56,10 +56,43 @@
 		TIRE_param = init_TIRE_param_strct_140_70_beta();
 	}
 
+
 	double C, vit_pene;
-	C = -1000;
+	C = -2000;
 	vit_pene = mbs_data->qd[T3_body_id];
 
+
+	MbsSensor psens[1];                        // Creation of a pointer to a sensor struct.
+	allocate_sensor(psens, mbs_data->njoint);  // Allocate the Jacobian at the correct dimension
+	init_sensor(psens, mbs_data->njoint);      // Initialize all value to zero
+
+					
+
+
+	if (iwhl == F_wheel_ft_lt_id)
+	{
+
+		mbs_sensor(psens, mbs_data, Sensor_wheel_ft_lt_id); // Compute the sensor carrier down left
+		vit_pene = psens->V[3];
+	}
+	else if (iwhl == F_wheel_rr_id)
+	{
+
+		mbs_sensor(psens, mbs_data, Sensor_wheel_rr_id); // Compute the sensor carrier down left
+		vit_pene = psens->V[3];
+
+		/*vit_pene = (mbs_data->last_pen_rr - pen) / 0.001;
+		mbs_data->last_pen_rr = pen;*/
+	}
+	else if (F_wheel_ft_rt_id == iwhl)
+	{
+
+		mbs_sensor(psens, mbs_data, Sensor_wheel_ft_rt_id); // Compute the sensor carrier down left
+		vit_pene = psens->V[3];
+/*
+		vit_pene = (mbs_data->last_pen_ft_rt - pen) / 0.001;
+		mbs_data->last_pen_ft_rt = pen;*/
+	}
 
 	//printf( "F1 : bakker  %f \n",pen);
 	///system("pause");
@@ -94,8 +127,8 @@
 
 		}
 	}
-
-	//printf("Calcul Forces wheel ok  F = %f  \n", Fwhl[3]);
+	
+	//printf("Calcul Forces wheel ok  F = %f et vit_pend =%f et 0.5*K*pen  =%f  \n", Fwhl[3],vit_pene, 0.5*K*pen);
 	/*
 	switch(iwhl)
 	{
@@ -134,6 +167,7 @@
 	printf( "M2 : bakker  %f , my %f\n",Mwhl[2],Mwhl_bis[2]);
 	printf( "M3 : bakker  %f , my %f\n",Mwhl[3],Mwhl_bis[3]);
 	system("pause");//*/
+	free_sensor(psens);                        // Free the memory (always better)
 
 
 	// Sample code:

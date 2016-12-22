@@ -63,8 +63,8 @@ extern "C" {
 #define Scaled	 
 //#define Normal	 
 	
-//#define DTC
-#define STC
+#define DTC
+//#define STC
 
 //#define ChgmntVariablesHauteur
 //#define ChgmntVariablesCarrossage
@@ -78,11 +78,11 @@ extern "C" {
 
 #define EntreCourbe
 //#define DoubleBand
-#define Dirdyn	
+//#define Dirdyn	
 
 #define Comp_DTC_STC
 //#define Printcoord
-
+//#define my_pi 3.14159265
 
 	
 
@@ -115,10 +115,10 @@ int main(int argc, char const *argv[])
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	/*                    PARAMETERS                              *
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-	simu_t = 20; //time total simu
-	t_start = 1.5; // tournant
-	V = 4; // vitesse de simu et d'eq quasi statique en m/s
-	Rayon = 15; //STC
+	simu_t = 15; //time total simu
+	t_start = 1.0; // tournant
+	V = 3; // vitesse de simu et d'eq quasi statique en m/s
+	Rayon = 5; //STC
 	L = 0.35;
 	steer = -L / Rayon; //  -(V*t_start) / (Rayon * 8); //DTC
 	
@@ -189,6 +189,7 @@ int main(int argc, char const *argv[])
 	mbs_data->last_pen_ft_lt = 0.0;
 	mbs_data->last_pen_ft_rt = 0.0;
 	mbs_data->last_pen_rr = 0.0;
+	mbs_data->time_end = 0.0;
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	/*              SCALING					                      *
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -580,7 +581,6 @@ int main(int argc, char const *argv[])
 	QuasiEquilibrium(mbs_data, V, front_radius, rear_radius, Toprint,steer);
 	Print_q_qd_qdd_Qq(mbs_data); // Print current value of joints
 	mbs_data->EstEnCourbe = 0;
-	mbs_data->
 	printf("my couple steering =%f my couple rear = %f et my autre couple = %f \n", mbs_data->Qq[R3_steering_fork_id], mbs_data->Qq[R2_wheel_rr_id], mbs_data->Qq[R1_pendulum_id]);
 	mypause();
 
@@ -774,16 +774,16 @@ int main(int argc, char const *argv[])
 	mbs_dirdyn->options->tf = simu_t;
 	mbs_dirdyn->options->save2file = 1;	
 	mbs_dirdyn->options->animpath = PROJECT_SOURCE_DIR"/../animationR";
+	mbs_dirdyn->options->realtime = 1;
+#ifdef Comp_DTC_STC
 	mbs_dirdyn->options->realtime = 0;
-//#ifdef Comp_DTC_STC
-//	mbs_dirdyn->options->realtime = 0;
-//#endif
+#endif
 	mbs_dirdyn->options->saveperiod = 1;
 
 
 	mbs_dirdyn->options->respath = PROJECT_SOURCE_DIR"/../resultsR/dirdyn";
 	mbs_run_dirdyn(mbs_dirdyn, mbs_data);
-	printf(" Dirdyn done \n");
+	printf(" Dirdyn done, tilt_ref =  %f \n", mbs_data->last_tilt_ref);
 	mbs_delete_dirdyn(mbs_dirdyn, mbs_data);
 
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -808,8 +808,17 @@ int main(int argc, char const *argv[])
 #ifdef DoubleBand
 	mbs_data->DoubleBande = 1;
 #endif
+	int my_mode = 0;
 
-	ComparaisonDTC_STC(mbs_data, q_saved_dir, qd_saved_dir, Qq_saved_dir, qdd_saved_dir, V, simu_t);
+#ifdef DTC
+	my_mode = 1; //DTC
+#endif
+
+#ifdef STC
+	my_mode = 2; //STC
+#endif
+
+	ComparaisonDTC_STC(mbs_data, q_saved_dir, qd_saved_dir, Qq_saved_dir, qdd_saved_dir, V, simu_t, my_mode);
 #endif
 	///* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	///*                   CLOSING OPERATIONS                      *

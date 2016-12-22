@@ -32,11 +32,11 @@ double* user_JointForces(MbsData *mbs_data, double tsim)
 	double R1_perturb;
 	if (mbs_data->speed_ref > 2)
 	{
-		R1_perturb = 2.5;
+		R1_perturb = 50;
 	}
 	else
 	{
-		R1_perturb =2.5;
+		R1_perturb =50;
 	}
 
 

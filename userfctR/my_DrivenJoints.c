@@ -17,6 +17,7 @@ void my_DrivenJoints_EnCourbe(MbsData *mbs_data, double tsim)
 	double t_start;
 	t_start = mbs_data->t_start; //Temps d'initiation du tournant
 
+
 	if (mbs_data->user_IO->modeTC == 2) //DTC 
 	{
 		if (mbs_data->DoubleBande == 1)
@@ -47,10 +48,18 @@ void my_DrivenJoints_EnCourbe(MbsData *mbs_data, double tsim)
 			t_f = mbs_data->speed_ref;
 			t_c = mbs_data->speed_ref / 2;
 			a_c = (-4 * mbs_data->user_IO->steer) / (((0.5*t_f - t_c) * 2)*((0.5*t_f - t_c) * 2) - t_f*t_f);
-			if (tsim > t_start)
+			//if (abs(mbs_data->q[R3_body_id]) > 0.78  && fabs( mbs_data->q[R3_steering_fork_id]) > 0.000001 &&	tsim <(t_start + t_f*2))
+			//{
+			//	//printf("arrete le tournant time_end = %f\n", mbs_data->time_end);
+			//	mbs_data->q[R3_steering_fork_id] = my_DrivenJoints_Steering_smooth_consigne(mbs_data, tsim, t_f, t_c, -a_c, mbs_data->time_end, mbs_data->user_IO->steer, 0.0);
+			//	printf("consigne = %f et time =%f et  && 	tsim <t_start + t_f =%f et time_end \n", my_DrivenJoints_Steering_smooth_consigne(mbs_data, tsim, t_f, t_c, -a_c, mbs_data->time_end, mbs_data->user_IO->steer, 0.0), tsim, t_start+t_f*2, mbs_data->time_end);
+			//}
+			//else 
+			if (tsim > t_start)// && abs(mbs_data->q[R3_body_id]) < 0.78 && 	tsim <t_start + t_f)
 			{
+			//	printf("coucou\n");
 				mbs_data->q[R3_steering_fork_id] = my_DrivenJoints_Steering_smooth_consigne(mbs_data, tsim, t_f, t_c, a_c, t_start, 0.0, mbs_data->user_IO->steer);
-
+				mbs_data->time_end = tsim;
 			}
 			else
 			{
