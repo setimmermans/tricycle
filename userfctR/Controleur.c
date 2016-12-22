@@ -16,9 +16,9 @@
 double my_controleur(MbsData *mbs_data, double tsim, double speed, double steering)
 {
 	double My_torque, delta_err, tilt_ref, max_torque, speed_tilt_ref, delta_speed, diff_max_torque, torque_step_max;
-	mbs_data->Kp = 200.0;// *(mbs_data->speed_ref*mbs_data->speed_ref / mbs_data->Rayon);//100
-	mbs_data->Ki = 50;// 1.0;//1
-	mbs_data->Kd = 50;// 20;//100
+	mbs_data->Kp =  100.0;// *(mbs_data->speed_ref*mbs_data->speed_ref / mbs_data->Rayon);//100
+	mbs_data->Ki = 10;// 1.0;//1
+	mbs_data->Kd = 10;// 20;//100
 	max_torque = 50.0;
 
 
@@ -26,7 +26,7 @@ double my_controleur(MbsData *mbs_data, double tsim, double speed, double steeri
 	speed_tilt_ref = -fabs((mbs_data->last_tilt_ref - tilt_ref) / 0.001);
 	if (tsim > mbs_data->t_start)
 	{
-		speed_tilt_ref = EntreEnCourbe_DTC_tilt_ref_vitesse(mbs_data, tsim);
+		speed_tilt_ref =  EntreEnCourbe_DTC_tilt_ref_vitesse(mbs_data, tsim);
 	}
 
 	delta_err = tilt_ref - mbs_data->q[R1_body_id];
@@ -77,17 +77,18 @@ double my_controleur(MbsData *mbs_data, double tsim, double speed, double steeri
 double my_controleur_stc(MbsData *mbs_data, double tsim, double speed, double steering) //STC
 {
 	double My_torque_tilt, delta_err, tilt_ref, max_torque, speed_tilt_ref, delta_speed, My_torque_steer, My_torque, torque_step_max, diff_max_torque;
-	mbs_data->Kp = 50;//*mbs_data->speed_ref;//200 normal //5 avant chgmt
-	mbs_data->Ki = 5.0;// 0.5;// 10;//100 normal // 100avant chgmt
-	mbs_data->Kd = 10.0;// *sqrt(mbs_data->speed_ref / 2);// 10;//100 normal // 10 avant chgmt
+	mbs_data->Kp = 10;//*mbs_data->speed_ref;//200 normal //5 avant chgmt
+	mbs_data->Ki =10.0;// 0.5;// 10;//100 normal // 100avant chgmt
+	mbs_data->Kd = 5.0;// *sqrt(mbs_data->speed_ref / 2);// 10;//100 normal // 10 avant chgmt
 	max_torque = 2.0;
 
 	tilt_ref = tilt_reference(mbs_data, tsim, speed, steering);
-	speed_tilt_ref =  fabs((mbs_data->last_tilt_ref - tilt_ref) / 0.001);
-	//if (tsim > mbs_data->t_start)
-	//{
-	//	speed_tilt_ref =  EntreEnCourbe_STC_tilt_ref_vitesse(mbs_data, tsim);  //(mbs_data->last_tilt_ref - tilt_ref) / 0.001;
-	//}
+	speed_tilt_ref = 0.0;// fabs((mbs_data->last_tilt_ref - tilt_ref) / 0.001);
+	if (tsim > mbs_data->t_start)
+	{
+		speed_tilt_ref = EntreEnCourbe_STC_tilt_ref_vitesse(mbs_data, tsim);  //(mbs_data->last_tilt_ref - tilt_ref) / 0.001;
+		//printf("speed_tilt_ref = %f \n",speed_tilt_ref);
+	}
 	
 	mbs_data->last_tilt_ref = tilt_ref;
 	delta_err = tilt_ref - mbs_data->q[R1_body_id];
@@ -274,6 +275,45 @@ double tilt_reference(MbsData *mbs_data, double tsim, double speed, double steer
 }
 
 
+double EntreEnCourbe_DTC_tilt_ref_vitesse(MbsData *mbs_data, double tsim)
+{
+	// entre en courbe
+	double t_f, t_c, a_c, t_start, the_tilt;
+
+	the_tilt = EntreEnCourbe_STC_tilt_ref(mbs_data, tsim, atan(mbs_data->speed_ref* mbs_data->speed_ref / (mbs_data->Rayon *9.81))); // atan(mbs_data->speed_ref* mbs_data->speed_ref * (-mbs_data->q[R3_steering_fork_id]) / (0.35*9.81)); ///////////::quidddddddddddddddddddddd
+	t_f = mbs_data->speed_ref;
+	t_c = mbs_data->speed_ref / 2;
+	a_c = (-4 * the_tilt) / (((0.5*t_f - t_c) * 2)*((0.5*t_f - t_c) * 2) - t_f*t_f);
+	t_start = mbs_data->t_start; //Temps d'initiation du tournant
+
+	double consigne_smooth_vit;
+	consigne_smooth_vit = 0.0;
+
+	if (tsim <= t_start + t_c)
+	{
+		consigne_smooth_vit = a_c* (tsim - t_start);
+	}
+	else if (tsim > (t_start + t_c) && tsim <= t_start + (t_f - t_c))
+	{
+		consigne_smooth_vit = a_c * t_c;
+	}
+	else if (tsim < (t_start + t_f) && tsim >= t_start + (t_f - t_c))
+	{
+		consigne_smooth_vit = -a_c *((tsim - t_start) - t_f);
+	}
+	else
+	{
+		consigne_smooth_vit = 0.0;
+
+	}
+
+	return consigne_smooth_vit;
+
+}
+
+
+
+
 double EntreEnCourbe_STC_tilt_ref(MbsData *mbs_data, double tsim, double the_tilt) //STC
 {
 	// entre en courbe
@@ -353,44 +393,6 @@ double EntreEnCourbe_STC_tilt_ref_vitesse(MbsData *mbs_data, double tsim)
 	return consigne_smooth_vit;
 
 }
-
-double EntreEnCourbe_DTC_tilt_ref_vitesse(MbsData *mbs_data, double tsim)
-{
-	// entre en courbe
-	double t_f, t_c, a_c, t_start, the_tilt;
-
-	the_tilt = atan(mbs_data->speed_ref* mbs_data->speed_ref / (mbs_data->q[R3_steering_fork_id] *9.81));
-
-	t_f = mbs_data->speed_ref;
-	t_c = mbs_data->speed_ref / 2;
-	a_c = (-4 * the_tilt) / (((0.5*t_f - t_c) * 2)*((0.5*t_f - t_c) * 2) - t_f*t_f);
-	t_start = mbs_data->t_start; //Temps d'initiation du tournant
-
-	double consigne_smooth_vit;
-	consigne_smooth_vit = 0.0;
-
-	if (tsim <= t_start + t_c)
-	{
-		consigne_smooth_vit = a_c* (tsim - t_start);
-	}
-	else if (tsim > (t_start + t_c) && tsim <= t_start + (t_f - t_c))
-	{
-		consigne_smooth_vit = a_c * t_c;
-	}
-	else if (tsim < (t_start + t_f) && tsim >= t_start + (t_f - t_c))
-	{
-		consigne_smooth_vit = -a_c *((tsim - t_start) - t_f);
-	}
-	else
-	{
-		consigne_smooth_vit = 0.0;
-
-	}
-
-	return consigne_smooth_vit;
-
-}
-
 
 void Print_q_qd_qdd_Qq(MbsData *mbs_data)
 {

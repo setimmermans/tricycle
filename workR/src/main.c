@@ -63,8 +63,8 @@ extern "C" {
 #define Scaled	 
 //#define Normal	 
 	
-#define DTC
-//#define STC
+//#define DTC
+#define STC
 
 //#define ChgmntVariablesHauteur
 //#define ChgmntVariablesCarrossage
@@ -117,8 +117,8 @@ int main(int argc, char const *argv[])
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	simu_t = 15; //time total simu
 	t_start = 1.0; // tournant
-	V = 3; // vitesse de simu et d'eq quasi statique en m/s
-	Rayon = 5; //STC
+	V = 4; // vitesse de simu et d'eq quasi statique en m/s
+	Rayon = 15; //STC
 	L = 0.35;
 	steer = -L / Rayon; //  -(V*t_start) / (Rayon * 8); //DTC
 	

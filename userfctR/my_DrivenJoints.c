@@ -16,7 +16,7 @@ void my_DrivenJoints_EnCourbe(MbsData *mbs_data, double tsim)
 	double t_f, t_c, a_c;
 	double t_start;
 	t_start = mbs_data->t_start; //Temps d'initiation du tournant
-
+	printf("tsim = %f \n", tsim);
 
 	if (mbs_data->user_IO->modeTC == 2) //DTC 
 	{
