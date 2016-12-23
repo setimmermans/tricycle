@@ -63,8 +63,8 @@ extern "C" {
 #define Scaled	 
 //#define Normal	 
 	
-//#define DTC
-#define STC
+#define DTC
+//#define STC
 
 //#define ChgmntVariablesHauteur
 //#define ChgmntVariablesCarrossage
@@ -77,10 +77,11 @@ extern "C" {
 //#define LoopQuasi
 
 #define EntreCourbe
-//#define DoubleBand
-//#define Dirdyn	
+#define DoubleBand
+#define Dirdyn	
+//#define Dirdynrealtime
 
-#define Comp_DTC_STC
+//#define Comp_DTC_STC
 //#define Printcoord
 //#define my_pi 3.14159265
 
@@ -115,7 +116,7 @@ int main(int argc, char const *argv[])
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	/*                    PARAMETERS                              *
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-	simu_t = 15; //time total simu
+	simu_t = 20; //time total simu
 	t_start = 1.0; // tournant
 	V = 4; // vitesse de simu et d'eq quasi statique en m/s
 	Rayon = 15; //STC
@@ -763,6 +764,8 @@ int main(int argc, char const *argv[])
 	mbs_data->DoubleBande = 1;
 #endif
 
+
+
 	//mbs_data->q[T3_body_id] = 0.2; // impose une hauteur
 	Print_q_qd_qdd_Qq(mbs_data); // Print current value of joints
 	mypause();
@@ -774,10 +777,17 @@ int main(int argc, char const *argv[])
 	mbs_dirdyn->options->tf = simu_t;
 	mbs_dirdyn->options->save2file = 1;	
 	mbs_dirdyn->options->animpath = PROJECT_SOURCE_DIR"/../animationR";
+	mbs_dirdyn->options->realtime = 0;
+#ifdef Dirdynrealtime
 	mbs_dirdyn->options->realtime = 1;
+#endif // Dirdynrealtime
+
+
 #ifdef Comp_DTC_STC
 	mbs_dirdyn->options->realtime = 0;
 #endif
+
+
 	mbs_dirdyn->options->saveperiod = 1;
 
 

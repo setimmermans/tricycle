@@ -253,7 +253,7 @@ double tilt_reference(MbsData *mbs_data, double tsim, double speed, double steer
 	{
 		//	my_tilt_control = EntreEnCourbe_STC_tilt_ref(mbs_data, tsim, the_tilt); 
 			//printf("the tilt control =%f et time =%f  \n ", my_tilt_control, tsim);
-		if (tsim > 14.99)
+		if (tsim > 19.99)
 		{
 			printf("the tilt control  =%f \n ", my_tilt_control);
 		}
