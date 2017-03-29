@@ -28,6 +28,8 @@ double* user_ExtForces(double PxF[4], double RxF[4][4],
 	double AxF[4], double OMPxF[4],
 	MbsData *mbs_data, double tsim, int ixF)
 {
+
+	
 	double Fx = 0.0, Fy = 0.0, Fz = 0.0;
 	double Mx = 0.0, My = 0.0, Mz = 0.0;
 	double dxF[4] = { 0.0, 0.0, 0.0, 0.0 };
@@ -42,6 +44,7 @@ double* user_ExtForces(double PxF[4], double RxF[4][4],
 
 	double *SWr = mbs_data->SWr[ixF];
 	double r_rim, r_tire;
+
 
 
 	if (ixF == F_wheel_ft_lt_id || F_wheel_ft_rt_id == ixF)
@@ -125,6 +128,27 @@ double* user_ExtForces(double PxF[4], double RxF[4][4],
 	SWr[6] = Ftemp[3];
 
 	//printf("rear wheel Fn:%f , Flat:%f et autres= %f  \n", SWr[3], SWr[2], SWr[1]);
+
+	switch (ixF)
+	{
+		/* Begin of user code */
+
+	case my_ext_force_lat_id:
+
+		if (tsim>10.0 &&tsim<11.0)
+		{
+			//Fy = 10;
+			//SWr[1] = 0.0;
+			//SWr[2] = Fy;
+			//SWr[3] = 0.0;
+			//SWr[4] = 0.0;
+			//SWr[5] = 0.0;
+			//SWr[6] = 0.0;
+		}
+		break;
+
+		/* End of user code */
+	}
 
 	return SWr;
 }

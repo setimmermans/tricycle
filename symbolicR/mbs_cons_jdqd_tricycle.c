@@ -11,7 +11,7 @@
 //	1348 Louvain-la-Neuve 
 //	http://www.robotran.be// 
 //
-//	==> Generation Date : Wed Dec 21 13:36:04 2016
+//	==> Generation Date : Tue Mar 28 10:33:04 2017
 //
 //	==> Project name : tricycle
 //	==> using XML input file 
@@ -19,7 +19,7 @@
 //	==> Number of joints : 31
 //
 //	==> Function : F18 : Constraints Quadratic Velocity Terms (Jdqd)
-//	==> Flops complexity : 822
+//	==> Flops complexity : 830
 //
 //	==> Generation Time :  0.020 seconds
 //	==> Post-Processing :  0.010 seconds
@@ -226,13 +226,13 @@ MbsData *s, double tsim)
   RO_5_326 = -S25*C26;
   RO_5_426 = -C25*S26;
   RO_5_626 = S25*S26;
-  RL_5_137 = RO_5_126*s->dpt[1][32]+RO_5_426*s->dpt[2][32];
+  RL_5_137 = RO_5_126*s->dpt[1][32]+RO_5_426*s->dpt[2][32]+s->dpt[3][32]*S25;
   RL_5_237 = s->dpt[1][32]*S26+s->dpt[2][32]*C26;
-  RL_5_337 = RO_5_326*s->dpt[1][32]+RO_5_626*s->dpt[2][32];
+  RL_5_337 = RO_5_326*s->dpt[1][32]+RO_5_626*s->dpt[2][32]+s->dpt[3][32]*C25;
 //
-  RL_6_138 = RO_5_126*s->dpt[1][31]+RO_5_426*s->dpt[2][31];
+  RL_6_138 = RO_5_126*s->dpt[1][31]+RO_5_426*s->dpt[2][31]+s->dpt[3][31]*S25;
   RL_6_238 = s->dpt[1][31]*S26+s->dpt[2][31]*C26;
-  RL_6_338 = RO_5_326*s->dpt[1][31]+RO_5_626*s->dpt[2][31];
+  RL_6_338 = RO_5_326*s->dpt[1][31]+RO_5_626*s->dpt[2][31]+s->dpt[3][31]*C25;
 
 // = = Block_0_1_0_0_0_9 = = 
  

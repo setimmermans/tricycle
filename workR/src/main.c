@@ -71,13 +71,13 @@ extern "C" {
 //#define ChgmntVariablesPincage
 //#define curveEq
 
-//#define ModalAnalysis
+//#define DoModalAnalysis
 
 //#define LoopModal	
 //#define LoopQuasi
 
-#define EntreCourbe
-#define DoubleBand
+//#define EntreCourbe
+//#define DoubleBand
 #define Dirdyn	
 //#define Dirdynrealtime
 
@@ -116,16 +116,16 @@ int main(int argc, char const *argv[])
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	/*                    PARAMETERS                              *
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-	simu_t = 20; //time total simu
+	simu_t = 4; //time total simu
 	t_start = 1.0; // tournant
-	V = 4; // vitesse de simu et d'eq quasi statique en m/s
-	Rayon = 15; //STC
+	V = 2;// vitesse de simu et d'eq quasi statique en m/s
+	Rayon =10; //STC
 	L = 0.35;
 	steer = -L / Rayon; //  -(V*t_start) / (Rayon * 8); //DTC
 	
 
 	// boucle en vitesse
-	max_V = 1; 
+	max_V = 10; 
 	steps = 0.01;
 	speed_init = 0.1;
 
@@ -191,6 +191,8 @@ int main(int argc, char const *argv[])
 	mbs_data->last_pen_ft_rt = 0.0;
 	mbs_data->last_pen_rr = 0.0;
 	mbs_data->time_end = 0.0;
+	mbs_data->last_fp = 0.0;
+	mbs_data->last_f= 0.0;
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	/*              SCALING					                      *
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -560,7 +562,7 @@ int main(int argc, char const *argv[])
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	/*					 MODAL ANALYSIS                      *
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-#ifdef ModalAnalysis
+#ifdef DoModalAnalysis
 
 	mbs_data->process = 4; // modal !
 
@@ -692,7 +694,7 @@ int main(int argc, char const *argv[])
 		sprintf(filename_modal, "%s/V%9.2f.txt", path_modal, mbs_data->speed_ref);
 		 mbs_data->process = 4; // modal
 		ModalAnalysis(mbs_data, mbs_data->speed_ref, filename_modal, front_radius, rear_radius); // Analyse Modale  
-		//printf("filename = %s \n", filename_modal);
+		printf("filename = %s \n", filename_modal);
 		mbs_data->speed_ref = mbs_data->speed_ref + steps;
 	}
 	mbs_data->speed_ref = V;
@@ -727,6 +729,7 @@ int main(int argc, char const *argv[])
 	mbs_data->q[R1_body_id] = 0.0;
 	mbs_data->q[R3_steering_fork_id] = 0.0;
 
+	mbs_data->q[T3_body_id] = mbs_data->q[T3_body_id] +0.001*mbs_data->q[T3_body_id];
 
 	//mbs_data->qd[R2_wheel_rr_id] = 0.0;
 	//mbs_data->qd[R2_wheel_ft_lt_id] = 0.0; 

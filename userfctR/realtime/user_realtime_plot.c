@@ -34,12 +34,16 @@ void user_realtime_plot(MbsData* mbs_data)
 
 
 
-
-	set_plot(mbs_data->q[R1_body_id], "R1 body");
+	//set_plot(mbs_data->q[R1_body_id], "R1 body");
 	set_plot(mbs_data->q[R3_steering_fork_id], "Steering Fork");
-	set_plot(mbs_data->Qq[R1_pendulum_id], "Couple Pendule");
-	set_plot(mbs_data->Qq[R3_steering_fork_id], "Couple steering Fork");
-	set_plot(mbs_data->user_IO->Fn_lft, "Fn");
+	set_plot(mbs_data->user_IO->dirdyn_ft_lt_steer, "Steering roue g");
+	set_plot(mbs_data->user_IO->dirdyn_ft_rt_steer, "Steering roue d");
+	set_plot(( mbs_data->user_IO->dirdyn_ft_lt_steer + mbs_data->user_IO->dirdyn_ft_rt_steer )/2, "Steering roue moyenne");
+	//set_plot(mbs_data->Qq[R1_pendulum_id], "Couple Pendule");
+	//set_plot(mbs_data->Qq[R3_steering_fork_id], "Couple steering Fork");
+	//set_plot(mbs_data->user_IO->Fn_lft, "Fn");
+	
+	
 	//double V;
 	//V = sqrt(  mbs_data->qd[T1_body_id]* mbs_data->qd[T1_body_id] + mbs_data->qd[T2_body_id]* mbs_data->qd[T2_body_id]);
 

@@ -64,6 +64,8 @@ void user_dirdyn_loop(MbsData *mbs_data, MbsDirdyn *mbs_dd)
 	set_output(PtrSensor->P[2], "Sensor_pilot_PositionY");
 	set_output(PtrSensor->P[3], "Sensor_pilot_PositionZ");
 
+	set_output(mbs_data->user_IO->dirdyn_ft_lt_steer, "Steering_roue_gauche");
+	set_output(mbs_data->user_IO->dirdyn_ft_rt_steer, "Steering_roue_droite");
 
 	// ForcesNormales
 	set_output(mbs_data->user_IO->Fn_lft, "Fn_lft");

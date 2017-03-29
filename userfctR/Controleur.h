@@ -22,6 +22,7 @@
 #include "mbs_load_xml.h"
 #include "cmake_config.h"
 #include "user_IO.h"
+#include "my_DrivenJoints.h"
 
 #ifndef _CONTROLEUR_H_
 #define _CONTROLEUR_H_

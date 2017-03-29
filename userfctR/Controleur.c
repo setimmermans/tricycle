@@ -24,7 +24,7 @@ double my_controleur(MbsData *mbs_data, double tsim, double speed, double steeri
 
 	tilt_ref = tilt_reference(mbs_data, tsim, speed, steering);
 	speed_tilt_ref = -fabs((mbs_data->last_tilt_ref - tilt_ref) / 0.001);
-	if (tsim > mbs_data->t_start)
+	if (tsim > mbs_data->t_start && mbs_data->EntreEnCourbe==1)
 	{
 		speed_tilt_ref =  EntreEnCourbe_DTC_tilt_ref_vitesse(mbs_data, tsim);
 	}
@@ -76,18 +76,18 @@ double my_controleur(MbsData *mbs_data, double tsim, double speed, double steeri
 
 double my_controleur_stc(MbsData *mbs_data, double tsim, double speed, double steering) //STC
 {
-	double My_torque_tilt, delta_err, tilt_ref, max_torque, speed_tilt_ref, delta_speed, My_torque_steer, My_torque, torque_step_max, diff_max_torque;
+	double My_torque_tilt, delta_err, tilt_ref, max_torque, speed_tilt_ref, delta_speed, My_torque, torque_step_max, diff_max_torque;
 	mbs_data->Kp = 10;//*mbs_data->speed_ref;//200 normal //5 avant chgmt
-	mbs_data->Ki =10.0;// 0.5;// 10;//100 normal // 100avant chgmt
-	mbs_data->Kd = 5.0;// *sqrt(mbs_data->speed_ref / 2);// 10;//100 normal // 10 avant chgmt
+	mbs_data->Ki = 1.0;// 10;// 10;// 10;//100 normal // 100avant chgmt
+	mbs_data->Kd = 5.0;// 5.0;// *sqrt(mbs_data->speed_ref / 2);// 10;//100 normal // 10 avant chgmt
 	max_torque = 2.0;
 
 	tilt_ref = tilt_reference(mbs_data, tsim, speed, steering);
 	speed_tilt_ref = 0.0;// fabs((mbs_data->last_tilt_ref - tilt_ref) / 0.001);
-	if (tsim > mbs_data->t_start)
+	if (tsim > mbs_data->t_start &&  mbs_data->EntreEnCourbe == 1)
 	{
 		speed_tilt_ref = EntreEnCourbe_STC_tilt_ref_vitesse(mbs_data, tsim);  //(mbs_data->last_tilt_ref - tilt_ref) / 0.001;
-		//printf("speed_tilt_ref = %f \n",speed_tilt_ref);
+		//printf("speed_tilt_ref = %f  car veut etre  en courbe \n",speed_tilt_ref);
 	}
 	
 	mbs_data->last_tilt_ref = tilt_ref;
@@ -108,7 +108,7 @@ double my_controleur_stc(MbsData *mbs_data, double tsim, double speed, double st
 		My_torque = (My_torque_tilt);// -My_torque_steer );//
 	}
 
-	if (abs(mbs_data->q[R1_body_id]) > 0.00001)
+	if (fabs(mbs_data->q[R1_body_id]) > 0.1)
 	{
 		printf("Delta err*Kp %f et  My_torque = %f et Ki* ErrorTot = %f et vit R1 body = %f \n", mbs_data->Kp *delta_err, My_torque, mbs_data->Ki * mbs_data->ErrorTot, delta_speed);
 	}
@@ -146,7 +146,7 @@ double my_controleur_stc(MbsData *mbs_data, double tsim, double speed, double st
 
 double tilt_reference(MbsData *mbs_data, double tsim, double speed, double steering)
 {
-	double the_tilt, my_tilt_control, translation_acc, acc_gyro, vit_lacet;
+	double the_tilt, my_tilt_control, translation_acc, acc_gyro, vit_lacet, Rayon_instantane;
 	the_tilt = 0.0;
 	my_tilt_control = 0.0;
 	// look up table CurveEquilibrium.txt
@@ -249,6 +249,41 @@ double tilt_reference(MbsData *mbs_data, double tsim, double speed, double steer
 
 	//printf("the tilt =%f et gyro =%f  \n ", the_tilt, 1000000.0 * acc_gyro);
 
+	double f_p, f_pp, my_value,y_ref_stc;
+	f_p = 0.0;
+	f_pp = 0.0;
+	Rayon_instantane = mbs_data->Rayon;
+	//y_ref_stc = my_DrivenJoints_controleur_y(mbs_data, tsim, mbs_data->t_start);
+	//if (y_ref_stc - mbs_data->last_f > 0.00001)
+	//{
+	//	f_p = (y_ref_stc - mbs_data->last_f) / 0.001; //vit de courbure
+
+	//	f_pp = (f_p - mbs_data->last_fp) / 0.001; // acc de courbure}
+	//}
+	//mbs_data->last_f = y_ref_stc;
+	//my_value = (1 + f_p*f_p) * sqrt(1 + f_p*f_p) / f_pp;
+	//mbs_data->last_fp = f_p;
+
+
+
+	////double t_f, t_c, a_c, consigne_simple_bande;
+
+	////t_f = 1.0;// mbs_data->speed_ref;
+	////t_c = 0.5;// (mbs_data->speed_ref) / 2;
+	////a_c = (-4 * mbs_data->user_IO->steer) / (((0.5*t_f - t_c) * 2)*((0.5*t_f - t_c) * 2) - t_f*t_f);
+
+	////my_value = my_DrivenJoints_Steering_smooth_consigne(mbs_data, tsim, t_f, t_c, 2 * a_c, mbs_data->t_start, 0.0, -2 * mbs_data->user_IO->steer);
+
+	//if (fabs(f_pp) >= 0.1)
+	//{
+	//	
+	//	Rayon_instantane = my_value;
+	//	//printf("the tilt control =%f et Rayon_instantane = %f et f_p =%f et f_pp =%f  et  time =%f et y_ref =%f \n ", my_tilt_control, Rayon_instantane, f_p, f_pp, tsim, y_ref_stc);
+	//
+	//}
+	
+
+	
 	if (mbs_data->user_IO->modeTC == 1) //STC
 	{
 		//	my_tilt_control = EntreEnCourbe_STC_tilt_ref(mbs_data, tsim, the_tilt); 
@@ -256,6 +291,11 @@ double tilt_reference(MbsData *mbs_data, double tsim, double speed, double steer
 		if (tsim > 19.99)
 		{
 			printf("the tilt control  =%f \n ", my_tilt_control);
+		}
+
+		if (mbs_data->DoubleBande == 1)
+		{
+			my_tilt_control = atan(speed*speed / (Rayon_instantane *g));
 		}
 		//return my_tilt_control;
 		return my_tilt_control;
@@ -319,8 +359,8 @@ double EntreEnCourbe_STC_tilt_ref(MbsData *mbs_data, double tsim, double the_til
 	// entre en courbe
 	double t_f, t_c, a_c, my_tilt_control, t_start;
 
-	t_f = mbs_data->speed_ref;
-	t_c = mbs_data->speed_ref / 2;
+	t_f = 0.5;// mbs_data->speed_ref;
+	t_c = 0.25;// mbs_data->speed_ref / 2;
 	a_c = (-4 * the_tilt) / (((0.5*t_f - t_c) * 2)*((0.5*t_f - t_c) * 2) - t_f*t_f);
 	t_start = mbs_data->t_start; //Temps d'initiation du tournant
 

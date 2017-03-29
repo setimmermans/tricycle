@@ -58,7 +58,7 @@
 
 
 	double C, vit_pene;
-	C = -2000;
+	C =  -20;
 	vit_pene = mbs_data->qd[T3_body_id];
 
 

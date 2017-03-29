@@ -11,7 +11,7 @@
 //	1348 Louvain-la-Neuve 
 //	http://www.robotran.be// 
 //
-//	==> Generation Date : Wed Dec 21 13:36:04 2016
+//	==> Generation Date : Tue Mar 28 10:33:04 2017
 //
 //	==> Project name : tricycle
 //	==> using XML input file 
@@ -19,7 +19,7 @@
 //	==> Number of joints : 31
 //
 //	==> Function : F 8 : Constraints Vector (h) and Jacobian Matrix (Jac) 
-//	==> Flops complexity : 649
+//	==> Flops complexity : 657
 //
 //	==> Generation Time :  0.020 seconds
 //	==> Post-Processing :  0.010 seconds
@@ -273,13 +273,13 @@ MbsData *s, double tsim)
   RO_5_326 = -S25*C26;
   RO_5_426 = -C25*S26;
   RO_5_626 = S25*S26;
-  RL_5_137 = RO_5_126*s->dpt[1][32]+RO_5_426*s->dpt[2][32];
+  RL_5_137 = RO_5_126*s->dpt[1][32]+RO_5_426*s->dpt[2][32]+s->dpt[3][32]*S25;
   RL_5_237 = s->dpt[1][32]*S26+s->dpt[2][32]*C26;
-  RL_5_337 = RO_5_326*s->dpt[1][32]+RO_5_626*s->dpt[2][32];
+  RL_5_337 = RO_5_326*s->dpt[1][32]+RO_5_626*s->dpt[2][32]+s->dpt[3][32]*C25;
 //
-  RL_6_138 = RO_5_126*s->dpt[1][31]+RO_5_426*s->dpt[2][31];
+  RL_6_138 = RO_5_126*s->dpt[1][31]+RO_5_426*s->dpt[2][31]+s->dpt[3][31]*S25;
   RL_6_238 = s->dpt[1][31]*S26+s->dpt[2][31]*C26;
-  RL_6_338 = RO_5_326*s->dpt[1][31]+RO_5_626*s->dpt[2][31];
+  RL_6_338 = RO_5_326*s->dpt[1][31]+RO_5_626*s->dpt[2][31]+s->dpt[3][31]*C25;
 
 // = = Block_0_1_0_0_0_9 = = 
  
@@ -342,7 +342,7 @@ MbsData *s, double tsim)
   Jac_7_22 = -(Plp11*(RL_4_236*RO_1_921-RL_4_336*RO_1_821)-Plp21*(RL_4_136*RO_1_921-RL_4_336*RO_1_721)+Plp31*(RL_4_136*
  RO_1_821-RL_4_236*RO_1_721));
   Jacu_7_25 = -(Plp11*RL_5_337-Plp31*RL_5_137);
-  Jacu_7_26 = -(Plp21*(s->dpt[1][32]*C26-s->dpt[2][32]*S26)-RL_5_237*(Plp11*C25-Plp31*S25));
+  Jacu_7_26 = -(Plp21*(RL_5_137*C25-RL_5_337*S25)-RL_5_237*(Plp11*C25-Plp31*S25));
 //
   Plp12 = RL_6_138-RL_7_113-RL_7_114-RL_7_139-s->dpt[1][5]+s->dpt[1][6];
   Plp22 = RL_6_238-RL_7_214-RL_7_239-s->dpt[2][12];
@@ -358,7 +358,7 @@ MbsData *s, double tsim)
   Jac_8_16 = Plp12*(RL_7_239*RO_7_915-RL_7_339*RO_7_815)-Plp22*(RL_7_139*RO_7_915-RL_7_339*RO_7_715)+Plp32*(RL_7_139*
  RO_7_815-RL_7_239*RO_7_715);
   Jacu_8_25 = Plp12*RL_6_338-Plp32*RL_6_138;
-  Jacu_8_26 = Plp22*(s->dpt[1][31]*C26-s->dpt[2][31]*S26)-RL_6_238*(Plp12*C25-Plp32*S25);
+  Jacu_8_26 = Plp22*(RL_6_138*C25-RL_6_338*S25)-RL_6_238*(Plp12*C25-Plp32*S25);
 //
   Plp13 = -(RL_9_141+s->dpt[1][2]-s->dpt[1][3]);
   Plp33 = -(RL_9_341+s->dpt[3][2]-s->dpt[3][3]);

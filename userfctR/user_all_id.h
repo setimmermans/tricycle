@@ -8,7 +8,7 @@
  *
  * Universite catholique de Louvain, Belgium 
  *
- * Last update : Mon Dec  5 11:13:29 2016
+ * Last update : Wed Mar 29 13:16:18 2017
  * --------------------------------------------------------
  *
  */
@@ -130,9 +130,10 @@
 
 // extforce
 
-#define F_wheel_rr_id 1
-#define F_wheel_ft_rt_id 2
-#define F_wheel_ft_lt_id 3
+#define my_ext_force_lat_id 1
+#define F_wheel_rr_id 2
+#define F_wheel_ft_rt_id 3
+#define F_wheel_ft_lt_id 4
 
 
 // links

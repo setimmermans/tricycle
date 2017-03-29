@@ -32,27 +32,47 @@ double* user_JointForces(MbsData *mbs_data, double tsim)
 	double R1_perturb;
 	if (mbs_data->speed_ref > 2)
 	{
-		R1_perturb = 50;
+		R1_perturb = 100;
 	}
 	else
 	{
-		R1_perturb =50;
+		R1_perturb =100;
 	}
 
 
-	double t_pertub,sigma, mu,my_dt;
-	t_pertub = 150;
+	double t_pertub,sigma, mu,my_dt, my_rear_torque;
+	
+	t_pertub = 250;
 	my_dt = 0.5;
 	sigma = 1 / (R1_perturb*sqrt(2 * 3.1415));
 	mu = t_pertub + my_dt;
 	if (mbs_data->process == 3) //dirdyn controle de vitesse / couple
 	{
 		double Kp_rr, V;
-		V = sqrt(mbs_data->qd[T1_body_id] * mbs_data->qd[T1_body_id] + mbs_data->qd[T2_body_id] * mbs_data->qd[T2_body_id]);
-
+		V =mbs_data->qd[T1_body_id];//  sqrt( mbs_data->qd[T1_body_id]*mbs_data->qd[T1_body_id] + mbs_data->qd[T2_body_id] * mbs_data->qd[T2_body_id]);
+		my_rear_torque = 0.0;
 		Kp_rr = 10;
 		//printf(" vitesse  de dedans =%f , vit demande =%f  et diff =%f\n", V, mbs_data->speed_ref, (mbs_data->qd[T1_body_id] - mbs_data->speed_ref));
-		mbs_data->Qq[R2_wheel_rr_id] = mbs_data->q_rr_ref - Kp_rr * (V - mbs_data->speed_ref); // - Kp_rr * (mbs_data->Qq[R2_wheel_rr_id] - mbs_data->q_rr_ref);//
+		my_rear_torque = mbs_data->q_rr_ref - Kp_rr * (V - mbs_data->speed_ref);
+		if (my_rear_torque > 2)
+		{
+			mbs_data->Qq[R2_wheel_rr_id] = sign(my_rear_torque)*2.0;
+		}
+		else
+		{
+			mbs_data->Qq[R2_wheel_rr_id] = my_rear_torque;// mbs_data->q_rr_ref - Kp_rr * (V - mbs_data->speed_ref); // - Kp_rr * (mbs_data->Qq[R2_wheel_rr_id] - mbs_data->q_rr_ref);//
+		}
+		
+
+		//if (tsim > 5.0)
+		//{
+		//	mbs_data->speed_ref = 3.0;
+		//}
+		//mbs_data->Qq[T1_body_id] = 0.0;
+		//if (tsim > 1.5 && tsim < 2.0)
+		//{
+		//	mbs_data->Qq[T1_body_id] = -50;
+		//}
 	}
 
 
@@ -80,14 +100,14 @@ double* user_JointForces(MbsData *mbs_data, double tsim)
 			mbs_data->Qq[R1_body_id] = 0.0;
 			if (tsim > t_pertub && tsim < t_pertub + my_dt)
 			{
-				mbs_data->Qq[R1_body_id] = R1_perturb * exp(-(tsim - (t_pertub + my_dt/2))*(tsim - (t_pertub + my_dt/2)) / (2.0*sigma *sigma)); //gaussienne
+			mbs_data->Qq[R1_body_id] = R1_perturb * exp(-(tsim - (t_pertub + my_dt/2))*(tsim - (t_pertub + my_dt/2)) / (2.0*sigma *sigma)); //gaussienne
 			}
 
 		} //STC
 
 		else
 		{
-			//	printf("no joint force \n");
+				printf("no joint force \n");
 				// no torque control 
 
 				//perturbation no control
